@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0f1220" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>For Baby — Japanese & Korean Study Nook</title>
+<style>
+  :root {
+    --bg: #0f1220;
+    --card: #1a1f35;
+    --card2: #232946;
+    --text: #f4f4f8;
+    --muted: #a9b0d0;
+    --pink: #ff7eb6;
+    --teal: #4fd1c5;
+    --yellow: #ffd166;
+    --red: #ff6b6b;
+    --border: #2e365c;
+    --border2: #3a4370;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    background: radial-gradient(circle at top, #1b2140, var(--bg));
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 16px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ---------- LOCK SCREEN ---------- */
+  .lock {
+    position: fixed;
+    inset: 0;
+    background: #0b0e18;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 16px;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    overflow-y: auto;
+  }
+
+  .lock-box {
+    background: var(--card);
+    padding: 24px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    border: 1px solid var(--border);
+    margin: auto;
+  }
+
+  .lock-box h1 {
+    margin-top: 0;
+    color: var(--pink);
+    font-size: 1.6rem;
+  }
+
+  .lock-box p {
+    font-size: 0.95rem;
+  }
+
+  .lock-box input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    color: white;
+    margin: 12px 0;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    min-height: 48px;
+  }
+
+  .lock-box input:focus {
+    border-color: var(--teal);
+  }
+
+  .lock-box button,
+  .quiz-btn {
+    background: linear-gradient(135deg, var(--pink), var(--teal));
+    border: none;
+    color: #0b0e18;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+    min-height: 48px;
+    font-family: inherit;
+    transition: transform 0.1s ease;
+  }
+
+  .lock-box button:active,
+  .quiz-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    text-align: center;
+    padding: 3rem 1rem 1.5rem;
+    max-width: 900px;
+    margin: auto;
+    padding-top: calc(3rem + env(safe-area-inset-top));
+  }
+
+  header h1 {
+    font-size: clamp(1.8rem, 8vw, 3.5rem);
+    margin: 0;
+    background: linear-gradient(135deg, var(--pink), var(--teal), var(--yellow));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    word-wrap: break-word;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: clamp(0.9rem, 3.8vw, 1.1rem);
+    margin: 0.5rem 0;
+  }
+
+  /* ---------- CONTAINER ---------- */
+  .container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 0 0.75rem 3rem;
+  }
+
+  /* ---------- TABS ---------- */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 4px 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 12px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    font-family: inherit;
+    min-height: 44px;
+    transition: all 0.15s ease;
+  }
+
+  .tab:active {
+    transform: scale(0.96);
+  }
+
+  .tab.active {
+    background: var(--card2);
+    color: var(--text);
+    border-color: var(--teal);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .section {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section.active {
+    display: block;
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section h2 {
+    margin-top: 0;
+    color: var(--teal);
+    font-size: 1.3rem;
+  }
+
+  .section h3 {
+    color: var(--pink);
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  /* ---------- TABLES (scrollable on mobile) ---------- */
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1rem 0;
+    border-radius: 12px;
+  }
+
+  table {
+    width: 100%;
+    min-width: 280px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    color: var(--yellow);
+    font-size: 0.9rem;
+  }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-card {
+    background: var(--card2);
+    padding: 1rem;
+    border-radius: 16px;
+    margin-top: 1rem;
+  }
+
+  .quiz-card h3 {
+    font-size: 1rem;
+    margin-top: 0;
+  }
+
+  .quiz-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    padding: 14px;
+    border-radius: 12px;
+    margin: 8px 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: inherit;
+    min-height: 48px;
+    transition: all 0.15s ease;
+  }
+
+  .quiz-option:active {
+    transform: scale(0.98);
+    border-color: var(--teal);
+  }
+
+  .quiz-option:hover {
+    border-color: var(--teal);
+  }
+
+  .quiz-result {
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  /* ---------- NOTE ---------- */
+  .note {
+    background: var(--card);
+    border-left: 4px solid var(--yellow);
+    padding: 1rem;
+    border-radius: 12px;
+    color: var(--muted);
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 2rem 1rem calc(3rem + env(safe-area-inset-bottom));
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* ---------- SMALL PHONES ---------- */
+  @media (max-width: 480px) {
+    header {
+      padding: 2rem 0.75rem 1rem;
+    }
+
+    .container {
+      padding: 0 0.6rem 2rem;
+    }
+
+    .section {
+      padding: 1rem;
+      border-radius: 16px;
+    }
+
+    th, td {
+      font-size: 0.85rem;
+      padding: 10px 8px;
+    }
+
+    .tab {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+    }
+  }
+
+  /* ---------- LANDSCAPE PHONES ---------- */
+  @media (max-height: 500px) and (orientation: landscape) {
+    header {
+      padding: 1.5rem 1rem 1rem;
+    }
+    .lock-box {
+      padding: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD LOCK -->
+<div class="lock" id="lock">
+  <div class="lock-box">
+    <h1>For Baby</h1>
+    <p>Enter password to open your study nook.</p>
+    <input id="password" type="password" placeholder="Password" autocomplete="off" />
+    <button onclick="unlock()">Enter</button>
+    <p id="lockMsg" style="color: var(--red); font-size: 0.9rem; min-height: 1.2em;"></p>
+  </div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="site" style="display:none;">
+  <header>
+    <h1>For Baby</h1>
+    <p>Japanese &amp; Korean Study Nook</p>
+    <p>Made for you, Baby. Learn at your own pace — no pressure.</p>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('jp', this)">🇯🇵 Japanese</button>
+      <button class="tab" onclick="showTab('kr', this)">🇰🇷 Korean</button>
+      <button class="tab" onclick="showTab('anime', this)">🎌 Anime &amp; K-Drama</button>
+      <button class="tab" onclick="showTab('work', this)">💊 Pharmacy &amp; Gym</button>
+      <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
+    </div>
+
+    <!-- JAPANESE -->
+    <div class="section active" id="jp">
+      <h2>Japanese Basics</h2>
+      <p>Start with these. You already love anime, so you’ll recognize some.</p>
+
+      <h3>Greetings</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Japanese</th><th>Romaji</th><th>English / Tagalog</th></tr>
+          <tr><td>こんにちは</td><td>Konnichiwa</td><td>Hello / Magandang araw</td></tr>
+          <tr><td>おはよう</td><td>Ohayou</td><td>Good morning / Magandang umaga</td></tr>
+          <tr><td>ありがとう</td><td>Arigatou</td><td>Thank you / Salamat</td></tr>
+          <tr><td>すみません</td><td>Sumimasen</td><td>Excuse me / Sorry / Paumanhin</td></tr>
+          <tr><td>おやすみ</td><td>Oyasumi</td><td>Good night / Magandang gabi</td></tr>
+        </table>
+      </div>
+
+      <h3>Hiragana Starter</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Character</th><th>Sound</th></tr>
+          <tr><td>あ</td><td>a</td></tr>
+          <tr><td>い</td><td>i</td></tr>
+          <tr><td>う</td><td>u</td></tr>
+          <tr><td>え</td><td>e</td></tr>
+          <tr><td>お</td><td>o</td></tr>
+          <tr><td>か</td><td>ka</td></tr>
+          <tr><td>き</td><td>ki</td></tr>
+          <tr><td>く</td><td>ku</td></tr>
+          <tr><td>け</td><td>ke</td></tr>
+          <tr><td>こ</td><td>ko</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- KOREAN -->
+    <div class="section" id="kr">
+      <h2>Korean Basics</h2>
+      <p>Hangul is easier than it looks. You can learn it fast.</p>
+
+      <h3>Greetings</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Korean</th><th>Romaji</th><th>English / Tagalog</th></tr>
+          <tr><td>안녕하세요</td><td>Annyeonghaseyo</td><td>Hello / Kamusta</td></tr>
+          <tr><td>감사합니다</td><td>Gamsahamnida</td><td>Thank you / Salamat</td></tr>
+          <tr><td>네</td><td>Ne</td><td>Yes / Oo</td></tr>
+          <tr><td>아니요</td><td>Aniyo</td><td>No / Hindi</td></tr>
+          <tr><td>미안해요</td><td>Mianhaeyo</td><td>Sorry / Paumanhin</td></tr>
+          <tr><td>잘 자요</td><td>Jal jayo</td><td>Good night / Magandang gabi</td></tr>
+        </table>
+      </div>
+
+      <h3>Hangul Starter</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Character</th><th>Sound</th></tr>
+          <tr><td>ㅏ</td><td>a</td></tr>
+          <tr><td>ㅑ</td><td>ya</td></tr>
+          <tr><td>ㅓ</td><td>eo</td></tr>
+          <tr><td>ㅕ</td><td>yeo</td></tr>
+          <tr><td>ㅗ</td><td>o</td></tr>
+          <tr><td>ㅛ</td><td>yo</td></tr>
+          <tr><td>ㅜ</td><td>u</td></tr>
+          <tr><td>ㅠ</td><td>yu</td></tr>
+          <tr><td>ㅡ</td><td>eu</td></tr>
+          <tr><td>ㅣ</td><td>i</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ANIME & K-DRAMA -->
+    <div class="section" id="anime">
+      <h2>Anime &amp; K-Drama Phrases</h2>
+      <p>Fun phrases you’ll hear all the time.</p>
+
+      <h3>Japanese</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Japanese</th><th>Romaji</th><th>Meaning</th></tr>
+          <tr><td>いただきます</td><td>Itadakimasu</td><td>Said before eating</td></tr>
+          <tr><td>すごい</td><td>Sugoi</td><td>Amazing / Wow</td></tr>
+          <tr><td>かわいい</td><td>Kawaii</td><td>Cute</td></tr>
+          <tr><td>がんばって</td><td>Ganbatte</td><td>Do your best</td></tr>
+          <tr><td>まじで</td><td>Majide</td><td>Seriously? / For real?</td></tr>
+        </table>
+      </div>
+
+      <h3>Korean</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Korean</th><th>Romaji</th><th>Meaning</th></tr>
+          <tr><td>대박</td><td>Daebak</td><td>Awesome / Jackpot</td></tr>
+          <tr><td>화이팅</td><td>Hwaiting</td><td>Fighting! / Cheer up!</td></tr>
+          <tr><td>진짜</td><td>Jinjja</td><td>Really?</td></tr>
+          <tr><td>귀여워</td><td>Gwiyeowo</td><td>Cute</td></tr>
+          <tr><td>맛있어</td><td>Mashisseo</td><td>Delicious</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PHARMACY & GYM -->
+    <div class="section" id="work">
+      <h2>Pharmacy &amp; Gym Vocab</h2>
+      <p>Because you’re a pharmacist and a gym girl.</p>
+
+      <h3>Japanese</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Japanese</th><th>Romaji</th><th>English</th></tr>
+          <tr><td>薬剤師</td><td>Yakuzaishi</td><td>Pharmacist</td></tr>
+          <tr><td>薬</td><td>Kusuri</td><td>Medicine</td></tr>
+          <tr><td>患者</td><td>Kanja</td><td>Patient</td></tr>
+          <tr><td>処方箋</td><td>Shohousen</td><td>Prescription</td></tr>
+          <tr><td>ジム</td><td>Jimu</td><td>Gym</td></tr>
+          <tr><td>運動</td><td>Undou</td><td>Exercise</td></tr>
+          <tr><td>筋トレ</td><td>Kintore</td><td>Strength training</td></tr>
+          <tr><td>水</td><td>Mizu</td><td>Water</td></tr>
+        </table>
+      </div>
+
+      <h3>Korean</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Korean</th><th>Romaji</th><th>English</th></tr>
+          <tr><td>약사</td><td>Yaksa</td><td>Pharmacist</td></tr>
+          <tr><td>약</td><td>Yak</td><td>Medicine</td></tr>
+          <tr><td>환자</td><td>Hwanja</td><td>Patient</td></tr>
+          <tr><td>처방전</td><td>Cheobangjeon</td><td>Prescription</td></tr>
+          <tr><td>헬스장</td><td>Helseujang</td><td>Gym</td></tr>
+          <tr><td>운동</td><td>Undong</td><td>Exercise</td></tr>
+          <tr><td>근력 운동</td><td>Geunnyeok undong</td><td>Strength training</td></tr>
+          <tr><td>물</td><td>Mul</td><td>Water</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="section" id="quiz">
+      <h2>Mini Quiz</h2>
+      <p>Test yourself, Baby. No pressure.</p>
+
+      <div class="quiz-card">
+        <h3>1. What does “Arigatou” mean?</h3>
+        <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+        <button class="quiz-option" onclick="answer(this, true)">Thank you</button>
+        <button class="quiz-option" onclick="answer(this, false)">Excuse me</button>
+        <div class="quiz-result"></div>
+      </div>
+
+      <div class="quiz-card">
+        <h3>2. What does “Annyeonghaseyo” mean?</h3>
+        <button class="quiz-option" onclick="answer(this, false)">Sorry</button>
+        <button class="quiz-option" onclick="answer(this, false)">Yes</button>
+        <button class="quiz-option" onclick="answer(this, true)">Hello</button>
+        <div class="quiz-result"></div>
+      </div>
+
+      <div class="quiz-card">
+        <h3>3. What is “Yakuzaishi”?</h3>
+        <button class="quiz-option" onclick="answer(this, true)">Pharmacist</button>
+        <button class="quiz-option" onclick="answer(this, false)">Gym</button>
+        <button class="quiz-option" onclick="answer(this, false)">Water</button>
+        <div class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> This site is for learning. It does not give medical advice.
+      Always consult a doctor or pharmacist for health concerns.
+    </div>
+  </div>
+
+  <footer>
+    Made for Baby. Keep learning, keep glowing. — BABY MO - Jes
+  </footer>
+</div>
+
+<script>
+  // CHANGE PASSWORD HERE
+  const PASSWORD = "baby";
+
+  function unlock() {
+    const input = document.getElementById("password").value.trim().toLowerCase();
+    if (input === PASSWORD) {
+      document.getElementById("lock").style.display = "none";
+      document.getElementById("site").style.display = "block";
+      localStorage.setItem("senUnlocked", "yes");
+    } else {
+      document.getElementById("lockMsg").textContent = "Wrong password. Try again, Baby.";
+    }
+  }
+
+  if (localStorage.getItem("senUnlocked") === "yes") {
+    document.getElementById("lock").style.display = "none";
+    document.getElementById("site").style.display = "block";
+  }
+
+  function showTab(id, btn) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+  }
+
+  function answer(btn, correct) {
+    const result = btn.parentElement.querySelector(".quiz-result");
+    if (correct) {
+      result.textContent = "Correct! Nice one, Baby. ✅";
+      result.style.color = "#4fd1c5";
+    } else {
+      result.textContent = "Not quite. Try again. 💡";
+      result.style.color = "#ff6b6b";
+    }
+  }
+
+  document.getElementById("password").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") unlock();
+  });
+</script>
+</body>
+</html>
