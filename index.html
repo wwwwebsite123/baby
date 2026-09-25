@@ -1,0 +1,2591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#1a1530" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="manifest" href="manifest.json" />
+<title>For Baby — Japanese & Korean Study Nook</title>
+<style>
+  :root {
+    --bg: #14102a; --bg2: #1e1840; --card: #221a44; --card2: #2c2358;
+    --text: #f6f2ff; --muted: #b8aede;
+    --hyd-blue: #7ea6f0; --hyd-purple: #b18cf0; --hyd-pink: #f2a3d4;
+    --hyd-lilac: #d4b6f5; --hyd-mint: #9fe6d4; --hyd-white: #fdf8ff;
+    --yellow: #ffd9a0; --red: #ff8098; --green: #4fbf7a;
+    --border: #3a2f6e; --border2: #4a3d8a;
+    --accent: #b18cf0;
+    --font-size: 16px;
+  }
+  body[data-season="sakura"] {
+    --bg: #2a1420; --bg2: #3a1e2c; --card: #2e1a28; --card2: #3d2436;
+    --hyd-purple: #f2a3c5; --hyd-pink: #ffb8d0; --hyd-lilac: #ffd0e0;
+    --hyd-blue: #f2a3c5; --accent: #f2a3c5; --border: #5a2e48; --border2: #7a3d5e;
+  }
+  body[data-season="maple"] {
+    --bg: #2a1810; --bg2: #3a2418; --card: #2e1c14; --card2: #3d2820;
+    --hyd-purple: #e08a4a; --hyd-pink: #d4623a; --hyd-lilac: #f2b070;
+    --hyd-blue: #c46a3a; --accent: #e08a4a; --border: #5a3420; --border2: #7a4830;
+  }
+  body[data-season="snow"] {
+    --bg: #141c2e; --bg2: #1e2a44; --card: #1a2438; --card2: #243050;
+    --hyd-purple: #a8c8f0; --hyd-pink: #c8d8f5; --hyd-lilac: #d8e8ff;
+    --hyd-blue: #7ea6f0; --accent: #a8c8f0; --border: #2e3c5c; --border2: #3d4e74;
+  }
+  body[data-theme="light"] {
+    --bg: #fdf8ff; --bg2: #f2ecff;
+    --card: #ffffff; --card2: #f6f0ff;
+    --text: #2a1f44; --muted: #6b5f8a;
+    --border: #ddd0f0; --border2: #c8b8e8;
+    --hyd-white: #2a1f44;
+    --yellow: #b8860b;
+  }
+  body[data-theme="light"] body::before { opacity: 0.3; }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(177,140,240,0.22), transparent 45%),
+      radial-gradient(circle at 85% 20%, rgba(126,166,240,0.20), transparent 50%),
+      radial-gradient(circle at 50% 100%, rgba(242,163,212,0.18), transparent 55%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    background-attachment: fixed;
+    color: var(--text); line-height: 1.6; font-size: var(--font-size);
+    min-height: 100vh; min-height: 100dvh;
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(circle at 12% 25%, rgba(212,182,245,0.10) 0 6px, transparent 7px),
+      radial-gradient(circle at 88% 60%, rgba(242,163,212,0.10) 0 8px, transparent 9px),
+      radial-gradient(circle at 30% 80%, rgba(126,166,240,0.10) 0 5px, transparent 6px),
+      radial-gradient(circle at 70% 15%, rgba(159,230,212,0.10) 0 6px, transparent 7px);
+    background-size: 400px 400px; opacity: 0.8; z-index: 0;
+  }
+
+  .petal-field { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .lock-petals { position: absolute; }
+  .petal { position: absolute; top: 0; animation-name: fallPetal; animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; backface-visibility: hidden; }
+  .petal-inner { width: 100%; height: 100%; animation: swayPetal 4s ease-in-out infinite; will-change: transform; transform-origin: center; }
+  .petal-inner svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 6px rgba(177,140,240,0.35)); }
+  @keyframes fallPetal {
+    0% { transform: translate3d(0, -14vh, 0); opacity: 0; }
+    8% { opacity: var(--op, 0.6); }
+    92% { opacity: var(--op, 0.6); }
+    100% { transform: translate3d(var(--drift, 40px), 114vh, 0); opacity: 0; }
+  }
+  @keyframes swayPetal {
+    0%, 100% { transform: translateX(-7px) rotate(-14deg); }
+    50% { transform: translateX(7px) rotate(14deg); }
+  }
+  .bloom-corner { position: absolute; width: 230px; height: 230px; opacity: 0.28; filter: blur(0.4px); animation: bloomFloat 12s ease-in-out infinite; }
+  .bloom-corner svg { display: block; width: 100%; height: 100%; }
+  .bloom-corner.top-left { top: -55px; left: -60px; }
+  .bloom-corner.bottom-right { bottom: -60px; right: -60px; animation-delay: -6s; opacity: 0.22; }
+  @keyframes bloomFloat {
+    0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+    50% { transform: translateY(-16px) scale(1.06) rotate(5deg); }
+  }
+  .bob { display: inline-block; animation: bobFlower 3.2s ease-in-out infinite; transform-origin: center bottom; }
+  .bob:nth-child(2) { animation-delay: -1.1s; }
+  .bob:nth-child(3) { animation-delay: -2.2s; }
+  @keyframes bobFlower {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-4px) rotate(6deg); }
+  }
+  .bloom-in { animation: bloomIn 1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes bloomIn { 0% { opacity: 0; transform: scale(0.88) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .petal, .petal-inner, .bloom-corner, .bob, .bloom-in { animation: none !important; }
+    .petal { display: none; }
+  }
+
+  .lock {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(177,140,240,0.25), transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(126,166,240,0.22), transparent 55%),
+      var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; padding: 16px;
+    padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+    overflow-y: auto;
+  }
+  .lock-box {
+    background: linear-gradient(160deg, var(--card), var(--card2));
+    padding: 28px 24px; border-radius: 24px; width: 100%; max-width: 400px;
+    text-align: center; border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(177,140,240,0.15); margin: auto; position: relative; z-index: 1;
+  }
+  .lock-box::before {
+    content: "🌸"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 2rem; background: var(--bg); padding: 0 8px; border-radius: 50%;
+  }
+  .lock-box h1 {
+    margin-top: 6px; font-size: 1.7rem;
+    background: linear-gradient(135deg, var(--hyd-pink), var(--hyd-purple), var(--hyd-blue));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .lock-box p { font-size: 0.95rem; color: var(--muted); }
+  .lock-box input {
+    width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border2);
+    background: var(--bg); color: var(--text); margin: 12px 0; font-size: 16px; font-family: inherit;
+    outline: none; min-height: 48px;
+  }
+  .lock-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(177,140,240,0.20); }
+  .lock-box button {
+    background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue), var(--hyd-pink));
+    border: none; color: #ffffff; padding: 14px 24px; border-radius: 14px;
+    font-weight: 700; cursor: pointer; font-size: 1rem; width: 100%; min-height: 48px;
+    font-family: inherit; box-shadow: 0 8px 24px rgba(177,140,240,0.30);
+  }
+  .lock-box button:active { transform: scale(0.97); }
+
+  header {
+    text-align: center; padding: 3.5rem 1rem 1.5rem; max-width: 900px; margin: auto;
+    padding-top: calc(3.5rem + env(safe-area-inset-top)); position: relative; z-index: 1;
+  }
+  .hydrangea-divider {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    color: var(--hyd-lilac); font-size: 1.1rem; margin: 0.25rem 0; letter-spacing: 2px;
+  }
+  .hydrangea-divider::before, .hydrangea-divider::after {
+    content: ""; flex: 1; max-width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  header h1 {
+    font-size: clamp(1.8rem, 8vw, 3.5rem); margin: 0;
+    background: linear-gradient(135deg, var(--hyd-pink), var(--hyd-purple), var(--hyd-blue), var(--hyd-mint));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    word-wrap: break-word; filter: drop-shadow(0 4px 20px rgba(177,140,240,0.30));
+  }
+  header p { color: var(--muted); font-size: clamp(0.9rem, 3.8vw, 1.1rem); margin: 0.5rem 0; }
+
+  .topbar {
+    position: absolute; top: calc(env(safe-area-inset-top) + 10px); right: 10px; left: 10px;
+    z-index: 20; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .icon-btn {
+    background: rgba(34, 26, 68, 0.85); border: 1px solid var(--border2);
+    color: var(--hyd-pink); padding: 7px 11px; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: inherit;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; gap: 4px; min-height: 36px;
+  }
+  body[data-theme="light"] .icon-btn { background: rgba(255,255,255,0.9); color: var(--accent); }
+  .icon-btn:active { transform: scale(0.95); }
+  .icon-btn.muted { color: var(--muted); border-color: var(--border); }
+
+  .stats-bar {
+    max-width: 1000px; margin: 0.5rem auto 0;
+    padding: 0 0.75rem;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px; position: relative; z-index: 1;
+  }
+  .stat-card {
+    background: linear-gradient(150deg, var(--card), var(--card2));
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 10px 12px; text-align: center;
+  }
+  .stat-card .label {
+    font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    font-weight: 700;
+  }
+  .stat-card .value {
+    font-size: 1.15rem; font-weight: 800; color: var(--accent);
+    display: block; margin-top: 2px;
+  }
+  .stat-card .sub { font-size: 0.7rem; color: var(--muted); }
+
+  .xp-bar {
+    max-width: 1000px; margin: 0.5rem auto 0; padding: 0 0.75rem;
+    position: relative; z-index: 1;
+  }
+  .xp-track {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; height: 14px; overflow: hidden; position: relative;
+  }
+  .xp-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--hyd-mint), var(--hyd-blue), var(--hyd-purple), var(--hyd-pink));
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 12px rgba(177,140,240,0.5);
+  }
+  .xp-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.75rem; color: var(--muted); margin-top: 4px;
+  }
+
+  .wotd {
+    max-width: 1000px; margin: 0.75rem auto 0; padding: 0 0.75rem;
+    position: relative; z-index: 1;
+  }
+  .wotd-card {
+    background: linear-gradient(135deg, rgba(177,140,240,0.15), rgba(126,166,240,0.12));
+    border: 1px solid var(--accent); border-radius: 16px;
+    padding: 12px 14px; display: flex; gap: 12px; align-items: center;
+    flex-wrap: wrap;
+  }
+  .wotd-card .label {
+    font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent); font-weight: 800; width: 100%;
+  }
+  .wotd-item { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 130px; }
+  .wotd-item .word { font-size: 1rem; font-weight: 800; }
+  .wotd-item .mean { font-size: 0.8rem; color: var(--muted); }
+
+  .search-row {
+    max-width: 1000px; margin: 0.75rem auto 0; padding: 0 0.75rem;
+    position: relative; z-index: 1;
+  }
+  .search-input {
+    width: 100%; padding: 12px 16px; border-radius: 999px;
+    border: 1px solid var(--border2); background: var(--card); color: var(--text);
+    font-family: inherit; font-size: 16px; outline: none;
+  }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(177,140,240,0.15); }
+
+  .container { max-width: 1000px; margin: auto; padding: 0.5rem 0.75rem 3rem; position: relative; z-index: 1; }
+
+  .tabs {
+    display: flex; gap: 8px; margin: 1rem 0 0.5rem;
+    overflow-x: auto; padding: 4px 4px 10px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-snap-type: x proximity;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    background: var(--card); border: 1px solid var(--border); color: var(--muted);
+    padding: 12px 16px; border-radius: 999px; cursor: pointer; font-weight: 600;
+    font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; scroll-snap-align: start;
+    font-family: inherit; min-height: 44px;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, rgba(177,140,240,0.30), rgba(126,166,240,0.30));
+    color: var(--text); border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(177,140,240,0.30);
+  }
+
+  .level-tabs { display: flex; gap: 8px; margin: 1rem 0 1.5rem; flex-wrap: wrap; }
+  .level-tab {
+    flex: 1; min-width: 90px; background: var(--bg); border: 1px solid var(--border2);
+    color: var(--muted); padding: 10px 12px; border-radius: 12px; cursor: pointer;
+    font-weight: 700; font-size: 0.85rem; font-family: inherit; min-height: 44px;
+    text-align: center;
+  }
+  .level-tab.easy.active { background: linear-gradient(135deg, rgba(159,230,212,0.25), rgba(126,166,240,0.25)); border-color: var(--hyd-mint); color: var(--hyd-mint); }
+  .level-tab.medium.active { background: linear-gradient(135deg, rgba(212,182,245,0.25), rgba(177,140,240,0.25)); border-color: var(--accent); color: var(--hyd-lilac); }
+  .level-tab.hard.active { background: linear-gradient(135deg, rgba(242,163,212,0.25), rgba(255,128,152,0.20)); border-color: var(--hyd-pink); color: var(--hyd-pink); }
+
+  .section {
+    display: none;
+    background: linear-gradient(160deg, var(--card), var(--card2));
+    border: 1px solid var(--border); border-radius: 22px; padding: 1.25rem;
+    margin-bottom: 1.5rem; box-shadow: 0 10px 40px rgba(177,140,240,0.10);
+  }
+  .section.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section h2 { margin-top: 0; color: var(--hyd-lilac); font-size: 1.3rem; }
+  .section h3 {
+    color: var(--hyd-pink); margin-bottom: 0.5rem; font-size: 1.05rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h3::before { content: "❀"; color: var(--accent); font-size: 0.9rem; }
+  .level-panel { display: none; }
+  .level-panel.active { display: block; }
+  .level-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px;
+  }
+  .level-badge.easy { background: rgba(159,230,212,0.20); color: var(--hyd-mint); border: 1px solid var(--hyd-mint); }
+  .level-badge.medium { background: rgba(212,182,245,0.20); color: var(--hyd-lilac); border: 1px solid var(--accent); }
+  .level-badge.hard { background: rgba(242,163,212,0.20); color: var(--hyd-pink); border: 1px solid var(--hyd-pink); }
+
+  .level-progress {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .level-progress .bar {
+    flex: 1; height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .level-progress .bar span {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, var(--hyd-mint), var(--accent));
+    transition: width 0.5s ease;
+  }
+
+  .hero-stage {
+    position: relative; height: 240px; margin: 0.5rem 0 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; border-radius: 18px;
+    background:
+      radial-gradient(circle at 50% 100%, rgba(79,191,122,0.20), transparent 60%),
+      radial-gradient(circle at 50% 0%, rgba(177,140,240,0.15), transparent 60%),
+      rgba(15, 12, 34, 0.6);
+    border: 1px solid var(--border);
+  }
+  .hero-character { width: 150px; height: 190px; opacity: 0; transform: translateX(-220%) rotate(-360deg); }
+  .hero-character svg { display: block; width: 100%; height: 100%; }
+  .hero-stage.play .hero-character { animation: heroEntrance 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  @keyframes heroEntrance {
+    0% { opacity: 0; transform: translateX(-220%) rotate(-360deg) scale(0.6); }
+    55% { opacity: 1; transform: translateX(18px) rotate(8deg) scale(1.05); }
+    75% { transform: translateX(-8px) rotate(-5deg) scale(0.98); }
+    100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+  }
+  .hero-smash {
+    position: absolute; top: 22%; left: 50%; transform: translate(-50%, 0) scale(0.4);
+    font-size: clamp(2rem, 9vw, 3.4rem); font-weight: 900; letter-spacing: 4px;
+    color: var(--hyd-pink); text-shadow: 0 0 24px rgba(242,163,212,0.9);
+    opacity: 0; pointer-events: none; white-space: nowrap;
+  }
+  .hero-stage.play .hero-smash { animation: smashPop 1.7s ease-out 0.55s forwards; }
+  @keyframes smashPop {
+    0% { opacity: 0; transform: translate(-50%, 0) scale(0.4); }
+    35% { opacity: 1; transform: translate(-50%, 0) scale(1.5); }
+    100% { opacity: 0; transform: translate(-50%, -30px) scale(1.7); }
+  }
+  .hero-caption {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    font-size: 0.78rem; color: var(--hyd-lilac); letter-spacing: 1px;
+    opacity: 0.85; text-align: center; width: 90%;
+  }
+
+  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0; border-radius: 12px; }
+  table { width: 100%; min-width: 280px; border-collapse: collapse; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--yellow); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr.hidden { display: none; }
+
+  .speakable {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px;
+    border-radius: 999px; background: rgba(177,140,240,0.12);
+    border: 1px solid rgba(177,140,240,0.30); color: var(--text);
+    cursor: pointer; font-weight: 600; min-height: 36px;
+    user-select: none; -webkit-user-select: none;
+    position: relative;
+  }
+  .speakable:active { transform: scale(0.95); }
+  .speakable.speaking {
+    background: linear-gradient(135deg, rgba(177,140,240,0.40), rgba(126,166,240,0.40));
+    box-shadow: 0 0 0 3px rgba(177,140,240,0.20);
+  }
+  .speakable .spk-icon { font-size: 0.8rem; opacity: 0.85; }
+  .speakable .fav-btn {
+    background: none; border: none; cursor: pointer; font-size: 0.85rem;
+    padding: 0; opacity: 0.5; transition: opacity 0.2s;
+  }
+  .speakable .fav-btn.fav { opacity: 1; }
+  .speakable .slow-btn {
+    background: none; border: none; cursor: pointer; font-size: 0.75rem;
+    padding: 0; opacity: 0.6;
+  }
+  .speakable .copy-btn {
+    background: none; border: none; cursor: pointer; font-size: 0.75rem;
+    padding: 0; opacity: 0.55;
+  }
+  .speakable.faved {
+    background: linear-gradient(135deg, rgba(242,163,212,0.25), rgba(255,128,152,0.15));
+    border-color: var(--hyd-pink);
+  }
+
+  ruby rt {
+    font-size: 0.65em; color: var(--hyd-lilac); font-weight: 600;
+    display: none;
+  }
+  body[data-furigana="on"] ruby rt { display: block; }
+  .romaji-cell { display: table-cell; }
+  body[data-romaji="off"] .romaji-cell { display: none; }
+
+  .quiz-card {
+    background: var(--bg); padding: 1rem; border-radius: 16px;
+    margin-top: 1rem; border: 1px solid var(--border);
+  }
+  .quiz-card h3 { font-size: 1rem; margin-top: 0; }
+  .quiz-card h3::before { content: "✨"; }
+  .quiz-option {
+    display: block; width: 100%; text-align: left; background: var(--card);
+    color: var(--text); border: 1px solid var(--border2); padding: 14px;
+    border-radius: 12px; margin: 8px 0; cursor: pointer; font-size: 0.95rem;
+    font-family: inherit; min-height: 48px;
+  }
+  .quiz-option.correct { background: linear-gradient(135deg, rgba(159,230,212,0.25), rgba(79,191,122,0.15)); border-color: var(--hyd-mint); }
+  .quiz-option.wrong { background: linear-gradient(135deg, rgba(255,128,152,0.20), rgba(242,163,212,0.15)); border-color: var(--red); }
+  .quiz-result { margin-top: 10px; font-weight: 700; font-size: 0.9rem; }
+  .quiz-score {
+    background: linear-gradient(135deg, rgba(79,191,122,0.15), rgba(159,230,212,0.10));
+    border: 1px solid var(--green);
+    border-radius: 12px; padding: 10px 14px; margin: 10px 0 14px;
+    font-size: 0.9rem; color: var(--hyd-mint); font-weight: 700;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .flash-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px; margin: 1rem 0;
+  }
+  .flash-card {
+    background: linear-gradient(150deg, var(--card), var(--card2));
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px; min-height: 100px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; transition: all 0.3s ease;
+    user-select: none;
+  }
+  .flash-card.flipped {
+    background: linear-gradient(150deg, rgba(177,140,240,0.25), rgba(126,166,240,0.20));
+    border-color: var(--accent);
+  }
+  .flash-card .front { font-size: 1rem; font-weight: 800; }
+  .flash-card .back { font-size: 0.85rem; color: var(--muted); margin-top: 6px; }
+  .flash-card .hint { font-size: 0.7rem; color: var(--muted); margin-top: 8px; opacity: 0.6; }
+
+  .listen-play {
+    background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+    border: none; color: #fff; padding: 16px 24px; border-radius: 16px;
+    font-size: 1rem; font-weight: 800; cursor: pointer; font-family: inherit;
+    width: 100%; margin: 0.5rem 0; min-height: 56px;
+  }
+  .listen-play:active { transform: scale(0.98); }
+
+  .letters-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px; margin: 1rem 0;
+  }
+  .letter-card {
+    background: linear-gradient(150deg, var(--card), var(--card2));
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px; cursor: pointer; text-align: center;
+    transition: all 0.2s ease; min-height: 90px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .letter-card:active { transform: scale(0.97); }
+  .letter-card.locked {
+    opacity: 0.5; cursor: not-allowed;
+    background: var(--bg);
+  }
+  .letter-card .emoji { font-size: 1.6rem; margin-bottom: 4px; }
+  .letter-card .title { font-weight: 700; font-size: 0.85rem; }
+  .letter-card .status { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+
+  .letter-modal {
+    position: fixed; inset: 0; background: rgba(10, 8, 22, 0.85);
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000; padding: 16px; backdrop-filter: blur(8px);
+  }
+  .letter-modal.open { display: flex; }
+  .letter-content {
+    background: linear-gradient(160deg, var(--card), var(--card2));
+    border: 1px solid var(--accent); border-radius: 20px;
+    padding: 24px; max-width: 480px; width: 100%;
+    box-shadow: 0 20px 60px rgba(177,140,240,0.30);
+    max-height: 85vh; overflow-y: auto;
+  }
+  .letter-content h3 { color: var(--hyd-pink); margin-top: 0; }
+  .letter-content p { font-size: 0.95rem; line-height: 1.7; white-space: pre-line; }
+  .letter-close {
+    background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+    border: none; color: white; padding: 12px 20px; border-radius: 12px;
+    cursor: pointer; font-family: inherit; font-weight: 700;
+    width: 100%; margin-top: 12px;
+  }
+
+  .badges-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px; margin: 1rem 0;
+  }
+  .badge {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 6px; text-align: center;
+    opacity: 0.35; transition: all 0.3s;
+  }
+  .badge.earned {
+    opacity: 1; border-color: var(--accent);
+    background: linear-gradient(150deg, rgba(177,140,240,0.20), rgba(126,166,240,0.15));
+    box-shadow: 0 4px 16px rgba(177,140,240,0.20);
+  }
+  .badge .icon { font-size: 1.4rem; display: block; }
+  .badge .name { font-size: 0.65rem; font-weight: 700; margin-top: 4px; display: block; }
+
+  .voice-panel {
+    display: none;
+    background: var(--bg); border: 1px solid var(--green);
+    border-radius: 14px; padding: 14px; margin: 1rem 0;
+  }
+  .voice-panel.open { display: block; animation: fadeIn 0.25s ease; }
+  .voice-panel h4 { margin: 0 0 10px; color: var(--green); font-size: 0.95rem; }
+  .voice-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 8px 0; font-size: 0.85rem; }
+  .voice-row label { color: var(--muted); }
+  .voice-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .voice-row select { background: var(--card); color: var(--text); border: 1px solid var(--border2); border-radius: 10px; padding: 8px; font-family: inherit; font-size: 0.85rem; max-width: 180px; }
+  .voice-toggle-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .voice-pill {
+    background: var(--card); border: 1px solid var(--border2);
+    color: var(--muted); padding: 8px 14px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .voice-pill.active { background: linear-gradient(135deg, rgba(79,191,122,0.25), rgba(159,230,212,0.20)); color: var(--green); border-color: var(--green); }
+
+  .settings-panel {
+    display: none;
+    background: var(--bg); border: 1px solid var(--accent);
+    border-radius: 14px; padding: 14px; margin: 1rem 0;
+  }
+  .settings-panel.open { display: block; }
+  .settings-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; flex-wrap: wrap; }
+  .settings-row label { color: var(--muted); }
+  .toggle-group { display: flex; gap: 6px; }
+  .mini-btn {
+    background: var(--card); border: 1px solid var(--border2); color: var(--muted);
+    padding: 6px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .mini-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .timer-bar {
+    background: linear-gradient(90deg, var(--red), var(--yellow));
+    height: 4px; border-radius: 2px; margin: 8px 0;
+    transition: width 1s linear;
+  }
+  .timer-wrap { margin: 8px 0 12px; }
+  .timer-label { font-size: 0.7rem; color: var(--muted); display: flex; justify-content: space-between; }
+
+  .match-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1rem 0;
+  }
+  .match-col { display: flex; flex-direction: column; gap: 8px; }
+  .match-item {
+    background: linear-gradient(150deg, var(--card), var(--card2));
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 10px; text-align: center; cursor: pointer;
+    font-weight: 700; font-size: 0.9rem; min-height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; transition: all 0.2s;
+  }
+  .match-item.selected {
+    background: linear-gradient(150deg, rgba(177,140,240,0.35), rgba(126,166,240,0.30));
+    border-color: var(--accent);
+  }
+  .match-item.matched {
+    opacity: 0.35; pointer-events: none;
+    background: linear-gradient(150deg, rgba(79,191,122,0.25), rgba(159,230,212,0.20));
+    border-color: var(--green);
+  }
+  .match-item.wrong { animation: shakeMatch 0.4s; }
+  @keyframes shakeMatch {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .match-btn-row { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+
+  .review-empty {
+    text-align: center; padding: 2rem 1rem; color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .review-empty .emoji { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+  .export-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .export-btn {
+    background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+    border: none; color: #fff; padding: 10px 16px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .export-btn.alt {
+    background: var(--card); border: 1px solid var(--border2); color: var(--muted);
+  }
+
+  .note {
+    background: var(--card); border-left: 4px solid var(--hyd-mint);
+    padding: 1rem; border-radius: 12px; color: var(--muted);
+    margin: 1rem 0; font-size: 0.9rem;
+  }
+  footer {
+    text-align: center; color: var(--muted);
+    padding: 2rem 1rem calc(3rem + env(safe-area-inset-bottom));
+    font-size: 0.9rem; line-height: 1.6; position: relative; z-index: 1;
+  }
+  footer .flower { display: block; font-size: 1.2rem; margin-bottom: 8px; color: var(--hyd-pink); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(34, 26, 68, 0.95); border: 1px solid var(--accent);
+    color: #fff; padding: 10px 18px; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none;
+    transition: all 0.3s ease; z-index: 9999;
+    backdrop-filter: blur(8px); max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .confetti {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+    overflow: hidden;
+  }
+  .confetti .piece {
+    position: absolute; width: 10px; height: 10px;
+    animation: fall 3s linear forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  @media (max-width: 480px) {
+    header { padding: 3rem 0.75rem 1rem; }
+    .icon-btn { font-size: 0.7rem; padding: 6px 9px; }
+    .stat-card .value { font-size: 1rem; }
+    .flash-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  }
+</style>
+</head>
+<body data-theme="dark" data-season="hydrangea" data-furigana="off" data-romaji="on">
+
+<div class="lock" id="lock">
+  <div class="petal-field lock-petals" id="lockPetals"></div>
+  <div class="lock-box bloom-in">
+    <h1>For Baby</h1>
+    <p>Enter password to open your study nook.</p>
+    <input id="password" type="password" placeholder="Password" autocomplete="off" />
+    <button onclick="unlock()">Enter 🌸</button>
+    <p id="lockMsg" style="color: var(--red); font-size: 0.9rem; min-height: 1.2em;"></p>
+  </div>
+</div>
+
+<div id="site" style="display:none;">
+  <div class="petal-field" id="petalField">
+    <div class="bloom-corner top-left" id="bloomTL"></div>
+    <div class="bloom-corner bottom-right" id="bloomBR"></div>
+  </div>
+
+  <div class="topbar">
+    <button class="icon-btn" onclick="toggleSettingsPanel()">⚙️</button>
+    <button class="icon-btn" onclick="toggleVoicePanel()">🎛️</button>
+    <button class="icon-btn muted" id="voiceBtn" onclick="toggleVoice()">🔊</button>
+    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button class="icon-btn" onclick="logout()">🔒</button>
+  </div>
+
+  <header>
+    <div class="hydrangea-divider"><span class="bob">🌸</span><span class="bob">❀</span><span class="bob">🌸</span></div>
+    <h1>For Baby</h1>
+    <p>Japanese &amp; Korean Study Nook</p>
+    <p id="greeting">Welcome back, Baby. 🌸</p>
+    <div class="hydrangea-divider"><span class="bob">🌸</span><span class="bob">❀</span><span class="bob">🌸</span></div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat-card"><span class="label">🔥 Streak</span><span class="value" id="statStreak">0</span><span class="sub">days</span></div>
+    <div class="stat-card"><span class="label">⚡ XP</span><span class="value" id="statXP">0</span><span class="sub" id="statRank">1A Student</span></div>
+    <div class="stat-card"><span class="label">✅ Correct</span><span class="value" id="statCorrect">0</span><span class="sub">answers</span></div>
+    <div class="stat-card"><span class="label">📅 Since</span><span class="value" id="statSince">0</span><span class="sub">days</span></div>
+  </div>
+
+  <div class="xp-bar">
+    <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    <div class="xp-label"><span id="xpCurrent">0 XP</span><span id="xpNext">Next rank: 100 XP</span></div>
+  </div>
+
+  <div class="wotd">
+    <div class="wotd-card">
+      <span class="label">✨ Word of the day</span>
+      <div class="wotd-item">
+        <span class="word speakable" id="wotdJP" data-speak="" data-lang="ja-JP"></span>
+        <span class="mean" id="wotdJPM"></span>
+      </div>
+      <div class="wotd-item">
+        <span class="word speakable" id="wotdKR" data-speak="" data-lang="ko-KR"></span>
+        <span class="mean" id="wotdKRM"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-row">
+    <input class="search-input" id="searchInput" type="search" placeholder="🔍 Search any word or meaning…" autocomplete="off" />
+  </div>
+
+  <div class="container">
+
+    <div class="settings-panel" id="settingsPanel">
+      <h4 style="margin:0 0 10px;color:var(--accent);">⚙️ Settings</h4>
+      <div class="settings-row">
+        <label>Font size</label>
+        <input type="range" id="fontSlider" min="14" max="22" step="1" value="16" style="flex:1;accent-color:var(--accent);" />
+        <span id="fontVal" style="font-weight:700;color:var(--accent);min-width:32px;text-align:right;">16</span>
+      </div>
+      <div class="settings-row">
+        <label>Furigana</label>
+        <div class="toggle-group">
+          <button class="mini-btn" id="furiOff" onclick="setFurigana('off')">Off</button>
+          <button class="mini-btn" id="furiOn" onclick="setFurigana('on')">On</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <label>Romaji</label>
+        <div class="toggle-group">
+          <button class="mini-btn" id="romOn" onclick="setRomaji('on')">Show</button>
+          <button class="mini-btn" id="romOff" onclick="setRomaji('off')">Hide</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <label>Seasonal theme</label>
+        <div class="toggle-group">
+          <button class="mini-btn" onclick="setSeason('sakura')">🌸</button>
+          <button class="mini-btn" onclick="setSeason('hydrangea')">💜</button>
+          <button class="mini-btn" onclick="setSeason('maple')">🍁</button>
+          <button class="mini-btn" onclick="setSeason('snow')">❄️</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <label>Sound effects</label>
+        <div class="toggle-group">
+          <button class="mini-btn" id="soundOn" onclick="setSound(true)">On</button>
+          <button class="mini-btn" id="soundOff" onclick="setSound(false)">Off</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <label>Animations</label>
+        <div class="toggle-group">
+          <button class="mini-btn" id="petalsOn" onclick="setPetals(true)">On</button>
+          <button class="mini-btn" id="petalsOff" onclick="setPetals(false)">Off</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <label>Timed quiz (30s)</label>
+        <div class="toggle-group">
+          <button class="mini-btn" id="timedOn" onclick="setTimed(true)">On</button>
+          <button class="mini-btn" id="timedOff" onclick="setTimed(false)">Off</button>
+        </div>
+      </div>
+      <div class="export-row">
+        <button class="export-btn" onclick="exportProgress()">📤 Export progress</button>
+        <button class="export-btn alt" onclick="resetProgress()">🗑️ Reset all progress</button>
+      </div>
+    </div>
+
+    <div class="voice-panel" id="voicePanel">
+      <h4>🎛️ Voice Settings</h4>
+      <div class="voice-row">
+        <label>Pitch</label>
+        <input type="range" id="pitchSlider" min="0.5" max="2" step="0.05" value="1.0" />
+        <span id="pitchVal" style="min-width:36px;text-align:right;color:var(--green);font-weight:700;">1.00</span>
+      </div>
+      <div class="voice-row">
+        <label>Speed</label>
+        <input type="range" id="rateSlider" min="0.5" max="1.6" step="0.05" value="0.9" />
+        <span id="rateVal" style="min-width:36px;text-align:right;color:var(--green);font-weight:700;">0.90</span>
+      </div>
+      <div class="voice-row">
+        <label>JA Voice</label>
+        <select id="jaVoiceSelect"><option value="">Auto</option></select>
+      </div>
+      <div class="voice-row">
+        <label>KO Voice</label>
+        <select id="koVoiceSelect"><option value="">Auto</option></select>
+      </div>
+      <div class="voice-toggle-row">
+        <button class="voice-pill active" id="presetNormal" onclick="applyPreset('normal')">🎓 Normal</button>
+        <button class="voice-pill" id="presetSoft" onclick="applyPreset('soft')">🌸 Soft</button>
+        <button class="voice-pill" onclick="testVoice()">▶️ Test</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('jp', this)">🇯🇵 Japanese</button>
+      <button class="tab" onclick="showTab('kr', this)">🇰🇷 Korean</button>
+      <button class="tab" onclick="showTab('anime', this)">🎌 Anime</button>
+      <button class="tab" onclick="showTab('work', this)">💊 Pharmacy</button>
+      <button class="tab" onclick="showTab('flash', this)">🃏 Flashcards</button>
+      <button class="tab" onclick="showTab('listen', this)">🎧 Listen</button>
+      <button class="tab" onclick="showTab('match', this)">🎮 Match</button>
+      <button class="tab" onclick="showTab('kpop', this)">💿 K-pop</button>
+      <button class="tab" onclick="showTab('tagalog', this)">🇵🇭 Tagalog</button>
+      <button class="tab" onclick="showTab('review', this)">📚 Review</button>
+      <button class="tab" onclick="showTab('favs', this)">💖 Favorites</button>
+      <button class="tab" onclick="showTab('letters', this)">💌 Letters</button>
+      <button class="tab" onclick="showTab('badges', this)">🏆 Badges</button>
+      <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
+    </div>
+
+    <!-- JAPANESE -->
+    <div class="section active" id="jp">
+      <h2>🇯🇵 Japanese Basics</h2>
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('jp', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('jp', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('jp', 'hard', this)">🔥 Hard</button>
+      </div>
+      <div class="level-progress"><span id="jpProgressText">0 / 0 learned</span><div class="bar"><span id="jpProgressBar" style="width:0%"></span></div></div>
+
+      <div class="level-panel active" id="jp-easy">
+        <span class="level-badge easy">EASY</span>
+        <h3>Greetings</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>English / Tagalog</th></tr>
+          <tr><td><span class="speakable" data-speak="こんにちは" data-lang="ja-JP">こんにちは</span></td><td class="romaji-cell">Konnichiwa</td><td>Hello / Magandang araw</td></tr>
+          <tr><td><span class="speakable" data-speak="おはよう" data-lang="ja-JP">おはよう</span></td><td class="romaji-cell">Ohayou</td><td>Good morning / Magandang umaga</td></tr>
+          <tr><td><span class="speakable" data-speak="ありがとう" data-lang="ja-JP">ありがとう</span></td><td class="romaji-cell">Arigatou</td><td>Thank you / Salamat</td></tr>
+          <tr><td><span class="speakable" data-speak="すみません" data-lang="ja-JP">すみません</span></td><td class="romaji-cell">Sumimasen</td><td>Excuse me / Paumanhin</td></tr>
+          <tr><td><span class="speakable" data-speak="おやすみ" data-lang="ja-JP">おやすみ</span></td><td class="romaji-cell">Oyasumi</td><td>Good night / Magandang gabi</td></tr>
+        </table></div>
+        <h3>Hiragana Starter</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Character</th><th>Sound</th></tr>
+          <tr><td><span class="speakable" data-speak="あ" data-lang="ja-JP">あ</span></td><td>a</td></tr>
+          <tr><td><span class="speakable" data-speak="い" data-lang="ja-JP">い</span></td><td>i</td></tr>
+          <tr><td><span class="speakable" data-speak="う" data-lang="ja-JP">う</span></td><td>u</td></tr>
+          <tr><td><span class="speakable" data-speak="え" data-lang="ja-JP">え</span></td><td>e</td></tr>
+          <tr><td><span class="speakable" data-speak="お" data-lang="ja-JP">お</span></td><td>o</td></tr>
+          <tr><td><span class="speakable" data-speak="か" data-lang="ja-JP">か</span></td><td>ka</td></tr>
+          <tr><td><span class="speakable" data-speak="き" data-lang="ja-JP">き</span></td><td>ki</td></tr>
+          <tr><td><span class="speakable" data-speak="く" data-lang="ja-JP">く</span></td><td>ku</td></tr>
+          <tr><td><span class="speakable" data-speak="け" data-lang="ja-JP">け</span></td><td>ke</td></tr>
+          <tr><td><span class="speakable" data-speak="こ" data-lang="ja-JP">こ</span></td><td>ko</td></tr>
+        </table></div>
+      </div>
+
+      <div class="level-panel" id="jp-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <h3>Everyday Phrases</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+          <tr><td><span class="speakable" data-speak="お願いします" data-lang="ja-JP">お願いします</span></td><td class="romaji-cell">Onegaishimasu</td><td>Please</td></tr>
+          <tr><td><span class="speakable" data-speak="はじめまして" data-lang="ja-JP">はじめまして</span></td><td class="romaji-cell">Hajimemashite</td><td>Nice to meet you</td></tr>
+          <tr><td><span class="speakable" data-speak="お元気ですか" data-lang="ja-JP">お元気ですか</span></td><td class="romaji-cell">Ogenki desu ka</td><td>How are you?</td></tr>
+          <tr><td><span class="speakable" data-speak="わかりません" data-lang="ja-JP">わかりません</span></td><td class="romaji-cell">Wakarimasen</td><td>I don't understand</td></tr>
+          <tr><td><span class="speakable" data-speak="日本語が話せますか" data-lang="ja-JP">日本語が話せますか</span></td><td class="romaji-cell">Nihongo ga hanasemasu ka</td><td>Do you speak Japanese?</td></tr>
+        </table></div>
+        <h3>Numbers 1–10</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Number</th><th>Japanese</th><th class="romaji-cell">Romaji</th></tr>
+          <tr><td>1</td><td><span class="speakable" data-speak="一" data-lang="ja-JP">一</span></td><td class="romaji-cell">ichi</td></tr>
+          <tr><td>2</td><td><span class="speakable" data-speak="二" data-lang="ja-JP">二</span></td><td class="romaji-cell">ni</td></tr>
+          <tr><td>3</td><td><span class="speakable" data-speak="三" data-lang="ja-JP">三</span></td><td class="romaji-cell">san</td></tr>
+          <tr><td>4</td><td><span class="speakable" data-speak="四" data-lang="ja-JP">四</span></td><td class="romaji-cell">shi / yon</td></tr>
+          <tr><td>5</td><td><span class="speakable" data-speak="五" data-lang="ja-JP">五</span></td><td class="romaji-cell">go</td></tr>
+          <tr><td>6</td><td><span class="speakable" data-speak="六" data-lang="ja-JP">六</span></td><td class="romaji-cell">roku</td></tr>
+          <tr><td>7</td><td><span class="speakable" data-speak="七" data-lang="ja-JP">七</span></td><td class="romaji-cell">shichi / nana</td></tr>
+          <tr><td>8</td><td><span class="speakable" data-speak="八" data-lang="ja-JP">八</span></td><td class="romaji-cell">hachi</td></tr>
+          <tr><td>9</td><td><span class="speakable" data-speak="九" data-lang="ja-JP">九</span></td><td class="romaji-cell">kyuu</td></tr>
+          <tr><td>10</td><td><span class="speakable" data-speak="十" data-lang="ja-JP">十</span></td><td class="romaji-cell">juu</td></tr>
+        </table></div>
+      </div>
+
+      <div class="level-panel" id="jp-hard">
+        <span class="level-badge hard">HARD</span>
+        <h3>Common Kanji</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Kanji</th><th class="romaji-cell">Reading</th><th>Meaning</th></tr>
+          <tr><td><span class="speakable" data-speak="水" data-lang="ja-JP"><ruby>水<rt>みず</rt></ruby></span></td><td class="romaji-cell">mizu</td><td>Water</td></tr>
+          <tr><td><span class="speakable" data-speak="火" data-lang="ja-JP"><ruby>火<rt>ひ</rt></ruby></span></td><td class="romaji-cell">hi</td><td>Fire</td></tr>
+          <tr><td><span class="speakable" data-speak="山" data-lang="ja-JP"><ruby>山<rt>やま</rt></ruby></span></td><td class="romaji-cell">yama</td><td>Mountain</td></tr>
+          <tr><td><span class="speakable" data-speak="川" data-lang="ja-JP"><ruby>川<rt>かわ</rt></ruby></span></td><td class="romaji-cell">kawa</td><td>River</td></tr>
+          <tr><td><span class="speakable" data-speak="人" data-lang="ja-JP"><ruby>人<rt>ひと</rt></ruby></span></td><td class="romaji-cell">hito</td><td>Person</td></tr>
+          <tr><td><span class="speakable" data-speak="日" data-lang="ja-JP"><ruby>日<rt>ひ</rt></ruby></span></td><td class="romaji-cell">hi</td><td>Sun / Day</td></tr>
+          <tr><td><span class="speakable" data-speak="月" data-lang="ja-JP"><ruby>月<rt>つき</rt></ruby></span></td><td class="romaji-cell">tsuki</td><td>Moon / Month</td></tr>
+          <tr><td><span class="speakable" data-speak="愛" data-lang="ja-JP"><ruby>愛<rt>あい</rt></ruby></span></td><td class="romaji-cell">ai</td><td>Love</td></tr>
+        </table></div>
+        <h3>Complex Sentences</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Japanese</th><th>Meaning</th></tr>
+          <tr><td><span class="speakable" data-speak="私は日本語を勉強しています。" data-lang="ja-JP">私は日本語を勉強しています。</span></td><td>I am studying Japanese.</td></tr>
+          <tr><td><span class="speakable" data-speak="今日はとても忙しいです。" data-lang="ja-JP">今日はとても忙しいです。</span></td><td>Today is very busy.</td></tr>
+          <tr><td><span class="speakable" data-speak="また明日会いましょう。" data-lang="ja-JP">また明日会いましょう。</span></td><td>Let's meet again tomorrow.</td></tr>
+          <tr><td><span class="speakable" data-speak="一緒に頑張りましょう。" data-lang="ja-JP">一緒に頑張りましょう。</span></td><td>Let's do our best together.</td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- KOREAN -->
+    <div class="section" id="kr">
+      <h2>🇰🇷 Korean Basics</h2>
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('kr', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('kr', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('kr', 'hard', this)">🔥 Hard</button>
+      </div>
+      <div class="level-progress"><span id="krProgressText">0 / 0 learned</span><div class="bar"><span id="krProgressBar" style="width:0%"></span></div></div>
+
+      <div class="level-panel active" id="kr-easy">
+        <span class="level-badge easy">EASY</span>
+        <h3>Greetings</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English / Tagalog</th></tr>
+          <tr><td><span class="speakable" data-speak="안녕하세요" data-lang="ko-KR">안녕하세요</span></td><td class="romaji-cell">Annyeonghaseyo</td><td>Hello / Kamusta</td></tr>
+          <tr><td><span class="speakable" data-speak="감사합니다" data-lang="ko-KR">감사합니다</span></td><td class="romaji-cell">Gamsahamnida</td><td>Thank you / Salamat</td></tr>
+          <tr><td><span class="speakable" data-speak="네" data-lang="ko-KR">네</span></td><td class="romaji-cell">Ne</td><td>Yes / Oo</td></tr>
+          <tr><td><span class="speakable" data-speak="아니요" data-lang="ko-KR">아니요</span></td><td class="romaji-cell">Aniyo</td><td>No / Hindi</td></tr>
+          <tr><td><span class="speakable" data-speak="미안해요" data-lang="ko-KR">미안해요</span></td><td class="romaji-cell">Mianhaeyo</td><td>Sorry / Paumanhin</td></tr>
+          <tr><td><span class="speakable" data-speak="잘 자요" data-lang="ko-KR">잘 자요</span></td><td class="romaji-cell">Jal jayo</td><td>Good night / Magandang gabi</td></tr>
+        </table></div>
+        <h3>Hangul Starter</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Character</th><th>Sound</th></tr>
+          <tr><td><span class="speakable" data-speak="아" data-lang="ko-KR">ㅏ (아)</span></td><td>a</td></tr>
+          <tr><td><span class="speakable" data-speak="야" data-lang="ko-KR">ㅑ (야)</span></td><td>ya</td></tr>
+          <tr><td><span class="speakable" data-speak="어" data-lang="ko-KR">ㅓ (어)</span></td><td>eo</td></tr>
+          <tr><td><span class="speakable" data-speak="여" data-lang="ko-KR">ㅕ (여)</span></td><td>yeo</td></tr>
+          <tr><td><span class="speakable" data-speak="오" data-lang="ko-KR">ㅗ (오)</span></td><td>o</td></tr>
+          <tr><td><span class="speakable" data-speak="요" data-lang="ko-KR">ㅛ (요)</span></td><td>yo</td></tr>
+          <tr><td><span class="speakable" data-speak="우" data-lang="ko-KR">ㅜ (우)</span></td><td>u</td></tr>
+          <tr><td><span class="speakable" data-speak="유" data-lang="ko-KR">ㅠ (유)</span></td><td>yu</td></tr>
+        </table></div>
+      </div>
+
+      <div class="level-panel" id="kr-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <h3>Everyday Phrases</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+          <tr><td><span class="speakable" data-speak="반갑습니다" data-lang="ko-KR">반갑습니다</span></td><td class="romaji-cell">Bangapseumnida</td><td>Nice to meet you</td></tr>
+          <tr><td><span class="speakable" data-speak="잘 지내요?" data-lang="ko-KR">잘 지내요?</span></td><td class="romaji-cell">Jal jinaeyo?</td><td>How are you?</td></tr>
+          <tr><td><span class="speakable" data-speak="이해 못 해요" data-lang="ko-KR">이해 못 해요</span></td><td class="romaji-cell">Ihae mot haeyo</td><td>I don't understand</td></tr>
+          <tr><td><span class="speakable" data-speak="한국어 할 줄 알아요?" data-lang="ko-KR">한국어 할 줄 알아요?</span></td><td class="romaji-cell">Hangugeo hal jul arayo?</td><td>Do you speak Korean?</td></tr>
+          <tr><td><span class="speakable" data-speak="천천히 말해 주세요" data-lang="ko-KR">천천히 말해 주세요</span></td><td class="romaji-cell">Cheoncheonhi malhae juseyo</td><td>Please speak slowly</td></tr>
+        </table></div>
+      </div>
+
+      <div class="level-panel" id="kr-hard">
+        <span class="level-badge hard">HARD</span>
+        <h3>Common Hanja Words</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>Meaning</th></tr>
+          <tr><td><span class="speakable" data-speak="사랑" data-lang="ko-KR">사랑</span></td><td class="romaji-cell">Sarang</td><td>Love</td></tr>
+          <tr><td><span class="speakable" data-speak="친구" data-lang="ko-KR">친구</span></td><td class="romaji-cell">Chingu</td><td>Friend</td></tr>
+          <tr><td><span class="speakable" data-speak="가족" data-lang="ko-KR">가족</span></td><td class="romaji-cell">Gajok</td><td>Family</td></tr>
+          <tr><td><span class="speakable" data-speak="시간" data-lang="ko-KR">시간</span></td><td class="romaji-cell">Sigan</td><td>Time</td></tr>
+          <tr><td><span class="speakable" data-speak="마음" data-lang="ko-KR">마음</span></td><td class="romaji-cell">Maeum</td><td>Heart / Mind</td></tr>
+          <tr><td><span class="speakable" data-speak="행복" data-lang="ko-KR">행복</span></td><td class="romaji-cell">Haengbok</td><td>Happiness</td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ANIME -->
+    <div class="section" id="anime">
+      <h2>🎌 Anime &amp; K-Drama</h2>
+      <div class="hero-stage" id="heroStage">
+        <div class="hero-character" id="heroCharacter"></div>
+        <div class="hero-smash">SMASH!</div>
+        <div class="hero-caption">Green-haired hero incoming… 🌸</div>
+      </div>
+      <h3>Anime Phrases</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>Meaning</th></tr>
+        <tr><td><span class="speakable" data-speak="すごい" data-lang="ja-JP">すごい</span></td><td class="romaji-cell">Sugoi</td><td>Amazing / Wow</td></tr>
+        <tr><td><span class="speakable" data-speak="かわいい" data-lang="ja-JP">かわいい</span></td><td class="romaji-cell">Kawaii</td><td>Cute</td></tr>
+        <tr><td><span class="speakable" data-speak="がんばって" data-lang="ja-JP">がんばって</span></td><td class="romaji-cell">Ganbatte</td><td>Do your best</td></tr>
+        <tr><td><span class="speakable" data-speak="プラスウルトラ！" data-lang="ja-JP">プラスウルトラ！</span></td><td class="romaji-cell">Purasu Urutora!</td><td>Plus Ultra!</td></tr>
+        <tr><td><span class="speakable" data-speak="私が来た！" data-lang="ja-JP">私が来た！</span></td><td class="romaji-cell">Watashi ga kita!</td><td>I am here!</td></tr>
+      </table></div>
+      <h3>K-Drama Phrases</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>Meaning</th></tr>
+        <tr><td><span class="speakable" data-speak="대박" data-lang="ko-KR">대박</span></td><td class="romaji-cell">Daebak</td><td>Awesome</td></tr>
+        <tr><td><span class="speakable" data-speak="화이팅" data-lang="ko-KR">화이팅</span></td><td class="romaji-cell">Hwaiting</td><td>Fighting!</td></tr>
+        <tr><td><span class="speakable" data-speak="진짜" data-lang="ko-KR">진짜</span></td><td class="romaji-cell">Jinjja</td><td>Really?</td></tr>
+        <tr><td><span class="speakable" data-speak="귀여워" data-lang="ko-KR">귀여워</span></td><td class="romaji-cell">Gwiyeowo</td><td>Cute</td></tr>
+      </table></div>
+      <h3>My Hero Academia Quotes</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>Meaning</th></tr>
+        <tr><td><span class="speakable" data-speak="諦めない" data-lang="ja-JP">諦めない</span></td><td class="romaji-cell">Akiramenai</td><td>I won't give up</td></tr>
+        <tr><td><span class="speakable" data-speak="限界を超えて" data-lang="ja-JP">限界を超えて</span></td><td class="romaji-cell">Genkai wo koete</td><td>Go beyond the limit</td></tr>
+        <tr><td><span class="speakable" data-speak="大丈夫" data-lang="ja-JP">大丈夫</span></td><td class="romaji-cell">Daijoubu</td><td>I'm okay</td></tr>
+        <tr><td><span class="speakable" data-speak="負けない" data-lang="ja-JP">負けない</span></td><td class="romaji-cell">Makenai</td><td>I won't lose</td></tr>
+        <tr><td><span class="speakable" data-speak="絆" data-lang="ja-JP">絆</span></td><td class="romaji-cell">Kizuna</td><td>Bonds</td></tr>
+        <tr><td><span class="speakable" data-speak="仲間" data-lang="ja-JP">仲間</span></td><td class="romaji-cell">Nakama</td><td>Comrades</td></tr>
+        <tr><td><span class="speakable" data-speak="勇気" data-lang="ja-JP">勇気</span></td><td class="romaji-cell">Yuuki</td><td>Courage</td></tr>
+        <tr><td><span class="speakable" data-speak="希望" data-lang="ja-JP">希望</span></td><td class="romaji-cell">Kibou</td><td>Hope</td></tr>
+      </table></div>
+      <h3>MHA Quotes — Korean</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>Meaning</th></tr>
+        <tr><td><span class="speakable" data-speak="포기하지 않아" data-lang="ko-KR">포기하지 않아</span></td><td class="romaji-cell">Pogihaji ana</td><td>I won't give up</td></tr>
+        <tr><td><span class="speakable" data-speak="한계를 넘어서" data-lang="ko-KR">한계를 넘어서</span></td><td class="romaji-cell">Hangyereul neomeoseo</td><td>Go beyond the limit</td></tr>
+        <tr><td><span class="speakable" data-speak="괜찮아" data-lang="ko-KR">괜찮아</span></td><td class="romaji-cell">Gwaenchana</td><td>I'm okay</td></tr>
+        <tr><td><span class="speakable" data-speak="용기" data-lang="ko-KR">용기</span></td><td class="romaji-cell">Yonggi</td><td>Courage</td></tr>
+        <tr><td><span class="speakable" data-speak="희망" data-lang="ko-KR">희망</span></td><td class="romaji-cell">Huimang</td><td>Hope</td></tr>
+        <tr><td><span class="speakable" data-speak="동료" data-lang="ko-KR">동료</span></td><td class="romaji-cell">Dongnyo</td><td>Comrades</td></tr>
+      </table></div>
+    </div>
+
+    <!-- PHARMACY -->
+    <div class="section" id="work">
+      <h2>💊 Pharmacy &amp; Gym</h2>
+      <h3>Japanese — Basics</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="薬剤師" data-lang="ja-JP">薬剤師</span></td><td class="romaji-cell">Yakuzaishi</td><td>Pharmacist</td></tr>
+        <tr><td><span class="speakable" data-speak="薬" data-lang="ja-JP">薬</span></td><td class="romaji-cell">Kusuri</td><td>Medicine</td></tr>
+        <tr><td><span class="speakable" data-speak="患者" data-lang="ja-JP">患者</span></td><td class="romaji-cell">Kanja</td><td>Patient</td></tr>
+        <tr><td><span class="speakable" data-speak="処方箋" data-lang="ja-JP">処方箋</span></td><td class="romaji-cell">Shohousen</td><td>Prescription</td></tr>
+        <tr><td><span class="speakable" data-speak="ジム" data-lang="ja-JP">ジム</span></td><td class="romaji-cell">Jimu</td><td>Gym</td></tr>
+        <tr><td><span class="speakable" data-speak="運動" data-lang="ja-JP">運動</span></td><td class="romaji-cell">Undou</td><td>Exercise</td></tr>
+      </table></div>
+      <h3>Japanese — Dosage &amp; OTC</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="錠剤" data-lang="ja-JP">錠剤</span></td><td class="romaji-cell">Jouzai</td><td>Tablet</td></tr>
+        <tr><td><span class="speakable" data-speak="カプセル" data-lang="ja-JP">カプセル</span></td><td class="romaji-cell">Kapuseru</td><td>Capsule</td></tr>
+        <tr><td><span class="speakable" data-speak="軟膏" data-lang="ja-JP">軟膏</span></td><td class="romaji-cell">Nankou</td><td>Ointment</td></tr>
+        <tr><td><span class="speakable" data-speak="シロップ" data-lang="ja-JP">シロップ</span></td><td class="romaji-cell">Shiroppu</td><td>Syrup</td></tr>
+        <tr><td><span class="speakable" data-speak="市販薬" data-lang="ja-JP">市販薬</span></td><td class="romaji-cell">Shihan'yaku</td><td>OTC medicine</td></tr>
+        <tr><td><span class="speakable" data-speak="副作用" data-lang="ja-JP">副作用</span></td><td class="romaji-cell">Fukusayou</td><td>Side effect</td></tr>
+      </table></div>
+      <h3>Japanese — Gym Equipment</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Japanese</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="ダンベル" data-lang="ja-JP">ダンベル</span></td><td class="romaji-cell">Danberu</td><td>Dumbbell</td></tr>
+        <tr><td><span class="speakable" data-speak="バーベル" data-lang="ja-JP">バーベル</span></td><td class="romaji-cell">Baaberu</td><td>Barbell</td></tr>
+        <tr><td><span class="speakable" data-speak="スクワット" data-lang="ja-JP">スクワット</span></td><td class="romaji-cell">Sukuwatto</td><td>Squat</td></tr>
+        <tr><td><span class="speakable" data-speak="ベンチプレス" data-lang="ja-JP">ベンチプレス</span></td><td class="romaji-cell">Benchi puresu</td><td>Bench press</td></tr>
+        <tr><td><span class="speakable" data-speak="ランニングマシン" data-lang="ja-JP">ランニングマシン</span></td><td class="romaji-cell">Ranningu mashin</td><td>Treadmill</td></tr>
+        <tr><td><span class="speakable" data-speak="筋肉" data-lang="ja-JP">筋肉</span></td><td class="romaji-cell">Kinniku</td><td>Muscle</td></tr>
+      </table></div>
+      <h3>Korean — Basics</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="약사" data-lang="ko-KR">약사</span></td><td class="romaji-cell">Yaksa</td><td>Pharmacist</td></tr>
+        <tr><td><span class="speakable" data-speak="약" data-lang="ko-KR">약</span></td><td class="romaji-cell">Yak</td><td>Medicine</td></tr>
+        <tr><td><span class="speakable" data-speak="환자" data-lang="ko-KR">환자</span></td><td class="romaji-cell">Hwanja</td><td>Patient</td></tr>
+        <tr><td><span class="speakable" data-speak="처방전" data-lang="ko-KR">처방전</span></td><td class="romaji-cell">Cheobangjeon</td><td>Prescription</td></tr>
+        <tr><td><span class="speakable" data-speak="헬스장" data-lang="ko-KR">헬스장</span></td><td class="romaji-cell">Helseujang</td><td>Gym</td></tr>
+        <tr><td><span class="speakable" data-speak="운동" data-lang="ko-KR">운동</span></td><td class="romaji-cell">Undong</td><td>Exercise</td></tr>
+      </table></div>
+      <h3>Korean — Dosage &amp; OTC</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="정제" data-lang="ko-KR">정제</span></td><td class="romaji-cell">Jeongje</td><td>Tablet</td></tr>
+        <tr><td><span class="speakable" data-speak="캡슐" data-lang="ko-KR">캡슐</span></td><td class="romaji-cell">Kaepsyul</td><td>Capsule</td></tr>
+        <tr><td><span class="speakable" data-speak="연고" data-lang="ko-KR">연고</span></td><td class="romaji-cell">Yeongo</td><td>Ointment</td></tr>
+        <tr><td><span class="speakable" data-speak="시럽" data-lang="ko-KR">시럽</span></td><td class="romaji-cell">Sireop</td><td>Syrup</td></tr>
+        <tr><td><span class="speakable" data-speak="일반의약품" data-lang="ko-KR">일반의약품</span></td><td class="romaji-cell">Ilban uiyakpum</td><td>OTC medicine</td></tr>
+        <tr><td><span class="speakable" data-speak="부작용" data-lang="ko-KR">부작용</span></td><td class="romaji-cell">Bujagyong</td><td>Side effect</td></tr>
+      </table></div>
+      <h3>Korean — Gym Equipment</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="덤벨" data-lang="ko-KR">덤벨</span></td><td class="romaji-cell">Deombbel</td><td>Dumbbell</td></tr>
+        <tr><td><span class="speakable" data-speak="바벨" data-lang="ko-KR">바벨</span></td><td class="romaji-cell">Babel</td><td>Barbell</td></tr>
+        <tr><td><span class="speakable" data-speak="스쿼트" data-lang="ko-KR">스쿼트</span></td><td class="romaji-cell">Seukwoteu</td><td>Squat</td></tr>
+        <tr><td><span class="speakable" data-speak="벤치프레스" data-lang="ko-KR">벤치프레스</span></td><td class="romaji-cell">Benchi peureseu</td><td>Bench press</td></tr>
+        <tr><td><span class="speakable" data-speak="러닝머신" data-lang="ko-KR">러닝머신</span></td><td class="romaji-cell">Reoning meosin</td><td>Treadmill</td></tr>
+        <tr><td><span class="speakable" data-speak="근육" data-lang="ko-KR">근육</span></td><td class="romaji-cell">Geunyuk</td><td>Muscle</td></tr>
+      </table></div>
+    </div>
+
+    <!-- FLASHCARDS -->
+    <div class="section" id="flash">
+      <h2>🃏 Flashcards</h2>
+      <p>Tap a card to flip it. Tap the word to hear it. 🌸</p>
+      <div class="level-tabs">
+        <button class="level-tab active" onclick="buildFlashcards('ja-JP', this)">🇯🇵 Japanese</button>
+        <button class="level-tab" onclick="buildFlashcards('ko-KR', this)">🇰🇷 Korean</button>
+      </div>
+      <div class="flash-grid" id="flashGrid"></div>
+    </div>
+
+    <!-- LISTENING -->
+    <div class="section" id="listen">
+      <h2>🎧 Listening Mode</h2>
+      <p>Tap Play, listen carefully, then pick the meaning.</p>
+      <div class="level-tabs">
+        <button class="level-tab active" onclick="setListenLang('ja-JP', this)">🇯🇵 Japanese</button>
+        <button class="level-tab" onclick="setListenLang('ko-KR', this)">🇰🇷 Korean</button>
+      </div>
+      <button class="listen-play" onclick="playListenWord()">▶️ Play word</button>
+      <div id="listenQuiz"></div>
+      <div class="quiz-score" style="margin-top:1rem;">Listening score <span id="listenScore">0 / 0</span></div>
+    </div>
+
+    <!-- MATCHING -->
+    <div class="section" id="match">
+      <h2>🎮 Matching Game</h2>
+      <p>Tap a word, then tap its meaning. Match all 6 to win.</p>
+      <div class="level-tabs">
+        <button class="level-tab active" onclick="startMatch('ja-JP', this)">🇯🇵 Japanese</button>
+        <button class="level-tab" onclick="startMatch('ko-KR', this)">🇰🇷 Korean</button>
+      </div>
+      <div class="match-btn-row">
+        <button class="export-btn" onclick="startMatch(currentMatchLang)">🔄 New round</button>
+        <span style="align-self:center;font-size:0.85rem;color:var(--muted);" id="matchScore">0 / 6 matched</span>
+      </div>
+      <div class="match-grid" id="matchGrid">
+        <div class="match-col" id="matchLeft"></div>
+        <div class="match-col" id="matchRight"></div>
+      </div>
+    </div>
+
+    <!-- K-POP -->
+    <div class="section" id="kpop">
+      <h2>💿 K-pop Phrase Pack</h2>
+      <p>Words and phrases every K-pop fan hears. Tap to hear them.</p>
+      <h3>Fandom &amp; Feelings</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="사랑해" data-lang="ko-KR">사랑해</span></td><td class="romaji-cell">Saranghae</td><td>I love you</td></tr>
+        <tr><td><span class="speakable" data-speak="보고 싶어" data-lang="ko-KR">보고 싶어</span></td><td class="romaji-cell">Bogo sipeo</td><td>I miss you</td></tr>
+        <tr><td><span class="speakable" data-speak="최고" data-lang="ko-KR">최고</span></td><td class="romaji-cell">Choego</td><td>The best</td></tr>
+        <tr><td><span class="speakable" data-speak="멋있어" data-lang="ko-KR">멋있어</span></td><td class="romaji-cell">Meosisseo</td><td>Cool / Awesome</td></tr>
+        <tr><td><span class="speakable" data-speak="예뻐" data-lang="ko-KR">예뻐</span></td><td class="romaji-cell">Yeppeo</td><td>Pretty</td></tr>
+        <tr><td><span class="speakable" data-speak="완벽해" data-lang="ko-KR">완벽해</span></td><td class="romaji-cell">Wanbyeokhae</td><td>Perfect</td></tr>
+      </table></div>
+      <h3>Fan Chant Language</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="하나 둘 셋" data-lang="ko-KR">하나 둘 셋</span></td><td class="romaji-cell">Hana dul set</td><td>One, two, three</td></tr>
+        <tr><td><span class="speakable" data-speak="다시 한번" data-lang="ko-KR">다시 한번</span></td><td class="romaji-cell">Dasi hanbeon</td><td>One more time</td></tr>
+        <tr><td><span class="speakable" data-speak="앵콜" data-lang="ko-KR">앵콜</span></td><td class="romaji-cell">Aengkol</td><td>Encore</td></tr>
+        <tr><td><span class="speakable" data-speak="데뷔" data-lang="ko-KR">데뷔</span></td><td class="romaji-cell">Debwi</td><td>Debut</td></tr>
+        <tr><td><span class="speakable" data-speak="컴백" data-lang="ko-KR">컴백</span></td><td class="romaji-cell">Keombaek</td><td>Comeback</td></tr>
+        <tr><td><span class="speakable" data-speak="무대" data-lang="ko-KR">무대</span></td><td class="romaji-cell">Mudae</td><td>Stage</td></tr>
+      </table></div>
+      <h3>Soft Phrases</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Korean</th><th class="romaji-cell">Romaji</th><th>English</th></tr>
+        <tr><td><span class="speakable" data-speak="괜찮아" data-lang="ko-KR">괜찮아</span></td><td class="romaji-cell">Gwaenchana</td><td>It's okay</td></tr>
+        <tr><td><span class="speakable" data-speak="잘 할 거야" data-lang="ko-KR">잘 할 거야</span></td><td class="romaji-cell">Jal hal geoya</td><td>You'll do well</td></tr>
+        <tr><td><span class="speakable" data-speak="힘내" data-lang="ko-KR">힘내</span></td><td class="romaji-cell">Himnae</td><td>Cheer up</td></tr>
+        <tr><td><span class="speakable" data-speak="고마워" data-lang="ko-KR">고마워</span></td><td class="romaji-cell">Gomawo</td><td>Thanks (casual)</td></tr>
+        <tr><td><span class="speakable" data-speak="미안해" data-lang="ko-KR">미안해</span></td><td class="romaji-cell">Mianhae</td><td>Sorry (casual)</td></tr>
+      </table></div>
+    </div>
+
+    <!-- TAGALOG -->
+    <div class="section" id="tagalog">
+      <h2>🇵🇭 Tagalog → Japanese / Korean</h2>
+      <p>Direct translations for the words you'd actually use.</p>
+      <h3>Everyday</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Tagalog</th><th>Japanese</th><th>Korean</th></tr>
+        <tr><td>Salamat</td><td><span class="speakable" data-speak="ありがとう" data-lang="ja-JP">ありがとう</span></td><td><span class="speakable" data-speak="고마워" data-lang="ko-KR">고마워</span></td></tr>
+        <tr><td>Magandang umaga</td><td><span class="speakable" data-speak="おはよう" data-lang="ja-JP">おはよう</span></td><td><span class="speakable" data-speak="좋은 아침" data-lang="ko-KR">좋은 아침</span></td></tr>
+        <tr><td>Magandang gabi</td><td><span class="speakable" data-speak="おやすみ" data-lang="ja-JP">おやすみ</span></td><td><span class="speakable" data-speak="잘 자요" data-lang="ko-KR">잘 자요</span></td></tr>
+        <tr><td>Kumusta ka?</td><td><span class="speakable" data-speak="お元気ですか" data-lang="ja-JP">お元気ですか</span></td><td><span class="speakable" data-speak="잘 지내요?" data-lang="ko-KR">잘 지내요?</span></td></tr>
+        <tr><td>Paumanhin</td><td><span class="speakable" data-speak="すみません" data-lang="ja-JP">すみません</span></td><td><span class="speakable" data-speak="미안해요" data-lang="ko-KR">미안해요</span></td></tr>
+        <tr><td>Paalam</td><td><span class="speakable" data-speak="さようなら" data-lang="ja-JP">さようなら</span></td><td><span class="speakable" data-speak="안녕히 가세요" data-lang="ko-KR">안녕히 가세요</span></td></tr>
+      </table></div>
+      <h3>Feelings</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Tagalog</th><th>Japanese</th><th>Korean</th></tr>
+        <tr><td>Pag-ibig</td><td><span class="speakable" data-speak="愛" data-lang="ja-JP">愛</span></td><td><span class="speakable" data-speak="사랑" data-lang="ko-KR">사랑</span></td></tr>
+        <tr><td>Kaibigan</td><td><span class="speakable" data-speak="友達" data-lang="ja-JP">友達</span></td><td><span class="speakable" data-speak="친구" data-lang="ko-KR">친구</span></td></tr>
+        <tr><td>Pamilya</td><td><span class="speakable" data-speak="家族" data-lang="ja-JP">家族</span></td><td><span class="speakable" data-speak="가족" data-lang="ko-KR">가족</span></td></tr>
+        <tr><td>Masaya</td><td><span class="speakable" data-speak="幸せ" data-lang="ja-JP">幸せ</span></td><td><span class="speakable" data-speak="행복" data-lang="ko-KR">행복</span></td></tr>
+        <tr><td>Pangarap</td><td><span class="speakable" data-speak="夢" data-lang="ja-JP">夢</span></td><td><span class="speakable" data-speak="꿈" data-lang="ko-KR">꿈</span></td></tr>
+      </table></div>
+      <h3>Pharmacist &amp; Gym</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Tagalog</th><th>Japanese</th><th>Korean</th></tr>
+        <tr><td>Gamot</td><td><span class="speakable" data-speak="薬" data-lang="ja-JP">薬</span></td><td><span class="speakable" data-speak="약" data-lang="ko-KR">약</span></td></tr>
+        <tr><td>Reseta</td><td><span class="speakable" data-speak="処方箋" data-lang="ja-JP">処方箋</span></td><td><span class="speakable" data-speak="처방전" data-lang="ko-KR">처방전</span></td></tr>
+        <tr><td>Pasyente</td><td><span class="speakable" data-speak="患者" data-lang="ja-JP">患者</span></td><td><span class="speakable" data-speak="환자" data-lang="ko-KR">환자</span></td></tr>
+        <tr><td>Ehersisyo</td><td><span class="speakable" data-speak="運動" data-lang="ja-JP">運動</span></td><td><span class="speakable" data-speak="운동" data-lang="ko-KR">운동</span></td></tr>
+        <tr><td>Tubig</td><td><span class="speakable" data-speak="水" data-lang="ja-JP">水</span></td><td><span class="speakable" data-speak="물" data-lang="ko-KR">물</span></td></tr>
+      </table></div>
+    </div>
+
+    <!-- REVIEW -->
+    <div class="section" id="review">
+      <h2>📚 Review Queue</h2>
+      <p>Words you got wrong. Answer them right to clear them. 🔁</p>
+      <div class="quiz-score">Review queue <span id="reviewCount">0</span></div>
+      <div id="reviewArea"></div>
+    </div>
+
+    <!-- FAVORITES -->
+    <div class="section" id="favs">
+      <h2>💖 My Favorites</h2>
+      <p>Words you hearted. Tap to hear them anytime.</p>
+      <div class="table-wrap" id="favWrap"><table id="favTable">
+        <tr><th>Word</th><th class="romaji-cell">Romaji</th><th>Meaning</th></tr>
+      </table></div>
+      <p id="favEmpty" style="color: var(--muted); font-size: 0.9rem;">No favorites yet. Tap ❤️ on any word to save it here.</p>
+    </div>
+
+    <!-- LETTERS -->
+    <div class="section" id="letters">
+      <h2>💌 Open When Letters</h2>
+      <p>Small notes from me. Unlock them as you learn. 🌸</p>
+      <div class="letters-grid" id="lettersGrid"></div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="section" id="badges">
+      <h2>🏆 Badges</h2>
+      <p>Milestones you've earned.</p>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="section" id="quiz">
+      <h2>📝 Quiz</h2>
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('quiz', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('quiz', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('quiz', 'hard', this)">🔥 Hard</button>
+      </div>
+
+      <div class="level-panel active" id="quiz-easy">
+        <span class="level-badge easy">EASY</span>
+        <div class="quiz-score">Easy <span id="score-quiz-easy">0 / 5</span></div>
+        <div class="quiz-card">
+          <h3>1. What does <span class="speakable" data-speak="ありがとう" data-lang="ja-JP">ありがとう</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+          <button class="quiz-option" onclick="answer(this, true)">Thank you</button>
+          <button class="quiz-option" onclick="answer(this, false)">Excuse me</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="안녕하세요" data-lang="ko-KR">안녕하세요</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Sorry</button>
+          <button class="quiz-option" onclick="answer(this, false)">Yes</button>
+          <button class="quiz-option" onclick="answer(this, true)">Hello</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What is <span class="speakable" data-speak="薬剤師" data-lang="ja-JP">薬剤師</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Pharmacist</button>
+          <button class="quiz-option" onclick="answer(this, false)">Gym</button>
+          <button class="quiz-option" onclick="answer(this, false)">Water</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="대박" data-lang="ko-KR">대박</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Cute</button>
+          <button class="quiz-option" onclick="answer(this, true)">Awesome</button>
+          <button class="quiz-option" onclick="answer(this, false)">Delicious</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What is <span class="speakable" data-speak="薬" data-lang="ja-JP">薬</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Medicine</button>
+          <button class="quiz-option" onclick="answer(this, false)">Water</button>
+          <button class="quiz-option" onclick="answer(this, false)">Gym</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+
+      <div class="level-panel" id="quiz-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <div class="quiz-score">Medium <span id="score-quiz-medium">0 / 5</span></div>
+        <div class="quiz-card">
+          <h3>1. What is <span class="speakable" data-speak="水" data-lang="ja-JP">水</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Fire</button>
+          <button class="quiz-option" onclick="answer(this, true)">Water</button>
+          <button class="quiz-option" onclick="answer(this, false)">Mountain</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="친구" data-lang="ko-KR">친구</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Family</button>
+          <button class="quiz-option" onclick="answer(this, true)">Friend</button>
+          <button class="quiz-option" onclick="answer(this, false)">Time</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What number is <span class="speakable" data-speak="七" data-lang="ja-JP">七</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">5</button>
+          <button class="quiz-option" onclick="answer(this, false)">6</button>
+          <button class="quiz-option" onclick="answer(this, true)">7</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="반갑습니다" data-lang="ko-KR">반갑습니다</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Nice to meet you</button>
+          <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+          <button class="quiz-option" onclick="answer(this, false)">I'm hungry</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What is <span class="speakable" data-speak="患者" data-lang="ja-JP">患者</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Pharmacist</button>
+          <button class="quiz-option" onclick="answer(this, true)">Patient</button>
+          <button class="quiz-option" onclick="answer(this, false)">Prescription</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+
+      <div class="level-panel" id="quiz-hard">
+        <span class="level-badge hard">HARD</span>
+        <div class="quiz-score">Hard <span id="score-quiz-hard">0 / 5</span></div>
+        <div class="quiz-card">
+          <h3>1. What does <span class="speakable" data-speak="一緒に頑張りましょう。" data-lang="ja-JP">一緒に頑張りましょう。</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Let's eat together</button>
+          <button class="quiz-option" onclick="answer(this, true)">Let's do our best together</button>
+          <button class="quiz-option" onclick="answer(this, false)">See you tomorrow</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="행복" data-lang="ko-KR">행복</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Sadness</button>
+          <button class="quiz-option" onclick="answer(this, true)">Happiness</button>
+          <button class="quiz-option" onclick="answer(this, false)">Anger</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What does <span class="speakable" data-speak="愛" data-lang="ja-JP">愛</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Love</button>
+          <button class="quiz-option" onclick="answer(this, false)">Friend</button>
+          <button class="quiz-option" onclick="answer(this, false)">Dream</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="함께 힘내요!" data-lang="ko-KR">함께 힘내요!</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Let's eat</button>
+          <button class="quiz-option" onclick="answer(this, true)">Let's cheer up together!</button>
+          <button class="quiz-option" onclick="answer(this, false)">Go home</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What does <span class="speakable" data-speak="마음" data-lang="ko-KR">마음</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Body</button>
+          <button class="quiz-option" onclick="answer(this, false)">Face</button>
+          <button class="quiz-option" onclick="answer(this, true)">Heart / Mind</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> This site is for learning. It does not give medical advice.
+    </div>
+  </div>
+
+  <footer>
+    <span class="flower"><span class="bob">🌸</span> <span class="bob">🌸</span> <span class="bob">🌸</span></span>
+    Made for Baby. Keep learning, keep glowing. — BABY MO - Jes
+  </footer>
+</div>
+
+<div class="letter-modal" id="letterModal" onclick="closeLetter(event)">
+  <div class="letter-content" onclick="event.stopPropagation()">
+    <h3 id="letterTitle">💌</h3>
+    <p id="letterBody"></p>
+    <button class="letter-close" onclick="closeLetter()">Close 🌸</button>
+  </div>
+</div>
+
+<div class="confetti" id="confetti"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+const PASSWORD = "baby";
+const STORAGE_KEY = "senState_v3";
+
+const DEFAULT_STATE = {
+  streak: 0, lastVisit: "", xp: 0, correct: 0, firstVisit: "",
+  learned: {}, favorites: {}, badges: {}, lettersOpened: {},
+  reviewQueue: {},
+  theme: "dark", season: "hydrangea",
+  furigana: "off", romaji: "on",
+  fontSize: 16, sound: true, petals: true, timed: false
+};
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { ...DEFAULT_STATE, firstVisit: today(), lastVisit: today() };
+    return { ...DEFAULT_STATE, ...JSON.parse(raw) };
+  } catch(e) { return { ...DEFAULT_STATE }; }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function today() { return new Date().toISOString().slice(0, 10); }
+function wordKey(lang, word) { return lang + "::" + word; }
+
+/* ============================================================
+   LOCK / UNLOCK
+============================================================ */
+function unlock() {
+  const input = document.getElementById("password").value.trim().toLowerCase();
+  if (input === PASSWORD) {
+    localStorage.setItem("senUnlocked", "yes");
+    document.getElementById("lock").style.display = "none";
+    document.getElementById("site").style.display = "block";
+    initVoices();
+    initOnOpen();
+  } else {
+    document.getElementById("lockMsg").textContent = "Wrong password. Try again, Baby.";
+  }
+}
+function logout() {
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  localStorage.removeItem("senUnlocked");
+  document.getElementById("site").style.display = "none";
+  document.getElementById("lock").style.display = "flex";
+  document.getElementById("password").value = "";
+  document.getElementById("lockMsg").textContent = "";
+  window.scrollTo(0, 0);
+}
+document.getElementById("password").addEventListener("keydown", e => {
+  if (e.key === "Enter") unlock();
+});
+
+/* ============================================================
+   INIT
+============================================================ */
+function initOnOpen() {
+  updateStreak();
+  applyTheme(state.theme);
+  applySeason(state.season);
+  applyFontSize(state.fontSize);
+  applyFurigana(state.furigana);
+  applyRomaji(state.romaji);
+  applyPetals(state.petals);
+  applySound(state.sound);
+  applyTimed(state.timed);
+  updateStatsUI();
+  pickWordOfDay();
+  injectSpeakableIcons();
+  buildFlashcards("ja-JP");
+  buildListenQuiz();
+  startMatch("ja-JP");
+  renderReviewQueue();
+  renderFavorites();
+  renderBadges();
+  renderLetters();
+  updateLevelProgressAll();
+  setGreeting();
+  initQuizScores();
+  checkBadges();
+}
+
+if (localStorage.getItem("senUnlocked") === "yes") {
+  document.getElementById("lock").style.display = "none";
+  document.getElementById("site").style.display = "block";
+  setTimeout(() => { initVoices(); initOnOpen(); }, 100);
+}
+
+/* ============================================================
+   STREAK / XP / STATS
+============================================================ */
+function updateStreak() {
+  const t = today();
+  if (state.lastVisit === t) return;
+  if (state.lastVisit) {
+    const last = new Date(state.lastVisit);
+    const now = new Date(t);
+    const diff = Math.floor((now - last) / 86400000);
+    if (diff === 1) state.streak += 1;
+    else if (diff > 1) state.streak = 1;
+  } else {
+    state.streak = 1;
+  }
+  state.lastVisit = t;
+  if (!state.firstVisit) state.firstVisit = t;
+  saveState();
+}
+function daysSinceStart() {
+  if (!state.firstVisit) return 0;
+  const start = new Date(state.firstVisit);
+  const now = new Date(today());
+  return Math.max(1, Math.floor((now - start) / 86400000) + 1);
+}
+const RANKS = [
+  { xp: 0, name: "1A Student" },
+  { xp: 100, name: "Sidekick" },
+  { xp: 300, name: "Pro Hero" },
+  { xp: 600, name: "Top 10 Hero" },
+  { xp: 1000, name: "Symbol of Peace" },
+  { xp: 2000, name: "Legend" }
+];
+function currentRank(xp) { let r = RANKS[0]; for (const rank of RANKS) if (xp >= rank.xp) r = rank; return r; }
+function nextRank(xp) { for (const rank of RANKS) if (xp < rank.xp) return rank; return null; }
+
+function updateStatsUI() {
+  document.getElementById("statStreak").textContent = state.streak || 0;
+  document.getElementById("statXP").textContent = state.xp;
+  document.getElementById("statCorrect").textContent = state.correct;
+  document.getElementById("statSince").textContent = daysSinceStart();
+  document.getElementById("statRank").textContent = currentRank(state.xp).name;
+  const rank = currentRank(state.xp);
+  const next = nextRank(state.xp);
+  const fill = document.getElementById("xpFill");
+  const cur = document.getElementById("xpCurrent");
+  const nxt = document.getElementById("xpNext");
+  if (next) {
+    const span = next.xp - rank.xp;
+    const into = state.xp - rank.xp;
+    fill.style.width = Math.min(100, (into / span) * 100) + "%";
+    cur.textContent = `${state.xp} XP — ${rank.name}`;
+    nxt.textContent = `Next: ${next.name} at ${next.xp} XP`;
+  } else {
+    fill.style.width = "100%";
+    cur.textContent = `${state.xp} XP — ${rank.name}`;
+    nxt.textContent = "Max rank reached ✨";
+  }
+}
+function addXP(a) { state.xp += a; saveState(); updateStatsUI(); checkBadges(); }
+function addCorrect() { state.correct += 1; saveState(); updateStatsUI(); checkBadges(); }
+
+function setGreeting() {
+  const h = new Date().getHours();
+  let g = "Welcome back, Baby. 🌸";
+  if (h < 5) g = "Can't sleep, Baby? 🌙";
+  else if (h < 12) g = "Good morning, Baby. ☀️";
+  else if (h < 18) g = "Good afternoon, Baby. 🌸";
+  else g = "Good evening, Baby. ✨";
+  if (state.streak > 1) g += ` 🔥 ${state.streak}-day streak!`;
+  document.getElementById("greeting").textContent = g;
+}
+
+/* ============================================================
+   WORD OF THE DAY
+============================================================ */
+const WOTD_JP = [
+  ["ありがとう", "Arigatou", "Thank you"],
+  ["おはよう", "Ohayou", "Good morning"],
+  ["がんばって", "Ganbatte", "Do your best"],
+  ["すごい", "Sugoi", "Amazing"],
+  ["かわいい", "Kawaii", "Cute"],
+  ["愛", "Ai", "Love"],
+  ["夢", "Yume", "Dream"],
+  ["友達", "Tomodachi", "Friend"],
+  ["プラスウルトラ！", "Purasu Urutora!", "Plus Ultra!"],
+  ["諦めない", "Akiramenai", "I won't give up"]
+];
+const WOTD_KR = [
+  ["안녕하세요", "Annyeonghaseyo", "Hello"],
+  ["감사합니다", "Gamsahamnida", "Thank you"],
+  ["사랑", "Sarang", "Love"],
+  ["친구", "Chingu", "Friend"],
+  ["꿈", "Kkum", "Dream"],
+  ["행복", "Haengbok", "Happiness"],
+  ["화이팅", "Hwaiting", "Cheer up!"],
+  ["대박", "Daebak", "Awesome"],
+  ["마음", "Maeum", "Heart"],
+  ["포기하지 않아", "Pogihaji ana", "I won't give up"]
+];
+function pickWordOfDay() {
+  const seed = parseInt(today().replace(/-/g, "")) % WOTD_JP.length;
+  const jp = WOTD_JP[seed];
+  const kr = WOTD_KR[seed % WOTD_KR.length];
+  const jpEl = document.getElementById("wotdJP");
+  jpEl.textContent = jp[0];
+  jpEl.setAttribute("data-speak", jp[0]);
+  document.getElementById("wotdJPM").textContent = `${jp[1]} — ${jp[2]}`;
+  const krEl = document.getElementById("wotdKR");
+  krEl.textContent = kr[0];
+  krEl.setAttribute("data-speak", kr[0]);
+  document.getElementById("wotdKRM").textContent = `${kr[1]} — ${kr[2]}`;
+}
+
+/* ============================================================
+   SEARCH
+============================================================ */
+document.getElementById("searchInput").addEventListener("input", function() {
+  const q = this.value.trim().toLowerCase();
+  document.querySelectorAll("table tr").forEach(row => {
+    if (row.querySelector("th")) return;
+    const text = row.textContent.toLowerCase();
+    row.classList.toggle("hidden", q && !text.includes(q));
+  });
+});
+
+/* ============================================================
+   TABS
+============================================================ */
+function showTab(id, btn) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  btn.classList.add("active");
+  if (id === "anime") playHeroAnimation();
+  if (id === "favs") renderFavorites();
+  if (id === "badges") renderBadges();
+  if (id === "letters") renderLetters();
+  if (id === "review") renderReviewQueue();
+  if (id === "match" && document.getElementById("matchLeft").children.length === 0) startMatch("ja-JP");
+}
+function showLevel(sectionId, level, btn) {
+  const section = document.getElementById(sectionId);
+  section.querySelectorAll(".level-panel").forEach(p => p.classList.remove("active"));
+  section.querySelectorAll(".level-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById(sectionId + "-" + level).classList.add("active");
+  btn.classList.add("active");
+}
+
+/* ============================================================
+   LEARNED / PROGRESS / FAVORITES
+============================================================ */
+function markLearned(lang, word) {
+  const k = wordKey(lang, word);
+  if (!state.learned[k]) {
+    state.learned[k] = true;
+    saveState();
+    updateLevelProgressAll();
+  }
+}
+function toggleFavorite(lang, word, romaji, meaning, btn) {
+  const k = wordKey(lang, word);
+  if (state.favorites[k]) {
+    delete state.favorites[k];
+    btn.classList.remove("fav");
+    btn.textContent = "🤍";
+    btn.closest(".speakable").classList.remove("faved");
+    showToast("Removed from favorites");
+  } else {
+    state.favorites[k] = { word, romaji, meaning, lang };
+    btn.classList.add("fav");
+    btn.textContent = "❤️";
+    btn.closest(".speakable").classList.add("faved");
+    showToast("Saved to favorites 💖");
+  }
+  saveState();
+  renderFavorites();
+  checkBadges();
+}
+function updateLevelProgressAll() {
+  updateLevelProgress("jp");
+  updateLevelProgress("kr");
+}
+function updateLevelProgress(section) {
+  const sectionEl = document.getElementById(section);
+  if (!sectionEl) return;
+  const words = sectionEl.querySelectorAll(".speakable");
+  let learned = 0;
+  words.forEach(w => {
+    const k = wordKey(w.getAttribute("data-lang"), w.getAttribute("data-speak") || w.textContent.trim());
+    if (state.learned[k]) learned++;
+  });
+  const total = words.length || 1;
+  document.getElementById(section + "ProgressText").textContent = `${learned} / ${words.length} learned`;
+  document.getElementById(section + "ProgressBar").style.width = (learned / total * 100) + "%";
+}
+
+/* ============================================================
+   VOICE
+============================================================ */
+let voices = [];
+let voiceEnabled = true;
+let speechPitch = 1.0;
+let speechRate = 0.9;
+let selectedJaVoice = "";
+let selectedKoVoice = "";
+const voiceSupport = 'speechSynthesis' in window;
+
+function initVoices() {
+  if (!voiceSupport) return;
+  voices = speechSynthesis.getVoices();
+  populateVoiceSelects();
+}
+function populateVoiceSelects() {
+  const jaSel = document.getElementById('jaVoiceSelect');
+  const koSel = document.getElementById('koVoiceSelect');
+  if (!jaSel || !koSel) return;
+  const jaVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ja'));
+  const koVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ko'));
+  jaSel.innerHTML = '<option value="">Auto</option>' + jaVoices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+  koSel.innerHTML = '<option value="">Auto</option>' + koVoices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+}
+if (voiceSupport) {
+  initVoices();
+  speechSynthesis.onvoiceschanged = () => { voices = speechSynthesis.getVoices(); populateVoiceSelects(); };
+}
+function findVoice(lang) {
+  if (!voices.length) voices = speechSynthesis.getVoices();
+  const short = lang.slice(0, 2).toLowerCase();
+  if (short === 'ja' && selectedJaVoice) {
+    const p = voices.find(v => v.name === selectedJaVoice); if (p) return p;
+  }
+  if (short === 'ko' && selectedKoVoice) {
+    const p = voices.find(v => v.name === selectedKoVoice); if (p) return p;
+  }
+  let v = voices.find(x => x.lang && x.lang.replace('_','-').toLowerCase() === lang.toLowerCase());
+  if (v) return v;
+  return voices.find(x => x.lang && x.lang.toLowerCase().startsWith(short)) || null;
+}
+function speak(text, lang, el, slow) {
+  if (!voiceSupport || !voiceEnabled) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang;
+    u.rate = slow ? Math.min(0.5, speechRate * 0.55) : speechRate;
+    u.pitch = speechPitch;
+    const v = findVoice(lang);
+    if (v) u.voice = v;
+    if (el) {
+      el.classList.add("speaking");
+      u.onend = () => el.classList.remove("speaking");
+      u.onerror = () => el.classList.remove("speaking");
+    }
+    setTimeout(() => speechSynthesis.speak(u), 60);
+  } catch(e) {}
+}
+document.addEventListener("click", e => {
+  const el = e.target.closest(".speakable");
+  if (el && !e.target.closest(".fav-btn") && !e.target.closest(".slow-btn") && !e.target.closest(".copy-btn")) {
+    const text = el.getAttribute("data-speak");
+    const lang = el.getAttribute("data-lang") || "ja-JP";
+    if (text) { speak(text, lang, el); markLearned(lang, text); }
+    return;
+  }
+  const slow = e.target.closest(".slow-btn");
+  if (slow) {
+    e.stopPropagation();
+    const par = slow.closest(".speakable");
+    speak(par.getAttribute("data-speak"), par.getAttribute("data-lang"), par, true);
+    return;
+  }
+  const fav = e.target.closest(".fav-btn");
+  if (fav) {
+    e.stopPropagation();
+    const par = fav.closest(".speakable");
+    const lang = par.getAttribute("data-lang");
+    const word = par.getAttribute("data-speak");
+    const row = par.closest("tr");
+    let romaji = "", meaning = "";
+    if (row) {
+      const cells = row.querySelectorAll("td");
+      if (cells[1]) romaji = cells[1].textContent.trim();
+      if (cells[cells.length - 1]) meaning = cells[cells.length - 1].textContent.trim();
+    }
+    toggleFavorite(lang, word, romaji, meaning, fav);
+    return;
+  }
+  const cp = e.target.closest(".copy-btn");
+  if (cp) {
+    e.stopPropagation();
+    const par = cp.closest(".speakable");
+    const word = par.getAttribute("data-speak");
+    navigator.clipboard.writeText(word).then(() => showToast("Copied! 📋")).catch(() => showToast("Copy failed"));
+  }
+});
+function injectSpeakableIcons() {
+  document.querySelectorAll(".speakable").forEach(el => {
+    if (el.dataset.enhanced) return;
+    el.dataset.enhanced = "1";
+    const word = el.getAttribute("data-speak");
+    const lang = el.getAttribute("data-lang") || "ja-JP";
+    const k = wordKey(lang, word);
+    const isFav = !!state.favorites[k];
+    const spk = document.createElement("span"); spk.className = "spk-icon"; spk.textContent = "🔊";
+    const slow = document.createElement("button"); slow.className = "slow-btn"; slow.textContent = "🐢"; slow.title = "Slow";
+    const fav = document.createElement("button"); fav.className = "fav-btn" + (isFav ? " fav" : ""); fav.textContent = isFav ? "❤️" : "🤍"; fav.title = "Favorite";
+    const cp = document.createElement("button"); cp.className = "copy-btn"; cp.textContent = "📋"; cp.title = "Copy";
+    el.appendChild(spk); el.appendChild(slow); el.appendChild(fav); el.appendChild(cp);
+    if (isFav) el.classList.add("faved");
+  });
+}
+function toggleVoice() {
+  voiceEnabled = !voiceEnabled;
+  const btn = document.getElementById("voiceBtn");
+  btn.textContent = voiceEnabled ? "🔊" : "🔇";
+  btn.classList.toggle("muted", !voiceEnabled);
+  if (!voiceEnabled && voiceSupport) speechSynthesis.cancel();
+}
+function toggleVoicePanel() { document.getElementById("voicePanel").classList.toggle("open"); }
+function applyPreset(name) {
+  const p = document.getElementById("pitchSlider");
+  const r = document.getElementById("rateSlider");
+  if (name === 'normal') { speechPitch = 1.0; speechRate = 0.9; }
+  else if (name === 'soft') { speechPitch = 1.2; speechRate = 0.8; }
+  p.value = speechPitch; r.value = speechRate;
+  document.getElementById("pitchVal").textContent = speechPitch.toFixed(2);
+  document.getElementById("rateVal").textContent = speechRate.toFixed(2);
+  document.querySelectorAll('.voice-pill').forEach(x => x.classList.remove('active'));
+  const b = document.getElementById('preset' + name.charAt(0).toUpperCase() + name.slice(1));
+  if (b) b.classList.add('active');
+}
+function testVoice() { speak("プラスウルトラ！", "ja-JP"); }
+document.getElementById('pitchSlider').addEventListener('input', function() {
+  speechPitch = parseFloat(this.value);
+  document.getElementById('pitchVal').textContent = speechPitch.toFixed(2);
+});
+document.getElementById('rateSlider').addEventListener('input', function() {
+  speechRate = parseFloat(this.value);
+  document.getElementById('rateVal').textContent = speechRate.toFixed(2);
+});
+document.getElementById('jaVoiceSelect').addEventListener('change', function() { selectedJaVoice = this.value; });
+document.getElementById('koVoiceSelect').addEventListener('change', function() { selectedKoVoice = this.value; });
+
+/* ============================================================
+   THEME / SEASON / TOGGLES
+============================================================ */
+function toggleTheme() {
+  state.theme = state.theme === "dark" ? "light" : "dark";
+  saveState(); applyTheme(state.theme);
+}
+function applyTheme(t) {
+  document.body.setAttribute("data-theme", t);
+  const btn = document.getElementById("themeBtn");
+  if (btn) btn.textContent = t === "dark" ? "🌙" : "☀️";
+}
+function setSeason(s) {
+  state.season = s; saveState(); applySeason(s);
+  document.querySelectorAll(".petal-field .petal").forEach(x => x.remove());
+  createPetals(document.getElementById('petalField'), 16);
+  createPetals(document.getElementById('lockPetals'), 10);
+  buildBlooms();
+  showToast("Theme: " + s);
+}
+function applySeason(s) { document.body.setAttribute("data-season", s); }
+function setFurigana(v) {
+  state.furigana = v; saveState(); applyFurigana(v);
+  document.getElementById("furiOn").classList.toggle("active", v === "on");
+  document.getElementById("furiOff").classList.toggle("active", v === "off");
+}
+function applyFurigana(v) { document.body.setAttribute("data-furigana", v); }
+function setRomaji(v) {
+  state.romaji = v; saveState(); applyRomaji(v);
+  document.getElementById("romOn").classList.toggle("active", v === "on");
+  document.getElementById("romOff").classList.toggle("active", v === "off");
+}
+function applyRomaji(v) { document.body.setAttribute("data-romaji", v); }
+function setPetals(v) {
+  state.petals = v; saveState(); applyPetals(v);
+  document.getElementById("petalsOn").classList.toggle("active", v);
+  document.getElementById("petalsOff").classList.toggle("active", !v);
+}
+function applyPetals(v) {
+  document.querySelectorAll(".petal-field").forEach(f => f.style.display = v ? "" : "none");
+}
+function setSound(v) {
+  state.sound = v; saveState(); applySound(v);
+  document.getElementById("soundOn").classList.toggle("active", v);
+  document.getElementById("soundOff").classList.toggle("active", !v);
+}
+function applySound(v) {}
+function applyFontSize(size) {
+  document.documentElement.style.setProperty("--font-size", size + "px");
+  const slider = document.getElementById("fontSlider");
+  if (slider) slider.value = size;
+  const v = document.getElementById("fontVal");
+  if (v) v.textContent = size;
+}
+document.getElementById('fontSlider').addEventListener('input', function() {
+  state.fontSize = parseInt(this.value); saveState();
+  applyFontSize(state.fontSize);
+});
+function toggleSettingsPanel() { document.getElementById("settingsPanel").classList.toggle("open"); }
+
+/* ============================================================
+   TIMED MODE
+============================================================ */
+function setTimed(v) {
+  state.timed = v; saveState(); applyTimed(v);
+  document.getElementById("timedOn").classList.toggle("active", v);
+  document.getElementById("timedOff").classList.toggle("active", !v);
+  showToast(v ? "Timed mode ON ⏱️" : "Timed mode OFF");
+}
+function applyTimed(v) {}
+
+/* ============================================================
+   SOUND EFFECTS
+============================================================ */
+let audioCtx = null;
+function playChime(correct) {
+  if (!state.sound) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    if (correct) {
+      o.frequency.setValueAtTime(660, audioCtx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(990, audioCtx.currentTime + 0.15);
+    } else {
+      o.frequency.setValueAtTime(220, audioCtx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.2);
+    }
+    o.type = "sine";
+    g.gain.setValueAtTime(0.06, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+    o.start(); o.stop(audioCtx.currentTime + 0.35);
+  } catch(e) {}
+}
+
+/* ============================================================
+   QUIZ
+============================================================ */
+const quizScores = {};
+function initQuizScores() {
+  document.querySelectorAll('.level-panel').forEach(panel => {
+    const cards = panel.querySelectorAll('.quiz-card');
+    if (cards.length) {
+      quizScores[panel.id] = { correct: 0, total: cards.length };
+      updateScoreDisplay(panel.id);
+    }
+  });
+}
+function updateScoreDisplay(panelId) {
+  const el = document.getElementById('score-' + panelId);
+  if (el && quizScores[panelId]) el.textContent = quizScores[panelId].correct + ' / ' + quizScores[panelId].total;
+}
+function answer(btn, correct) {
+  const card = btn.parentElement;
+  const result = card.querySelector(".quiz-result");
+  const panel = card.closest('.level-panel');
+
+  // Timed mode
+  if (state.timed && !card.dataset.timerStarted && card.querySelector('.quiz-option')) {
+    card.dataset.timerStarted = "1";
+    startQuizTimer(card);
+  }
+
+  if (correct) {
+    if (card.dataset.answered === "1") return;
+    card.dataset.answered = "1";
+    result.textContent = "Correct! ✅ +10 XP";
+    result.style.color = "#9fe6d4";
+    btn.classList.add('correct');
+    addXP(10); addCorrect();
+    playChime(true);
+    if (panel && quizScores[panel.id]) {
+      quizScores[panel.id].correct += 1;
+      updateScoreDisplay(panel.id);
+      if (quizScores[panel.id].correct === quizScores[panel.id].total) {
+        fireConfetti();
+        showToast("Perfect set! 🎉");
+      }
+    }
+  } else {
+    result.textContent = "Not quite. Try again. 💡";
+    result.style.color = "#ff8098";
+    btn.classList.add('wrong');
+    playChime(false);
+    setTimeout(() => btn.classList.remove('wrong'), 600);
+
+    // Add to review queue
+    const spk = card.querySelector(".speakable");
+    if (spk) {
+      const word = spk.getAttribute("data-speak");
+      const lang = spk.getAttribute("data-lang");
+      const row = spk.closest("tr");
+      let romaji = "", meaning = "";
+      if (row) {
+        const cells = row.querySelectorAll("td");
+        if (cells[1]) romaji = cells[1].textContent.trim();
+        if (cells[cells.length - 1]) meaning = cells[cells.length - 1].textContent.trim();
+      }
+      if (word) addToReview(word, romaji, meaning, lang);
+    }
+  }
+}
+function startQuizTimer(card) {
+  const wrap = document.createElement("div");
+  wrap.className = "timer-wrap";
+  wrap.innerHTML = `<div class="timer-label"><span>⏱️</span><span class="timer-count">30s</span></div><div class="timer-bar" style="width:100%"></div>`;
+  card.insertBefore(wrap, card.firstChild);
+  const bar = wrap.querySelector(".timer-bar");
+  const label = wrap.querySelector(".timer-count");
+  let left = 30;
+  const interval = setInterval(() => {
+    if (card.dataset.answered === "1") { clearInterval(interval); wrap.remove(); return; }
+    left--;
+    label.textContent = left + "s";
+    bar.style.width = (left / 30 * 100) + "%";
+    if (left <= 0) {
+      clearInterval(interval); wrap.remove();
+      showToast("Time's up! 💡");
+    }
+  }, 1000);
+}
+
+/* ============================================================
+   CONFETTI
+============================================================ */
+function fireConfetti() {
+  const c = document.getElementById("confetti");
+  const colors = ["#b18cf0","#7ea6f0","#f2a3d4","#9fe6d4","#ffd166","#4fbf7a"];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement("div");
+    p.className = "piece";
+    p.style.left = Math.random() * 100 + "%";
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+    p.style.animationDelay = (Math.random() * 0.5) + "s";
+    p.style.animationDuration = (2 + Math.random() * 1.5) + "s";
+    c.appendChild(p);
+    setTimeout(() => p.remove(), 4000);
+  }
+}
+
+/* ============================================================
+   FLASHCARDS
+============================================================ */
+function buildFlashcards(lang, btn) {
+  if (btn) {
+    const tabs = btn.parentElement.querySelectorAll(".level-tab");
+    tabs.forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+  }
+  const grid = document.getElementById("flashGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  const allWords = [];
+  document.querySelectorAll(".speakable").forEach(el => {
+    if (el.getAttribute("data-lang") !== lang) return;
+    const row = el.closest("tr");
+    if (!row) return;
+    const cells = row.querySelectorAll("td");
+    if (cells.length < 3) return;
+    const word = el.getAttribute("data-speak");
+    const romaji = cells[1].textContent.trim();
+    const meaning = cells[cells.length - 1].textContent.trim();
+    if (word && meaning) allWords.push({ word, romaji, meaning, lang });
+  });
+  const uniq = [];
+  const seen = new Set();
+  allWords.forEach(w => {
+    const k = wordKey(w.lang, w.word);
+    if (!seen.has(k)) { seen.add(k); uniq.push(w); }
+  });
+  const shuffled = uniq.sort(() => Math.random() - 0.5).slice(0, 20);
+  shuffled.forEach(w => {
+    const card = document.createElement("div");
+    card.className = "flash-card";
+    card.innerHTML = `<div class="front">${w.word}</div><div class="hint">tap to flip</div>`;
+    card.onclick = () => {
+      if (card.classList.contains("flipped")) {
+        card.classList.remove("flipped");
+        card.innerHTML = `<div class="front">${w.word}</div><div class="hint">tap to flip</div>`;
+      } else {
+        card.classList.add("flipped");
+        card.innerHTML = `<div class="front">${w.word}</div><div class="back">${w.romaji}<br>${w.meaning}</div>`;
+        speak(w.word, w.lang);
+        markLearned(w.lang, w.word);
+      }
+    };
+    grid.appendChild(card);
+  });
+}
+
+/* ============================================================
+   LISTENING MODE
+============================================================ */
+let listenLang = "ja-JP";
+let listenCurrent = null;
+let listenCorrect = 0, listenTotal = 0;
+
+function setListenLang(lang, btn) {
+  listenLang = lang;
+  const tabs = btn.parentElement.querySelectorAll(".level-tab");
+  tabs.forEach(t => t.classList.remove("active"));
+  btn.classList.add("active");
+  buildListenQuiz();
+}
+function buildListenQuiz() {
+  listenCorrect = 0; listenTotal = 0;
+  const scoreEl = document.getElementById("listenScore");
+  if (scoreEl) scoreEl.textContent = "0 / 0";
+  const area = document.getElementById("listenQuiz");
+  if (area) area.innerHTML = "";
+  nextListenQuestion();
+}
+function nextListenQuestion() {
+  const pool = [];
+  document.querySelectorAll(".speakable").forEach(el => {
+    if (el.getAttribute("data-lang") !== listenLang) return;
+    const row = el.closest("tr");
+    if (!row) return;
+    const cells = row.querySelectorAll("td");
+    if (cells.length < 3) return;
+    const word = el.getAttribute("data-speak");
+    const meaning = cells[cells.length - 1].textContent.trim();
+    if (word && meaning) pool.push({ word, meaning });
+  });
+  const uniq = [];
+  const seen = new Set();
+  pool.forEach(p => { if (!seen.has(p.word)) { seen.add(p.word); uniq.push(p); } });
+  if (uniq.length < 4) return;
+
+  const correct = uniq[Math.floor(Math.random() * uniq.length)];
+  listenCurrent = correct;
+  const wrong = uniq.filter(x => x.word !== correct.word)
+    .sort(() => Math.random() - 0.5).slice(0, 2);
+  const options = [correct, ...wrong].sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById("listenQuiz");
+  if (!container) return;
+  container.innerHTML = `<div class="quiz-card"><h3>Which meaning matches the word you heard?</h3></div>`;
+  options.forEach(opt => {
+    const b = document.createElement("button");
+    b.className = "quiz-option";
+    b.textContent = opt.meaning;
+    b.onclick = () => {
+      listenTotal++;
+      if (opt.word === correct.word) {
+        listenCorrect++;
+        b.classList.add('correct');
+        addXP(10); addCorrect();
+        playChime(true);
+        showToast("Correct! ✅");
+        setTimeout(() => { container.innerHTML = ""; nextListenQuestion(); }, 900);
+      } else {
+        b.classList.add('wrong');
+        playChime(false);
+      }
+      document.getElementById("listenScore").textContent = `${listenCorrect} / ${listenTotal}`;
+    };
+    container.appendChild(b);
+  });
+}
+function playListenWord() {
+  if (!listenCurrent) return;
+  speak(listenCurrent.word, listenLang);
+}
+
+/* ============================================================
+   MATCHING GAME
+============================================================ */
+let currentMatchLang = "ja-JP";
+let matchSelectedLeft = null;
+let matchSelectedRight = null;
+let matchScore = 0;
+let matchTotal = 6;
+
+function startMatch(lang, btn) {
+  currentMatchLang = lang;
+  if (btn) {
+    const tabs = btn.parentElement.querySelectorAll(".level-tab");
+    tabs.forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+  }
+  const pool = [];
+  document.querySelectorAll(".speakable").forEach(el => {
+    if (el.getAttribute("data-lang") !== lang) return;
+    const row = el.closest("tr");
+    if (!row) return;
+    const cells = row.querySelectorAll("td");
+    if (cells.length < 3) return;
+    const word = el.getAttribute("data-speak");
+    const meaning = cells[cells.length - 1].textContent.trim();
+    if (word && meaning) pool.push({ word, meaning });
+  });
+  const uniq = [];
+  const seen = new Set();
+  pool.forEach(p => { if (!seen.has(p.word)) { seen.add(p.word); uniq.push(p); } });
+  if (uniq.length < 6) { showToast("Not enough words yet"); return; }
+  const picks = uniq.sort(() => Math.random() - 0.5).slice(0, 6);
+
+  const left = document.getElementById("matchLeft");
+  const right = document.getElementById("matchRight");
+  if (!left || !right) return;
+  left.innerHTML = ""; right.innerHTML = "";
+  matchSelectedLeft = null; matchSelectedRight = null; matchScore = 0; matchTotal = 6;
+  const sc = document.getElementById("matchScore");
+  if (sc) sc.textContent = "0 / 6 matched";
+
+  const shuffledRight = [...picks].sort(() => Math.random() - 0.5);
+
+  picks.forEach(p => {
+    const d = document.createElement("div");
+    d.className = "match-item";
+    d.textContent = p.word;
+    d.dataset.key = p.word;
+    d.dataset.side = "left";
+    d.onclick = () => selectMatch(d, "left");
+    left.appendChild(d);
+  });
+  shuffledRight.forEach(p => {
+    const d = document.createElement("div");
+    d.className = "match-item";
+    d.textContent = p.meaning;
+    d.dataset.key = p.word;
+    d.dataset.side = "right";
+    d.onclick = () => selectMatch(d, "right");
+    right.appendChild(d);
+  });
+}
+function selectMatch(el, side) {
+  if (el.classList.contains("matched")) return;
+  if (side === "left") {
+    if (matchSelectedLeft) matchSelectedLeft.classList.remove("selected");
+    matchSelectedLeft = el;
+  } else {
+    if (matchSelectedRight) matchSelectedRight.classList.remove("selected");
+    matchSelectedRight = el;
+  }
+  el.classList.add("selected");
+  checkMatch();
+}
+function checkMatch() {
+  if (!matchSelectedLeft || !matchSelectedRight) return;
+  const l = matchSelectedLeft, r = matchSelectedRight;
+  matchSelectedLeft = null; matchSelectedRight = null;
+  if (l.dataset.key === r.dataset.key) {
+    l.classList.add("matched"); r.classList.add("matched");
+    l.classList.remove("selected"); r.classList.remove("selected");
+    matchScore++;
+    const sc = document.getElementById("matchScore");
+    if (sc) sc.textContent = `${matchScore} / ${matchTotal} matched`;
+    addXP(5); addCorrect();
+    playChime(true);
+    speak(l.dataset.key, currentMatchLang);
+    if (matchScore === matchTotal) {
+      fireConfetti();
+      showToast("All matched! 🎉");
+    }
+  } else {
+    l.classList.add("wrong"); r.classList.add("wrong");
+    playChime(false);
+    setTimeout(() => {
+      l.classList.remove("wrong", "selected");
+      r.classList.remove("wrong", "selected");
+    }, 500);
+  }
+}
+
+/* ============================================================
+   REVIEW QUEUE
+============================================================ */
+function addToReview(word, romaji, meaning, lang) {
+  const k = wordKey(lang, word);
+  if (!state.reviewQueue[k]) {
+    state.reviewQueue[k] = { word, romaji, meaning, lang };
+    saveState();
+    renderReviewQueue();
+  }
+}
+function removeFromReview(k) {
+  delete state.reviewQueue[k];
+  saveState();
+  renderReviewQueue();
+}
+function renderReviewQueue() {
+  const area = document.getElementById("reviewArea");
+  const countEl = document.getElementById("reviewCount");
+  if (!area) return;
+  const keys = Object.keys(state.reviewQueue);
+  if (countEl) countEl.textContent = keys.length;
+  if (!keys.length) {
+    area.innerHTML = `<div class="review-empty"><span class="emoji">✨</span>Nothing to review yet, Baby.<br><small>Wrong answers will show up here.</small></div>`;
+    return;
+  }
+  const item = state.reviewQueue[keys[0]];
+  const wrongs = Object.values(state.reviewQueue).filter(x => x.word !== item.word).slice(0, 2);
+  if (wrongs.length < 1) {
+    wrongs.push({ meaning: "Something else" });
+  }
+  area.innerHTML = `
+    <div class="quiz-card">
+      <h3>Review: what does this mean?</h3>
+      <p style="text-align:center;margin:16px 0;">
+        <span class="speakable" data-speak="${item.word}" data-lang="${item.lang}">${item.word}</span>
+      </p>
+      <button class="quiz-option" onclick="reviewAnswer(this, true)">${item.meaning}</button>
+      ${wrongs.map(w => `<button class="quiz-option" onclick="reviewAnswer(this, false)">${w.meaning}</button>`).join('')}
+      <div class="quiz-result"></div>
+      <p style="font-size:0.75rem;color:var(--muted);margin-top:8px;">${keys.length} word(s) in queue</p>
+    </div>`;
+  injectSpeakableIcons();
+}
+function reviewAnswer(btn, correct) {
+  const result = btn.parentElement.querySelector(".quiz-result");
+  const keys = Object.keys(state.reviewQueue);
+  const key = keys[0];
+  if (correct) {
+    result.textContent = "Cleared! ✅ +5 XP";
+    result.style.color = "#9fe6d4";
+    addXP(5);
+    playChime(true);
+    if (key) removeFromReview(key);
+    setTimeout(renderReviewQueue, 700);
+  } else {
+    result.textContent = "Not yet. Try again 💡";
+    result.style.color = "#ff8098";
+    btn.classList.add("wrong");
+    playChime(false);
+    setTimeout(() => btn.classList.remove("wrong"), 600);
+  }
+}
+
+/* ============================================================
+   FAVORITES RENDER
+============================================================ */
+function renderFavorites() {
+  const table = document.getElementById("favTable");
+  const empty = document.getElementById("favEmpty");
+  if (!table) return;
+  table.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+  const keys = Object.keys(state.favorites);
+  empty.style.display = keys.length ? "none" : "block";
+  keys.forEach(k => {
+    const f = state.favorites[k];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><span class="speakable" data-speak="${f.word}" data-lang="${f.lang}">${f.word}</span></td>
+      <td class="romaji-cell">${f.romaji || ""}</td>
+      <td>${f.meaning || ""}</td>`;
+    table.appendChild(tr);
+  });
+  injectSpeakableIcons();
+}
+
+/* ============================================================
+   BADGES
+============================================================ */
+const BADGES = [
+  { id: "firstCorrect", icon: "🎯", name: "First correct", check: () => state.correct >= 1 },
+  { id: "tenCorrect", icon: "🔟", name: "10 correct", check: () => state.correct >= 10 },
+  { id: "fiftyCorrect", icon: "💪", name: "50 correct", check: () => state.correct >= 50 },
+  { id: "streak3", icon: "🔥", name: "3-day streak", check: () => state.streak >= 3 },
+  { id: "streak7", icon: "⚡", name: "7-day streak", check: () => state.streak >= 7 },
+  { id: "streak30", icon: "🌟", name: "30-day streak", check: () => state.streak >= 30 },
+  { id: "xp100", icon: "🌱", name: "100 XP", check: () => state.xp >= 100 },
+  { id: "xp500", icon: "🌿", name: "500 XP", check: () => state.xp >= 500 },
+  { id: "xp1000", icon: "🌳", name: "1000 XP", check: () => state.xp >= 1000 },
+  { id: "firstFav", icon: "💖", name: "First favorite", check: () => Object.keys(state.favorites).length >= 1 },
+  { id: "tenFav", icon: "💝", name: "10 favorites", check: () => Object.keys(state.favorites).length >= 10 },
+  { id: "firstLetter", icon: "💌", name: "First letter", check: () => Object.keys(state.lettersOpened).length >= 1 },
+  { id: "reviewClear", icon: "🧹", name: "Review cleared", check: () => state.correct >= 3 }
+];
+function checkBadges() {
+  let newBadge = null;
+  BADGES.forEach(b => {
+    if (!state.badges[b.id] && b.check()) {
+      state.badges[b.id] = true;
+      newBadge = b;
+    }
+  });
+  if (newBadge) {
+    saveState();
+    renderBadges();
+    showToast(`🏆 Badge earned: ${newBadge.name}!`);
+    fireConfetti();
+  }
+}
+function renderBadges() {
+  const grid = document.getElementById("badgesGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  BADGES.forEach(b => {
+    const d = document.createElement("div");
+    d.className = "badge" + (state.badges[b.id] ? " earned" : "");
+    d.innerHTML = `<span class="icon">${b.icon}</span><span class="name">${b.name}</span>`;
+    grid.appendChild(d);
+  });
+}
+
+/* ============================================================
+   LETTERS
+============================================================ */
+const LETTERS = [
+  { id: "start", emoji: "🌸", title: "Open when you start", unlock: () => true, body: "Hey Baby,\n\nIf you're reading this, you opened the site I made for you. I hope it makes learning a little less boring. Take it slow. No pressure. I'm proud of you already.\n\n— Jes" },
+  { id: "streak3", emoji: "🔥", title: "Open when 3-day streak", unlock: () => state.streak >= 3, body: "Three days in a row. That's not luck — that's you showing up for yourself. Keep going. 🌸" },
+  { id: "firstCorrect", emoji: "🎯", title: "Open when first correct answer", unlock: () => state.correct >= 1, body: "You got one right. That means you actually read the words. Most people just scroll. You didn't. Proud of you." },
+  { id: "xp100", emoji: "🌱", title: "Open when you hit 100 XP", unlock: () => state.xp >= 100, body: "100 XP. You've learned more than you think. Rest if you need to. Then come back." },
+  { id: "streak7", emoji: "⚡", title: "Open when 7-day streak", unlock: () => state.streak >= 7, body: "A whole week. Whatever happens next, remember you did this. 頑張って. 화이팅." },
+  { id: "xp500", emoji: "🌿", title: "Open when you hit 500 XP", unlock: () => state.xp >= 500, body: "You're serious about this, huh? I like that about you. 🌸" },
+  { id: "xp1000", emoji: "🏆", title: "Open when you hit 1000 XP", unlock: () => state.xp >= 1000, body: "1000 XP. That's a lot of words. You didn't just study — you built a habit. お疲れ様. 수고했어요." },
+  { id: "firstFav", emoji: "💖", title: "Open when first favorite", unlock: () => Object.keys(state.favorites).length >= 1, body: "You saved a word. That means it mattered to you. Small thing, but I noticed. 🌸" },
+  { id: "matchWin", emoji: "🎮", title: "Open when you win Match", unlock: () => state.correct >= 5, body: "You matched pairs and answered right. That's not just memorizing — that's actually knowing.\n\nKeep going, Baby." },
+  { id: "tenStreak", emoji: "🌟", title: "Open when 10-day streak", unlock: () => state.streak >= 10, body: "Ten days. Not a fluke. Not a mood. You built something real. I'm proud of you, always." },
+  { id: "topHero", emoji: "🏅", title: "Open when Top 10 Hero rank", unlock: () => state.xp >= 600, body: "Top 10 Hero. In any world, that's serious. And you did it by showing up, a little every day.\n\nおめでとう。축하해요." },
+  { id: "symbol", emoji: "🌍", title: "Open when Symbol of Peace", unlock: () => state.xp >= 1000, body: "You hit the highest rank I made for you. There's more to learn, but this — right here — matters. Thank you for taking this seriously. Thank you for being you." }
+];
+function renderLetters() {
+  const grid = document.getElementById("lettersGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  LETTERS.forEach(l => {
+    const unlocked = l.unlock();
+    const opened = state.lettersOpened[l.id];
+    const d = document.createElement("div");
+    d.className = "letter-card" + (unlocked ? "" : " locked");
+    d.innerHTML = `<div class="emoji">${l.emoji}</div><div class="title">${l.title}</div><div class="status">${unlocked ? (opened ? "Opened ✓" : "Tap to open") : "Locked 🔒"}</div>`;
+    if (unlocked) d.onclick = () => openLetter(l);
+    grid.appendChild(d);
+  });
+}
+function openLetter(l) {
+  state.lettersOpened[l.id] = true;
+  saveState();
+  document.getElementById("letterTitle").textContent = l.emoji + " " + l.title;
+  document.getElementById("letterBody").textContent = l.body;
+  document.getElementById("letterModal").classList.add("open");
+  renderLetters();
+  checkBadges();
+}
+function closeLetter(e) {
+  if (e && e.target && e.target.className !== "letter-modal") return;
+  document.getElementById("letterModal").classList.remove("open");
+}
+
+/* ============================================================
+   EXPORT / RESET
+============================================================ */
+function exportProgress() {
+  try {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "baby-progress-" + today() + ".json";
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("Progress exported 📤");
+  } catch (e) {
+    showToast("Export failed 😔");
+  }
+}
+function resetProgress() {
+  if (!confirm("Reset all progress? This cannot be undone.")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+/* ============================================================
+   HERO CHARACTER
+============================================================ */
+function dekuSVG() {
+  return `<svg viewBox="0 0 200 240" width="100%" height="100%" aria-hidden="true">
+    <ellipse cx="100" cy="232" rx="52" ry="7" fill="rgba(79,191,122,0.35)"/>
+    <rect x="76" y="180" width="20" height="42" rx="8" fill="#2d5f8a"/>
+    <rect x="104" y="180" width="20" height="42" rx="8" fill="#2d5f8a"/>
+    <rect x="72" y="214" width="28" height="14" rx="6" fill="#c0392b"/>
+    <rect x="100" y="214" width="28" height="14" rx="6" fill="#c0392b"/>
+    <rect x="64" y="118" width="72" height="68" rx="16" fill="#4fbf7a"/>
+    <rect x="64" y="118" width="72" height="20" rx="10" fill="#3da566"/>
+    <path d="M100 130 L100 180" stroke="#fdf8ff" stroke-width="3" opacity="0.55"/>
+    <g transform="rotate(-32 51 132)"><rect x="40" y="100" width="22" height="60" rx="11" fill="#4fbf7a"/></g>
+    <g transform="rotate(32 149 132)"><rect x="138" y="100" width="22" height="60" rx="11" fill="#4fbf7a"/></g>
+    <circle cx="40" cy="98" r="14" fill="#f5c9a0" stroke="#e0a878" stroke-width="1.5"/>
+    <circle cx="160" cy="98" r="14" fill="#f5c9a0" stroke="#e0a878" stroke-width="1.5"/>
+    <rect x="90" y="106" width="20" height="16" fill="#e0a878"/>
+    <circle cx="100" cy="80" r="44" fill="#f5c9a0"/>
+    <path d="M56 76 Q58 38 86 30 Q98 18 108 30 Q138 28 148 54 Q154 70 145 84 Q138 68 124 74 Q112 58 100 64 Q88 58 76 74 Q66 68 56 76 Z" fill="#3da566"/>
+    <path d="M58 60 L44 44 L66 52 Z" fill="#2d7a4f"/>
+    <path d="M90 26 L86 6 L106 22 Z" fill="#2d7a4f"/>
+    <path d="M128 30 L144 14 L138 40 Z" fill="#2d7a4f"/>
+    <ellipse cx="84" cy="82" rx="9" ry="11" fill="#ffffff"/>
+    <ellipse cx="116" cy="82" rx="9" ry="11" fill="#ffffff"/>
+    <circle cx="85" cy="84" r="6" fill="#2d7a4f"/>
+    <circle cx="117" cy="84" r="6" fill="#2d7a4f"/>
+    <circle cx="83" cy="82" r="2" fill="#ffffff"/>
+    <circle cx="115" cy="82" r="2" fill="#ffffff"/>
+    <circle cx="72" cy="94" r="1.6" fill="#c97b5a"/>
+    <circle cx="78" cy="98" r="1.6" fill="#c97b5a"/>
+    <circle cx="122" cy="94" r="1.6" fill="#c97b5a"/>
+    <circle cx="128" cy="98" r="1.6" fill="#c97b5a"/>
+    <path d="M90 102 Q100 110 110 102" stroke="#8b5a3c" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+function buildHero() {
+  const h = document.getElementById('heroCharacter');
+  if (h) h.innerHTML = dekuSVG();
+}
+function playHeroAnimation() {
+  const stage = document.getElementById('heroStage');
+  if (!stage) return;
+  stage.classList.remove('play');
+  void stage.offsetWidth;
+  stage.classList.add('play');
+}
+buildHero();
+
+/* ============================================================
+   PETALS
+============================================================ */
+const PALETTE_DEFAULT = ['#b18cf0','#7ea6f0','#f2a3d4','#d4b6f5','#a8c8f5','#9fe6d4','#c9a7f0','#8fb8f2'];
+const PALETTE_SAKURA = ['#ffb8d0','#f2a3c5','#ffd0e0','#ff8aae','#ffb8d0'];
+const PALETTE_MAPLE = ['#e08a4a','#d4623a','#f2b070','#c46a3a','#e08a4a'];
+const PALETTE_SNOW = ['#a8c8f0','#c8d8f5','#d8e8ff','#e8f0ff','#a8c8f0'];
+
+function palette() {
+  const s = state.season || "hydrangea";
+  if (s === "sakura") return PALETTE_SAKURA;
+  if (s === "maple") return PALETTE_MAPLE;
+  if (s === "snow") return PALETTE_SNOW;
+  return PALETTE_DEFAULT;
+}
+function floretInner(c1, c2, cx = 0, cy = 0) {
+  return `
+    <ellipse cx="${cx}" cy="${cy - 6}" rx="4.2" ry="6" fill="${c1}" opacity="0.92"/>
+    <ellipse cx="${cx + 6}" cy="${cy}" rx="6" ry="4.2" fill="${c2}" opacity="0.92"/>
+    <ellipse cx="${cx}" cy="${cy + 6}" rx="4.2" ry="6" fill="${c1}" opacity="0.86"/>
+    <ellipse cx="${cx - 6}" cy="${cy}" rx="6" ry="4.2" fill="${c2}" opacity="0.86"/>
+    <circle cx="${cx}" cy="${cy}" r="2" fill="#fdf8ff" opacity="0.65"/>`;
+}
+function floretSVG(size, c1, c2) {
+  return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">${floretInner(c1, c2, 12, 12)}</svg>`;
+}
+function clusterSVG(p) {
+  const spots = [[50,50],[31,33],[69,33],[31,67],[69,67],[50,23],[23,50],[77,50],[50,77],[39,41],[61,59],[61,41],[39,59]];
+  let inner = '';
+  spots.forEach(([x, y], i) => {
+    const c1 = p[i % p.length];
+    const c2 = p[(i + 3) % p.length];
+    const rot = Math.round(Math.random() * 360);
+    const sc = 0.82 + Math.random() * 0.3;
+    inner += `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${sc})">${floretInner(c1, c2, 0, 0)}</g>`;
+  });
+  return `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${inner}</svg>`;
+}
+function createPetals(container, count) {
+  if (!container) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const p = palette();
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < count; i++) {
+    const size = 9 + Math.random() * 16;
+    const dur = 13 + Math.random() * 12;
+    const delay = -Math.random() * dur;
+    const drift = (Math.random() * 2 - 1) * 130;
+    const op = 0.30 + Math.random() * 0.40;
+    const c1 = p[Math.floor(Math.random() * p.length)];
+    const c2 = p[Math.floor(Math.random() * p.length)];
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    petal.style.left = (Math.random() * 100) + '%';
+    petal.style.width = size + 'px';
+    petal.style.height = size + 'px';
+    petal.style.setProperty('--drift', drift + 'px');
+    petal.style.setProperty('--op', op);
+    petal.style.animationDuration = dur + 's';
+    petal.style.animationDelay = delay + 's';
+    const inner = document.createElement('div');
+    inner.className = 'petal-inner';
+    inner.style.animationDuration = (3 + Math.random() * 3.5) + 's';
+    inner.style.animationDelay = (-Math.random() * 3) + 's';
+    inner.innerHTML = floretSVG(size, c1, c2);
+    petal.appendChild(inner);
+    frag.appendChild(petal);
+  }
+  container.appendChild(frag);
+}
+function buildBlooms() {
+  const tl = document.getElementById('bloomTL');
+  const br = document.getElementById('bloomBR');
+  const p = palette();
+  if (tl) tl.innerHTML = clusterSVG(p);
+  if (br) br.innerHTML = clusterSVG(p.slice().reverse());
+}
+buildBlooms();
+createPetals(document.getElementById('petalField'), 16);
+createPetals(document.getElementById('lockPetals'), 10);
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove("show"), 2200);
+}
+</script>
+</body>
+</html>
