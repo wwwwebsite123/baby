@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#1a1530" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>For Baby — Japanese & Korean Study Nook</title>
+<style>
+  :root {
+    --bg: #14102a; --bg2: #1e1840; --card: #221a44; --card2: #2c2358;
+    --text: #f6f2ff; --muted: #b8aede;
+    --hyd-blue: #7ea6f0; --hyd-purple: #b18cf0; --hyd-pink: #f2a3d4;
+    --hyd-lilac: #d4b6f5; --hyd-mint: #9fe6d4; --hyd-white: #fdf8ff;
+    --yellow: #ffd9a0; --red: #ff8098;
+    --border: #3a2f6e; --border2: #4a3d8a;
+    --deku-green: #4fbf7a;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(177,140,240,0.22), transparent 45%),
+      radial-gradient(circle at 85% 20%, rgba(126,166,240,0.20), transparent 50%),
+      radial-gradient(circle at 50% 100%, rgba(242,163,212,0.18), transparent 55%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    background-attachment: fixed;
+    color: var(--text); line-height: 1.6; font-size: 16px;
+    min-height: 100vh; min-height: 100dvh;
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(circle at 12% 25%, rgba(212,182,245,0.10) 0 6px, transparent 7px),
+      radial-gradient(circle at 88% 60%, rgba(242,163,212,0.10) 0 8px, transparent 9px),
+      radial-gradient(circle at 30% 80%, rgba(126,166,240,0.10) 0 5px, transparent 6px),
+      radial-gradient(circle at 70% 15%, rgba(159,230,212,0.10) 0 6px, transparent 7px);
+    background-size: 400px 400px; opacity: 0.8; z-index: 0;
+  }
+
+  /* ============ HYDRANGEA ANIMATION ============ */
+  .petal-field { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .lock-petals { position: absolute; }
+  .petal { position: absolute; top: 0; animation-name: fallPetal; animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; backface-visibility: hidden; }
+  .petal-inner { width: 100%; height: 100%; animation: swayPetal 4s ease-in-out infinite; will-change: transform; transform-origin: center; }
+  .petal-inner svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 6px rgba(177,140,240,0.35)); }
+
+  @keyframes fallPetal {
+    0% { transform: translate3d(0, -14vh, 0); opacity: 0; }
+    8% { opacity: var(--op, 0.6); }
+    92% { opacity: var(--op, 0.6); }
+    100% { transform: translate3d(var(--drift, 40px), 114vh, 0); opacity: 0; }
+  }
+  @keyframes swayPetal {
+    0% { transform: translateX(-7px) rotate(-14deg); }
+    50% { transform: translateX(7px) rotate(14deg); }
+    100% { transform: translateX(-7px) rotate(-14deg); }
+  }
+
+  .bloom-corner { position: absolute; width: 230px; height: 230px; opacity: 0.28; filter: blur(0.4px); animation: bloomFloat 12s ease-in-out infinite; will-change: transform; }
+  .bloom-corner svg { display: block; width: 100%; height: 100%; }
+  .bloom-corner.top-left { top: -55px; left: -60px; }
+  .bloom-corner.bottom-right { bottom: -60px; right: -60px; animation-delay: -6s; opacity: 0.22; }
+  @keyframes bloomFloat {
+    0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+    50% { transform: translateY(-16px) scale(1.06) rotate(5deg); }
+  }
+
+  .bob { display: inline-block; animation: bobFlower 3.2s ease-in-out infinite; transform-origin: center bottom; }
+  .bob:nth-child(2) { animation-delay: -1.1s; }
+  .bob:nth-child(3) { animation-delay: -2.2s; }
+  @keyframes bobFlower {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-4px) rotate(6deg); }
+  }
+
+  .bloom-in { animation: bloomIn 1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes bloomIn {
+    0% { opacity: 0; transform: scale(0.88) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .petal, .petal-inner, .bloom-corner, .bob, .bloom-in { animation: none !important; }
+    .petal { display: none; }
+  }
+
+  /* ============ LOCK SCREEN ============ */
+  .lock {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(177,140,240,0.25), transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(126,166,240,0.22), transparent 55%),
+      #100c22;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; padding: 16px;
+    padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+    overflow-y: auto;
+  }
+  .lock-box {
+    background: linear-gradient(160deg, var(--card), var(--card2));
+    padding: 28px 24px; border-radius: 24px; width: 100%; max-width: 400px;
+    text-align: center; border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(177,140,240,0.15); margin: auto; position: relative; z-index: 1;
+  }
+  .lock-box::before {
+    content: "🌸"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 2rem; background: #100c22; padding: 0 8px; border-radius: 50%;
+  }
+  .lock-box h1 {
+    margin-top: 6px; font-size: 1.7rem;
+    background: linear-gradient(135deg, var(--hyd-pink), var(--hyd-purple), var(--hyd-blue));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .lock-box p { font-size: 0.95rem; color: var(--muted); }
+  .lock-box input {
+    width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border2);
+    background: var(--bg); color: white; margin: 12px 0; font-size: 16px; font-family: inherit;
+    outline: none; min-height: 48px;
+  }
+  .lock-box input:focus { border-color: var(--hyd-purple); box-shadow: 0 0 0 3px rgba(177,140,240,0.20); }
+  .lock-box button {
+    background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue), var(--hyd-pink));
+    border: none; color: #ffffff; padding: 14px 24px; border-radius: 14px;
+    font-weight: 700; cursor: pointer; font-size: 1rem; width: 100%; min-height: 48px;
+    font-family: inherit; box-shadow: 0 8px 24px rgba(177,140,240,0.30);
+    transition: transform 0.1s ease;
+  }
+  .lock-box button:active { transform: scale(0.97); }
+
+  /* ============ HEADER ============ */
+  header {
+    text-align: center; padding: 3rem 1rem 1.5rem; max-width: 900px; margin: auto;
+    padding-top: calc(3rem + env(safe-area-inset-top)); position: relative; z-index: 1;
+  }
+  .hydrangea-divider {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    color: var(--hyd-lilac); font-size: 1.1rem; margin: 0.25rem 0; letter-spacing: 2px;
+  }
+  .hydrangea-divider::before, .hydrangea-divider::after {
+    content: ""; flex: 1; max-width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hyd-purple), transparent);
+  }
+  header h1 {
+    font-size: clamp(1.8rem, 8vw, 3.5rem); margin: 0;
+    background: linear-gradient(135deg, var(--hyd-pink), var(--hyd-purple), var(--hyd-blue), var(--hyd-mint));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    word-wrap: break-word; filter: drop-shadow(0 4px 20px rgba(177,140,240,0.30));
+  }
+  header p { color: var(--muted); font-size: clamp(0.9rem, 3.8vw, 1.1rem); margin: 0.5rem 0; }
+
+  /* ============ TOP BAR ============ */
+  .topbar {
+    position: absolute; top: calc(env(safe-area-inset-top) + 12px); right: 12px;
+    z-index: 10; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+    max-width: calc(100% - 24px);
+  }
+  .icon-btn {
+    background: rgba(34, 26, 68, 0.85); border: 1px solid var(--border2);
+    color: var(--hyd-pink); padding: 8px 12px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; gap: 5px; transition: all 0.15s ease; min-height: 38px;
+  }
+  .icon-btn:active { transform: scale(0.95); background: rgba(242, 163, 212, 0.15); }
+  .icon-btn.muted { color: var(--muted); border-color: var(--border); }
+
+  /* ============ CONTAINER ============ */
+  .container { max-width: 1000px; margin: auto; padding: 0 0.75rem 3rem; position: relative; z-index: 1; }
+
+  /* ============ TABS ============ */
+  .tabs {
+    display: flex; gap: 8px; justify-content: flex-start; margin: 1.5rem 0 0.5rem;
+    overflow-x: auto; overflow-y: hidden; padding: 4px 4px 10px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-snap-type: x proximity;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    background: var(--card); border: 1px solid var(--border); color: var(--muted);
+    padding: 12px 18px; border-radius: 999px; cursor: pointer; font-weight: 600;
+    font-size: 0.9rem; white-space: nowrap; flex-shrink: 0; scroll-snap-align: start;
+    font-family: inherit; min-height: 44px; transition: all 0.2s ease;
+  }
+  .tab:active { transform: scale(0.96); }
+  .tab.active {
+    background: linear-gradient(135deg, rgba(177,140,240,0.30), rgba(126,166,240,0.30));
+    color: var(--hyd-white); border-color: var(--hyd-purple);
+    box-shadow: 0 4px 16px rgba(177,140,240,0.30);
+  }
+
+  /* ============ LEVEL TABS ============ */
+  .level-tabs { display: flex; gap: 8px; margin: 1rem 0 1.5rem; flex-wrap: wrap; }
+  .level-tab {
+    flex: 1; min-width: 90px; background: var(--bg); border: 1px solid var(--border2);
+    color: var(--muted); padding: 10px 12px; border-radius: 12px; cursor: pointer;
+    font-weight: 700; font-size: 0.85rem; font-family: inherit; min-height: 44px;
+    text-align: center; transition: all 0.2s ease;
+  }
+  .level-tab:active { transform: scale(0.97); }
+  .level-tab.easy.active {
+    background: linear-gradient(135deg, rgba(159,230,212,0.25), rgba(126,166,240,0.25));
+    border-color: var(--hyd-mint); color: var(--hyd-mint); box-shadow: 0 4px 14px rgba(159,230,212,0.25);
+  }
+  .level-tab.medium.active {
+    background: linear-gradient(135deg, rgba(212,182,245,0.25), rgba(177,140,240,0.25));
+    border-color: var(--hyd-purple); color: var(--hyd-lilac); box-shadow: 0 4px 14px rgba(177,140,240,0.30);
+  }
+  .level-tab.hard.active {
+    background: linear-gradient(135deg, rgba(242,163,212,0.25), rgba(255,128,152,0.20));
+    border-color: var(--hyd-pink); color: var(--hyd-pink); box-shadow: 0 4px 14px rgba(242,163,212,0.30);
+  }
+
+  /* ============ SECTIONS ============ */
+  .section {
+    display: none;
+    background: linear-gradient(160deg, var(--card), var(--card2));
+    border: 1px solid var(--border); border-radius: 22px; padding: 1.25rem;
+    margin-bottom: 1.5rem; box-shadow: 0 10px 40px rgba(177,140,240,0.10);
+  }
+  .section.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section h2 { margin-top: 0; color: var(--hyd-lilac); font-size: 1.3rem; }
+  .section h3 {
+    color: var(--hyd-pink); margin-bottom: 0.5rem; font-size: 1.05rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h3::before { content: "❀"; color: var(--hyd-purple); font-size: 0.9rem; }
+  .level-panel { display: none; }
+  .level-panel.active { display: block; animation: fadeIn 0.25s ease; }
+  .level-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px;
+  }
+  .level-badge.easy { background: rgba(159,230,212,0.20); color: var(--hyd-mint); border: 1px solid var(--hyd-mint); }
+  .level-badge.medium { background: rgba(212,182,245,0.20); color: var(--hyd-lilac); border: 1px solid var(--hyd-purple); }
+  .level-badge.hard { background: rgba(242,163,212,0.20); color: var(--hyd-pink); border: 1px solid var(--hyd-pink); }
+
+  /* ============ HERO STAGE ============ */
+  .hero-stage {
+    position: relative; height: 240px; margin: 0.5rem 0 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; border-radius: 18px;
+    background:
+      radial-gradient(circle at 50% 100%, rgba(79,191,122,0.20), transparent 60%),
+      radial-gradient(circle at 50% 0%, rgba(177,140,240,0.15), transparent 60%),
+      rgba(15, 12, 34, 0.6);
+    border: 1px solid var(--border);
+  }
+  .hero-character {
+    width: 150px; height: 190px; opacity: 0;
+    transform: translateX(-220%) rotate(-360deg);
+    will-change: transform, opacity;
+  }
+  .hero-character svg { display: block; width: 100%; height: 100%; }
+  .hero-stage.play .hero-character {
+    animation: heroEntrance 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes heroEntrance {
+    0% { opacity: 0; transform: translateX(-220%) rotate(-360deg) scale(0.6); }
+    55% { opacity: 1; transform: translateX(18px) rotate(8deg) scale(1.05); }
+    75% { transform: translateX(-8px) rotate(-5deg) scale(0.98); }
+    100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+  }
+  .hero-smash {
+    position: absolute; top: 22%; left: 50%;
+    transform: translate(-50%, 0) scale(0.4);
+    font-size: clamp(2rem, 9vw, 3.4rem); font-weight: 900; letter-spacing: 4px;
+    color: var(--hyd-pink);
+    text-shadow: 0 0 24px rgba(242,163,212,0.9), 0 0 48px rgba(177,140,240,0.6);
+    opacity: 0; pointer-events: none; font-family: Inter, sans-serif; white-space: nowrap;
+  }
+  .hero-stage.play .hero-smash { animation: smashPop 1.7s ease-out 0.55s forwards; }
+  @keyframes smashPop {
+    0% { opacity: 0; transform: translate(-50%, 0) scale(0.4) rotate(-10deg); }
+    35% { opacity: 1; transform: translate(-50%, 0) scale(1.5) rotate(4deg); }
+    55% { opacity: 1; transform: translate(-50%, 0) scale(1.15) rotate(0deg); }
+    100% { opacity: 0; transform: translate(-50%, -30px) scale(1.7) rotate(-4deg); }
+  }
+  .hero-spark {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--hyd-mint); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 12px rgba(159,230,212,0.9);
+  }
+  .hero-stage.play .hero-spark { animation: sparkFly 1.1s ease-out 0.85s forwards; }
+  @keyframes sparkFly {
+    0% { opacity: 1; transform: translate(0,0) scale(0.5); }
+    100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
+  }
+  .hero-shock {
+    position: absolute; bottom: 12px; left: 50%;
+    transform: translateX(-50%) scaleX(0.2);
+    width: 160px; height: 6px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(79,191,122,0.9), transparent 70%);
+    opacity: 0; pointer-events: none;
+  }
+  .hero-stage.play .hero-shock { animation: shockwave 1s ease-out 1.1s forwards; }
+  @keyframes shockwave {
+    0% { opacity: 0.9; transform: translateX(-50%) scaleX(0.2); }
+    100% { opacity: 0; transform: translateX(-50%) scaleX(2.4); }
+  }
+  .hero-caption {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    font-size: 0.78rem; color: var(--hyd-lilac); letter-spacing: 1px;
+    opacity: 0.85; text-align: center; width: 90%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-stage.play .hero-character { animation: none; opacity: 1; transform: none; }
+    .hero-stage.play .hero-smash { animation: none; opacity: 0; }
+    .hero-stage.play .hero-spark, .hero-stage.play .hero-shock { animation: none; }
+  }
+
+  /* ============ TABLES ============ */
+  .table-wrap {
+    width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    margin: 1rem 0; border-radius: 12px;
+  }
+  table { width: 100%; min-width: 280px; border-collapse: collapse; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--yellow); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ============ SPEAKABLE ============ */
+  .speakable {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
+    border-radius: 999px; background: rgba(177,140,240,0.12);
+    border: 1px solid rgba(177,140,240,0.30); color: var(--hyd-white);
+    cursor: pointer; font-weight: 600; transition: all 0.15s ease;
+    min-height: 36px; user-select: none; -webkit-user-select: none;
+  }
+  .speakable:active { transform: scale(0.95); background: rgba(177,140,240,0.28); }
+  .speakable::after { content: "🔊"; font-size: 0.85rem; opacity: 0.85; }
+  .speakable.speaking {
+    background: linear-gradient(135deg, rgba(177,140,240,0.40), rgba(126,166,240,0.40));
+    border-color: var(--hyd-purple); box-shadow: 0 0 0 3px rgba(177,140,240,0.20);
+    animation: pulse 1s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(177,140,240,0.20); }
+    50% { box-shadow: 0 0 0 6px rgba(177,140,240,0.10); }
+  }
+
+  /* ============ QUIZ ============ */
+  .quiz-card {
+    background: var(--bg); padding: 1rem; border-radius: 16px;
+    margin-top: 1rem; border: 1px solid var(--border);
+  }
+  .quiz-card h3 { font-size: 1rem; margin-top: 0; }
+  .quiz-card h3::before { content: "✨"; }
+  .quiz-option {
+    display: block; width: 100%; text-align: left; background: var(--card);
+    color: var(--text); border: 1px solid var(--border2); padding: 14px;
+    border-radius: 12px; margin: 8px 0; cursor: pointer; font-size: 0.95rem;
+    font-family: inherit; min-height: 48px; transition: all 0.15s ease;
+  }
+  .quiz-option:active { transform: scale(0.98); border-color: var(--hyd-purple); }
+  .quiz-option:hover { border-color: var(--hyd-purple); }
+  .quiz-option.correct {
+    background: linear-gradient(135deg, rgba(159,230,212,0.25), rgba(79,191,122,0.15));
+    border-color: var(--hyd-mint);
+  }
+  .quiz-option.wrong {
+    background: linear-gradient(135deg, rgba(255,128,152,0.20), rgba(242,163,212,0.15));
+    border-color: var(--red);
+  }
+  .quiz-result { margin-top: 10px; font-weight: 700; font-size: 0.95rem; }
+
+  .quiz-score {
+    background: linear-gradient(135deg, rgba(79,191,122,0.15), rgba(159,230,212,0.10));
+    border: 1px solid var(--deku-green);
+    border-radius: 12px; padding: 10px 14px; margin: 10px 0 14px;
+    font-size: 0.9rem; color: var(--hyd-mint); font-weight: 700;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .quiz-score span { color: var(--hyd-white); }
+
+  /* ============ VOICE PANEL ============ */
+  .voice-panel {
+    display: none;
+    background: var(--bg); border: 1px solid var(--deku-green);
+    border-radius: 14px; padding: 14px; margin: 1rem 0;
+    box-shadow: 0 6px 24px rgba(79,191,122,0.15);
+  }
+  .voice-panel.open { display: block; animation: fadeIn 0.25s ease; }
+  .voice-panel h4 {
+    margin: 0 0 10px; color: var(--deku-green); font-size: 0.95rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .voice-row {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; margin: 8px 0; font-size: 0.85rem;
+  }
+  .voice-row label { color: var(--muted); }
+  .voice-row input[type="range"] { flex: 1; accent-color: var(--deku-green); }
+  .voice-row select {
+    background: var(--card); color: var(--text); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 8px; font-family: inherit; font-size: 0.85rem;
+    max-width: 180px;
+  }
+  .voice-toggle-row {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .voice-pill {
+    background: var(--card); border: 1px solid var(--border2);
+    color: var(--muted); padding: 8px 14px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .voice-pill.active {
+    background: linear-gradient(135deg, rgba(79,191,122,0.25), rgba(159,230,212,0.20));
+    color: var(--deku-green); border-color: var(--deku-green);
+  }
+  .voice-note {
+    font-size: 0.78rem; color: var(--muted); margin-top: 10px;
+    line-height: 1.5; padding-top: 10px; border-top: 1px dashed var(--border2);
+  }
+
+  /* ============ NOTE / FOOTER ============ */
+  .note {
+    background: var(--card); border-left: 4px solid var(--hyd-mint);
+    padding: 1rem; border-radius: 12px; color: var(--muted);
+    margin: 1rem 0; font-size: 0.9rem;
+  }
+  footer {
+    text-align: center; color: var(--muted);
+    padding: 2rem 1rem calc(3rem + env(safe-area-inset-bottom));
+    font-size: 0.9rem; line-height: 1.6; position: relative; z-index: 1;
+  }
+  footer .flower { display: block; font-size: 1.2rem; margin-bottom: 8px; color: var(--hyd-pink); }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(34, 26, 68, 0.95); border: 1px solid var(--hyd-purple);
+    color: var(--hyd-white); padding: 10px 18px; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none;
+    transition: all 0.3s ease; z-index: 9999;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(177,140,240,0.30); max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 600px) {
+    .bloom-corner { width: 150px; height: 150px; opacity: 0.20; }
+    .bloom-corner.top-left { top: -45px; left: -50px; }
+    .bloom-corner.bottom-right { bottom: -50px; right: -50px; opacity: 0.16; }
+    .hero-stage { height: 210px; }
+    .hero-character { width: 130px; height: 165px; }
+  }
+  @media (max-width: 480px) {
+    header { padding: 2.5rem 0.75rem 1rem; }
+    .container { padding: 0 0.6rem 2rem; }
+    .section { padding: 1rem; border-radius: 18px; }
+    th, td { font-size: 0.85rem; padding: 10px 8px; }
+    .tab { padding: 10px 14px; font-size: 0.85rem; }
+    .level-tab { font-size: 0.8rem; padding: 10px 8px; }
+    .icon-btn { font-size: 0.72rem; padding: 6px 10px; }
+    .speakable { font-size: 0.9rem; padding: 5px 10px; }
+    .topbar { gap: 5px; }
+  }
+  @media (max-height: 500px) and (orientation: landscape) {
+    header { padding: 1.5rem 1rem 1rem; }
+    .lock-box { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD LOCK -->
+<div class="lock" id="lock">
+  <div class="petal-field lock-petals" id="lockPetals"></div>
+  <div class="lock-box bloom-in">
+    <h1>For Baby</h1>
+    <p>Enter password to open your study nook.</p>
+    <input id="password" type="password" placeholder="Password" autocomplete="off" />
+    <button onclick="unlock()">Enter 🌸</button>
+    <p id="lockMsg" style="color: var(--red); font-size: 0.9rem; min-height: 1.2em;"></p>
+  </div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="site" style="display:none;">
+
+  <div class="petal-field" id="petalField">
+    <div class="bloom-corner top-left" id="bloomTL"></div>
+    <div class="bloom-corner bottom-right" id="bloomBR"></div>
+  </div>
+
+  <div class="topbar">
+    <button class="icon-btn" id="voiceSettingsBtn" onclick="toggleVoicePanel()">🎛️ Voice</button>
+    <button class="icon-btn muted" id="voiceBtn" onclick="toggleVoice()">🔊 On</button>
+    <button class="icon-btn" onclick="logout()">🔒</button>
+  </div>
+
+  <header>
+    <div class="hydrangea-divider">
+      <span class="bob">🌸</span><span class="bob">❀</span><span class="bob">🌸</span>
+    </div>
+    <h1>For Baby</h1>
+    <p>Japanese &amp; Korean Study Nook</p>
+    <p>Tap any word to hear it. 🌸</p>
+    <div class="hydrangea-divider">
+      <span class="bob">🌸</span><span class="bob">❀</span><span class="bob">🌸</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- VOICE PANEL -->
+    <div class="voice-panel" id="voicePanel">
+      <h4>🎛️ Voice Settings</h4>
+
+      <div class="voice-row">
+        <label>Pitch</label>
+        <input type="range" id="pitchSlider" min="0.5" max="2" step="0.05" value="1.0" />
+        <span id="pitchVal" style="min-width:36px;text-align:right;color:var(--deku-green);font-weight:700;">1.00</span>
+      </div>
+
+      <div class="voice-row">
+        <label>Speed</label>
+        <input type="range" id="rateSlider" min="0.5" max="1.6" step="0.05" value="0.9" />
+        <span id="rateVal" style="min-width:36px;text-align:right;color:var(--deku-green);font-weight:700;">0.90</span>
+      </div>
+
+      <div class="voice-row">
+        <label>JA Voice</label>
+        <select id="jaVoiceSelect"><option value="">Auto</option></select>
+      </div>
+
+      <div class="voice-row">
+        <label>KO Voice</label>
+        <select id="koVoiceSelect"><option value="">Auto</option></select>
+      </div>
+
+      <div class="voice-toggle-row">
+        <button class="voice-pill active" id="presetNormal" onclick="applyPreset('normal')">🎓 Normal</button>
+        <button class="voice-pill" id="presetSoft" onclick="applyPreset('soft')">🌸 Soft</button>
+        <button class="voice-pill" onclick="testVoice()">▶️ Test</button>
+      </div>
+
+      <div class="voice-note">
+        <strong>Tip:</strong> For best pronunciation, install Google Text-to-Speech and add Japanese + Korean voices in your Android settings → System → Languages &amp; input → Text-to-speech output.
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('jp', this)">🇯🇵 Japanese</button>
+      <button class="tab" onclick="showTab('kr', this)">🇰🇷 Korean</button>
+      <button class="tab" onclick="showTab('anime', this)">🎌 Anime &amp; K-Drama</button>
+      <button class="tab" onclick="showTab('work', this)">💊 Pharmacy &amp; Gym</button>
+      <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
+    </div>
+
+    <!-- ============ JAPANESE ============ -->
+    <div class="section active" id="jp">
+      <h2>🇯🇵 Japanese Basics</h2>
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('jp', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('jp', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('jp', 'hard', this)">🔥 Hard</button>
+      </div>
+
+      <div class="level-panel active" id="jp-easy">
+        <span class="level-badge easy">EASY</span>
+        <h3>Greetings</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Japanese</th><th>Romaji</th><th>English / Tagalog</th></tr>
+            <tr><td><span class="speakable" data-speak="こんにちは" data-lang="ja-JP">こんにちは</span></td><td>Konnichiwa</td><td>Hello / Magandang araw</td></tr>
+            <tr><td><span class="speakable" data-speak="おはよう" data-lang="ja-JP">おはよう</span></td><td>Ohayou</td><td>Good morning / Magandang umaga</td></tr>
+            <tr><td><span class="speakable" data-speak="ありがとう" data-lang="ja-JP">ありがとう</span></td><td>Arigatou</td><td>Thank you / Salamat</td></tr>
+            <tr><td><span class="speakable" data-speak="すみません" data-lang="ja-JP">すみません</span></td><td>Sumimasen</td><td>Excuse me / Paumanhin</td></tr>
+            <tr><td><span class="speakable" data-speak="おやすみ" data-lang="ja-JP">おやすみ</span></td><td>Oyasumi</td><td>Good night / Magandang gabi</td></tr>
+          </table>
+        </div>
+        <h3>Hiragana Starter</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Character</th><th>Sound</th></tr>
+            <tr><td><span class="speakable" data-speak="あ" data-lang="ja-JP">あ</span></td><td>a</td></tr>
+            <tr><td><span class="speakable" data-speak="い" data-lang="ja-JP">い</span></td><td>i</td></tr>
+            <tr><td><span class="speakable" data-speak="う" data-lang="ja-JP">う</span></td><td>u</td></tr>
+            <tr><td><span class="speakable" data-speak="え" data-lang="ja-JP">え</span></td><td>e</td></tr>
+            <tr><td><span class="speakable" data-speak="お" data-lang="ja-JP">お</span></td><td>o</td></tr>
+            <tr><td><span class="speakable" data-speak="か" data-lang="ja-JP">か</span></td><td>ka</td></tr>
+            <tr><td><span class="speakable" data-speak="き" data-lang="ja-JP">き</span></td><td>ki</td></tr>
+            <tr><td><span class="speakable" data-speak="く" data-lang="ja-JP">く</span></td><td>ku</td></tr>
+            <tr><td><span class="speakable" data-speak="け" data-lang="ja-JP">け</span></td><td>ke</td></tr>
+            <tr><td><span class="speakable" data-speak="こ" data-lang="ja-JP">こ</span></td><td>ko</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="level-panel" id="jp-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <h3>Everyday Phrases</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Japanese</th><th>Romaji</th><th>English</th></tr>
+            <tr><td><span class="speakable" data-speak="お願いします" data-lang="ja-JP">お願いします</span></td><td>Onegaishimasu</td><td>Please</td></tr>
+            <tr><td><span class="speakable" data-speak="はじめまして" data-lang="ja-JP">はじめまして</span></td><td>Hajimemashite</td><td>Nice to meet you</td></tr>
+            <tr><td><span class="speakable" data-speak="お元気ですか" data-lang="ja-JP">お元気ですか</span></td><td>Ogenki desu ka</td><td>How are you?</td></tr>
+            <tr><td><span class="speakable" data-speak="わかりません" data-lang="ja-JP">わかりません</span></td><td>Wakarimasen</td><td>I don't understand</td></tr>
+            <tr><td><span class="speakable" data-speak="日本語が話せますか" data-lang="ja-JP">日本語が話せますか</span></td><td>Nihongo ga hanasemasu ka</td><td>Do you speak Japanese?</td></tr>
+          </table>
+        </div>
+        <h3>Katakana Starter</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Character</th><th>Sound</th></tr>
+            <tr><td><span class="speakable" data-speak="ア" data-lang="ja-JP">ア</span></td><td>a</td></tr>
+            <tr><td><span class="speakable" data-speak="イ" data-lang="ja-JP">イ</span></td><td>i</td></tr>
+            <tr><td><span class="speakable" data-speak="ウ" data-lang="ja-JP">ウ</span></td><td>u</td></tr>
+            <tr><td><span class="speakable" data-speak="エ" data-lang="ja-JP">エ</span></td><td>e</td></tr>
+            <tr><td><span class="speakable" data-speak="オ" data-lang="ja-JP">オ</span></td><td>o</td></tr>
+            <tr><td><span class="speakable" data-speak="カ" data-lang="ja-JP">カ</span></td><td>ka</td></tr>
+            <tr><td><span class="speakable" data-speak="キ" data-lang="ja-JP">キ</span></td><td>ki</td></tr>
+            <tr><td><span class="speakable" data-speak="ク" data-lang="ja-JP">ク</span></td><td>ku</td></tr>
+            <tr><td><span class="speakable" data-speak="ケ" data-lang="ja-JP">ケ</span></td><td>ke</td></tr>
+            <tr><td><span class="speakable" data-speak="コ" data-lang="ja-JP">コ</span></td><td>ko</td></tr>
+          </table>
+        </div>
+        <h3>Numbers 1–10</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Number</th><th>Japanese</th><th>Romaji</th></tr>
+            <tr><td>1</td><td><span class="speakable" data-speak="一" data-lang="ja-JP">一</span></td><td>ichi</td></tr>
+            <tr><td>2</td><td><span class="speakable" data-speak="二" data-lang="ja-JP">二</span></td><td>ni</td></tr>
+            <tr><td>3</td><td><span class="speakable" data-speak="三" data-lang="ja-JP">三</span></td><td>san</td></tr>
+            <tr><td>4</td><td><span class="speakable" data-speak="四" data-lang="ja-JP">四</span></td><td>shi / yon</td></tr>
+            <tr><td>5</td><td><span class="speakable" data-speak="五" data-lang="ja-JP">五</span></td><td>go</td></tr>
+            <tr><td>6</td><td><span class="speakable" data-speak="六" data-lang="ja-JP">六</span></td><td>roku</td></tr>
+            <tr><td>7</td><td><span class="speakable" data-speak="七" data-lang="ja-JP">七</span></td><td>shichi / nana</td></tr>
+            <tr><td>8</td><td><span class="speakable" data-speak="八" data-lang="ja-JP">八</span></td><td>hachi</td></tr>
+            <tr><td>9</td><td><span class="speakable" data-speak="九" data-lang="ja-JP">九</span></td><td>kyuu</td></tr>
+            <tr><td>10</td><td><span class="speakable" data-speak="十" data-lang="ja-JP">十</span></td><td>juu</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="level-panel" id="jp-hard">
+        <span class="level-badge hard">HARD</span>
+        <h3>Common Kanji</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Kanji</th><th>Reading</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="水" data-lang="ja-JP">水</span></td><td>mizu</td><td>Water</td></tr>
+            <tr><td><span class="speakable" data-speak="火" data-lang="ja-JP">火</span></td><td>hi</td><td>Fire</td></tr>
+            <tr><td><span class="speakable" data-speak="山" data-lang="ja-JP">山</span></td><td>yama</td><td>Mountain</td></tr>
+            <tr><td><span class="speakable" data-speak="川" data-lang="ja-JP">川</span></td><td>kawa</td><td>River</td></tr>
+            <tr><td><span class="speakable" data-speak="人" data-lang="ja-JP">人</span></td><td>hito</td><td>Person</td></tr>
+            <tr><td><span class="speakable" data-speak="日" data-lang="ja-JP">日</span></td><td>hi</td><td>Sun / Day</td></tr>
+            <tr><td><span class="speakable" data-speak="月" data-lang="ja-JP">月</span></td><td>tsuki</td><td>Moon / Month</td></tr>
+            <tr><td><span class="speakable" data-speak="愛" data-lang="ja-JP">愛</span></td><td>ai</td><td>Love</td></tr>
+          </table>
+        </div>
+        <h3>Complex Sentences</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Japanese</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="私は日本語を勉強しています。" data-lang="ja-JP">私は日本語を勉強しています。</span></td><td>I am studying Japanese.</td></tr>
+            <tr><td><span class="speakable" data-speak="今日はとても忙しいです。" data-lang="ja-JP">今日はとても忙しいです。</span></td><td>Today is very busy.</td></tr>
+            <tr><td><span class="speakable" data-speak="また明日会いましょう。" data-lang="ja-JP">また明日会いましょう。</span></td><td>Let's meet again tomorrow.</td></tr>
+            <tr><td><span class="speakable" data-speak="あなたのことが大好きです。" data-lang="ja-JP">あなたのことが大好きです。</span></td><td>I really like you.</td></tr>
+            <tr><td><span class="speakable" data-speak="一緒に頑張りましょう。" data-lang="ja-JP">一緒に頑張りましょう。</span></td><td>Let's do our best together.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ KOREAN ============ -->
+    <div class="section" id="kr">
+      <h2>🇰🇷 Korean Basics</h2>
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('kr', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('kr', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('kr', 'hard', this)">🔥 Hard</button>
+      </div>
+
+      <div class="level-panel active" id="kr-easy">
+        <span class="level-badge easy">EASY</span>
+        <h3>Greetings</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Korean</th><th>Romaji</th><th>English / Tagalog</th></tr>
+            <tr><td><span class="speakable" data-speak="안녕하세요" data-lang="ko-KR">안녕하세요</span></td><td>Annyeonghaseyo</td><td>Hello / Kamusta</td></tr>
+            <tr><td><span class="speakable" data-speak="감사합니다" data-lang="ko-KR">감사합니다</span></td><td>Gamsahamnida</td><td>Thank you / Salamat</td></tr>
+            <tr><td><span class="speakable" data-speak="네" data-lang="ko-KR">네</span></td><td>Ne</td><td>Yes / Oo</td></tr>
+            <tr><td><span class="speakable" data-speak="아니요" data-lang="ko-KR">아니요</span></td><td>Aniyo</td><td>No / Hindi</td></tr>
+            <tr><td><span class="speakable" data-speak="미안해요" data-lang="ko-KR">미안해요</span></td><td>Mianhaeyo</td><td>Sorry / Paumanhin</td></tr>
+            <tr><td><span class="speakable" data-speak="잘 자요" data-lang="ko-KR">잘 자요</span></td><td>Jal jayo</td><td>Good night / Magandang gabi</td></tr>
+          </table>
+        </div>
+        <h3>Hangul Starter</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Character</th><th>Sound</th></tr>
+            <tr><td><span class="speakable" data-speak="아" data-lang="ko-KR">ㅏ (아)</span></td><td>a</td></tr>
+            <tr><td><span class="speakable" data-speak="야" data-lang="ko-KR">ㅑ (야)</span></td><td>ya</td></tr>
+            <tr><td><span class="speakable" data-speak="어" data-lang="ko-KR">ㅓ (어)</span></td><td>eo</td></tr>
+            <tr><td><span class="speakable" data-speak="여" data-lang="ko-KR">ㅕ (여)</span></td><td>yeo</td></tr>
+            <tr><td><span class="speakable" data-speak="오" data-lang="ko-KR">ㅗ (오)</span></td><td>o</td></tr>
+            <tr><td><span class="speakable" data-speak="요" data-lang="ko-KR">ㅛ (요)</span></td><td>yo</td></tr>
+            <tr><td><span class="speakable" data-speak="우" data-lang="ko-KR">ㅜ (우)</span></td><td>u</td></tr>
+            <tr><td><span class="speakable" data-speak="유" data-lang="ko-KR">ㅠ (유)</span></td><td>yu</td></tr>
+            <tr><td><span class="speakable" data-speak="으" data-lang="ko-KR">ㅡ (으)</span></td><td>eu</td></tr>
+            <tr><td><span class="speakable" data-speak="이" data-lang="ko-KR">ㅣ (이)</span></td><td>i</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="level-panel" id="kr-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <h3>Everyday Phrases</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Korean</th><th>Romaji</th><th>English</th></tr>
+            <tr><td><span class="speakable" data-speak="반갑습니다" data-lang="ko-KR">반갑습니다</span></td><td>Bangapseumnida</td><td>Nice to meet you</td></tr>
+            <tr><td><span class="speakable" data-speak="잘 지내요?" data-lang="ko-KR">잘 지내요?</span></td><td>Jal jinaeyo?</td><td>How are you?</td></tr>
+            <tr><td><span class="speakable" data-speak="이해 못 해요" data-lang="ko-KR">이해 못 해요</span></td><td>Ihae mot haeyo</td><td>I don't understand</td></tr>
+            <tr><td><span class="speakable" data-speak="한국어 할 줄 알아요?" data-lang="ko-KR">한국어 할 줄 알아요?</span></td><td>Hangugeo hal jul arayo?</td><td>Do you speak Korean?</td></tr>
+            <tr><td><span class="speakable" data-speak="천천히 말해 주세요" data-lang="ko-KR">천천히 말해 주세요</span></td><td>Cheoncheonhi malhae juseyo</td><td>Please speak slowly</td></tr>
+          </table>
+        </div>
+        <h3>Hangul Consonants</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Character</th><th>Sound</th></tr>
+            <tr><td><span class="speakable" data-speak="기역" data-lang="ko-KR">ㄱ (기역)</span></td><td>g/k</td></tr>
+            <tr><td><span class="speakable" data-speak="니은" data-lang="ko-KR">ㄴ (니은)</span></td><td>n</td></tr>
+            <tr><td><span class="speakable" data-speak="디귿" data-lang="ko-KR">ㄷ (디귿)</span></td><td>d/t</td></tr>
+            <tr><td><span class="speakable" data-speak="리을" data-lang="ko-KR">ㄹ (리을)</span></td><td>r/l</td></tr>
+            <tr><td><span class="speakable" data-speak="미음" data-lang="ko-KR">ㅁ (미음)</span></td><td>m</td></tr>
+            <tr><td><span class="speakable" data-speak="비읍" data-lang="ko-KR">ㅂ (비읍)</span></td><td>b/p</td></tr>
+            <tr><td><span class="speakable" data-speak="시옷" data-lang="ko-KR">ㅅ (시옷)</span></td><td>s</td></tr>
+            <tr><td><span class="speakable" data-speak="이응" data-lang="ko-KR">ㅇ (이응)</span></td><td>ng / silent</td></tr>
+            <tr><td><span class="speakable" data-speak="지읒" data-lang="ko-KR">ㅈ (지읒)</span></td><td>j</td></tr>
+            <tr><td><span class="speakable" data-speak="히읗" data-lang="ko-KR">ㅎ (히읗)</span></td><td>h</td></tr>
+          </table>
+        </div>
+        <h3>Numbers 1–10</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Number</th><th>Sino-Korean</th><th>Native Korean</th></tr>
+            <tr><td>1</td><td><span class="speakable" data-speak="일" data-lang="ko-KR">일</span></td><td><span class="speakable" data-speak="하나" data-lang="ko-KR">하나</span></td></tr>
+            <tr><td>2</td><td><span class="speakable" data-speak="이" data-lang="ko-KR">이</span></td><td><span class="speakable" data-speak="둘" data-lang="ko-KR">둘</span></td></tr>
+            <tr><td>3</td><td><span class="speakable" data-speak="삼" data-lang="ko-KR">삼</span></td><td><span class="speakable" data-speak="셋" data-lang="ko-KR">셋</span></td></tr>
+            <tr><td>4</td><td><span class="speakable" data-speak="사" data-lang="ko-KR">사</span></td><td><span class="speakable" data-speak="넷" data-lang="ko-KR">넷</span></td></tr>
+            <tr><td>5</td><td><span class="speakable" data-speak="오" data-lang="ko-KR">오</span></td><td><span class="speakable" data-speak="다섯" data-lang="ko-KR">다섯</span></td></tr>
+            <tr><td>6</td><td><span class="speakable" data-speak="육" data-lang="ko-KR">육</span></td><td><span class="speakable" data-speak="여섯" data-lang="ko-KR">여섯</span></td></tr>
+            <tr><td>7</td><td><span class="speakable" data-speak="칠" data-lang="ko-KR">칠</span></td><td><span class="speakable" data-speak="일곱" data-lang="ko-KR">일곱</span></td></tr>
+            <tr><td>8</td><td><span class="speakable" data-speak="팔" data-lang="ko-KR">팔</span></td><td><span class="speakable" data-speak="여덟" data-lang="ko-KR">여덟</span></td></tr>
+            <tr><td>9</td><td><span class="speakable" data-speak="구" data-lang="ko-KR">구</span></td><td><span class="speakable" data-speak="아홉" data-lang="ko-KR">아홉</span></td></tr>
+            <tr><td>10</td><td><span class="speakable" data-speak="십" data-lang="ko-KR">십</span></td><td><span class="speakable" data-speak="열" data-lang="ko-KR">열</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="level-panel" id="kr-hard">
+        <span class="level-badge hard">HARD</span>
+        <h3>Common Hanja Words</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Korean</th><th>Romaji</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="사랑" data-lang="ko-KR">사랑</span></td><td>Sarang</td><td>Love</td></tr>
+            <tr><td><span class="speakable" data-speak="친구" data-lang="ko-KR">친구</span></td><td>Chingu</td><td>Friend</td></tr>
+            <tr><td><span class="speakable" data-speak="가족" data-lang="ko-KR">가족</span></td><td>Gajok</td><td>Family</td></tr>
+            <tr><td><span class="speakable" data-speak="시간" data-lang="ko-KR">시간</span></td><td>Sigan</td><td>Time</td></tr>
+            <tr><td><span class="speakable" data-speak="마음" data-lang="ko-KR">마음</span></td><td>Maeum</td><td>Heart / Mind</td></tr>
+            <tr><td><span class="speakable" data-speak="행복" data-lang="ko-KR">행복</span></td><td>Haengbok</td><td>Happiness</td></tr>
+          </table>
+        </div>
+        <h3>Complex Sentences</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Korean</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="저는 한국어를 공부하고 있어요." data-lang="ko-KR">저는 한국어를 공부하고 있어요.</span></td><td>I am studying Korean.</td></tr>
+            <tr><td><span class="speakable" data-speak="오늘 너무 바빠요." data-lang="ko-KR">오늘 너무 바빠요.</span></td><td>Today is very busy.</td></tr>
+            <tr><td><span class="speakable" data-speak="내일 또 만나요." data-lang="ko-KR">내일 또 만나요.</span></td><td>Let's meet again tomorrow.</td></tr>
+            <tr><td><span class="speakable" data-speak="당신이 정말 좋아요." data-lang="ko-KR">당신이 정말 좋아요.</span></td><td>I really like you.</td></tr>
+            <tr><td><span class="speakable" data-speak="함께 힘내요!" data-lang="ko-KR">함께 힘내요!</span></td><td>Let's cheer up together!</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ ANIME ============ -->
+    <div class="section" id="anime">
+      <h2>🎌 Anime &amp; K-Drama</h2>
+
+      <div class="hero-stage" id="heroStage">
+        <div class="hero-shock"></div>
+        <div class="hero-character" id="heroCharacter"></div>
+        <div class="hero-smash">SMASH!</div>
+        <div class="hero-spark" style="--sx:-120px; --sy:-60px;"></div>
+        <div class="hero-spark" style="--sx:110px; --sy:-70px;"></div>
+        <div class="hero-spark" style="--sx:-90px; --sy:-100px;"></div>
+        <div class="hero-spark" style="--sx:80px; --sy:-110px;"></div>
+        <div class="hero-spark" style="--sx:0px; --sy:-130px;"></div>
+        <div class="hero-caption">Green-haired hero incoming… 🌸</div>
+      </div>
+
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('anime', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('anime', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('anime', 'hard', this)">🔥 Hard</button>
+      </div>
+
+      <div class="level-panel active" id="anime-easy">
+        <span class="level-badge easy">EASY</span>
+        <h3>Anime Phrases You'll Hear</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Japanese</th><th>Romaji</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="いただきます" data-lang="ja-JP">いただきます</span></td><td>Itadakimasu</td><td>Said before eating</td></tr>
+            <tr><td><span class="speakable" data-speak="すごい" data-lang="ja-JP">すごい</span></td><td>Sugoi</td><td>Amazing / Wow</td></tr>
+            <tr><td><span class="speakable" data-speak="かわいい" data-lang="ja-JP">かわいい</span></td><td>Kawaii</td><td>Cute</td></tr>
+            <tr><td><span class="speakable" data-speak="がんばって" data-lang="ja-JP">がんばって</span></td><td>Ganbatte</td><td>Do your best</td></tr>
+            <tr><td><span class="speakable" data-speak="まじで" data-lang="ja-JP">まじで</span></td><td>Majide</td><td>Seriously? / For real?</td></tr>
+          </table>
+        </div>
+        <h3>K-Drama Phrases You'll Hear</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Korean</th><th>Romaji</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="대박" data-lang="ko-KR">대박</span></td><td>Daebak</td><td>Awesome / Jackpot</td></tr>
+            <tr><td><span class="speakable" data-speak="화이팅" data-lang="ko-KR">화이팅</span></td><td>Hwaiting</td><td>Fighting! / Cheer up!</td></tr>
+            <tr><td><span class="speakable" data-speak="진짜" data-lang="ko-KR">진짜</span></td><td>Jinjja</td><td>Really?</td></tr>
+            <tr><td><span class="speakable" data-speak="귀여워" data-lang="ko-KR">귀여워</span></td><td>Gwiyeowo</td><td>Cute</td></tr>
+            <tr><td><span class="speakable" data-speak="맛있어" data-lang="ko-KR">맛있어</span></td><td>Mashisseo</td><td>Delicious</td></tr>
+          </table>
+        </div>
+
+        <div class="quiz-score">Set: Anime Easy <span id="score-anime-easy">0 / 5</span></div>
+
+        <h3>⚡ Anime Quiz — Easy (Set 1)</h3>
+        <div class="quiz-card">
+          <h3>1. What does <span class="speakable" data-speak="すごい" data-lang="ja-JP">すごい</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+          <button class="quiz-option" onclick="answer(this, true)">Amazing</button>
+          <button class="quiz-option" onclick="answer(this, false)">Excuse me</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="かわいい" data-lang="ja-JP">かわいい</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Delicious</button>
+          <button class="quiz-option" onclick="answer(this, true)">Cute</button>
+          <button class="quiz-option" onclick="answer(this, false)">Strong</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What does <span class="speakable" data-speak="대박" data-lang="ko-KR">대박</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Sorry</button>
+          <button class="quiz-option" onclick="answer(this, false)">Cute</button>
+          <button class="quiz-option" onclick="answer(this, true)">Awesome</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="화이팅" data-lang="ko-KR">화이팅</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Cheer up!</button>
+          <button class="quiz-option" onclick="answer(this, false)">Goodbye</button>
+          <button class="quiz-option" onclick="answer(this, false)">I'm tired</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What does <span class="speakable" data-speak="いただきます" data-lang="ja-JP">いただきます</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Good morning</button>
+          <button class="quiz-option" onclick="answer(this, true)">Said before eating</button>
+          <button class="quiz-option" onclick="answer(this, false)">See you later</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+
+      <div class="level-panel" id="anime-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <h3>My Hero Academia — Character Names</h3>
+        <p>Her favorite is <strong>Deku</strong>. ⚡ Learn his name and his friends' in Japanese &amp; Korean.</p>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Character</th><th>Japanese</th><th>Korean</th></tr>
+            <tr><td>Deku / Izuku Midoriya</td><td><span class="speakable" data-speak="緑谷出久" data-lang="ja-JP">緑谷出久</span></td><td><span class="speakable" data-speak="미도리야 이즈쿠" data-lang="ko-KR">미도리야 이즈쿠</span></td></tr>
+            <tr><td>Bakugo</td><td><span class="speakable" data-speak="爆豪勝己" data-lang="ja-JP">爆豪勝己</span></td><td><span class="speakable" data-speak="바쿠고 카츠키" data-lang="ko-KR">바쿠고 카츠키</span></td></tr>
+            <tr><td>Uraraka</td><td><span class="speakable" data-speak="麗日お茶子" data-lang="ja-JP">麗日お茶子</span></td><td><span class="speakable" data-speak="우라라카 오챠코" data-lang="ko-KR">우라라카 오챠코</span></td></tr>
+            <tr><td>Todoroki</td><td><span class="speakable" data-speak="轟焦凍" data-lang="ja-JP">轟焦凍</span></td><td><span class="speakable" data-speak="토도로키 쇼토" data-lang="ko-KR">토도로키 쇼토</span></td></tr>
+            <tr><td>All Might</td><td><span class="speakable" data-speak="オールマイト" data-lang="ja-JP">オールマイト</span></td><td><span class="speakable" data-speak="올마이트" data-lang="ko-KR">올마이트</span></td></tr>
+          </table>
+        </div>
+        <h3>Hero Words</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>English</th><th>Japanese</th><th>Korean</th></tr>
+            <tr><td>Hero</td><td><span class="speakable" data-speak="ヒーロー" data-lang="ja-JP">ヒーロー</span></td><td><span class="speakable" data-speak="히어로" data-lang="ko-KR">히어로</span></td></tr>
+            <tr><td>Power / Quirk</td><td><span class="speakable" data-speak="個性" data-lang="ja-JP">個性</span></td><td><span class="speakable" data-speak="개성" data-lang="ko-KR">개성</span></td></tr>
+            <tr><td>Fight</td><td><span class="speakable" data-speak="戦う" data-lang="ja-JP">戦う</span></td><td><span class="speakable" data-speak="싸우다" data-lang="ko-KR">싸우다</span></td></tr>
+            <tr><td>Friend</td><td><span class="speakable" data-speak="友達" data-lang="ja-JP">友達</span></td><td><span class="speakable" data-speak="친구" data-lang="ko-KR">친구</span></td></tr>
+            <tr><td>Dream</td><td><span class="speakable" data-speak="夢" data-lang="ja-JP">夢</span></td><td><span class="speakable" data-speak="꿈" data-lang="ko-KR">꿈</span></td></tr>
+          </table>
+        </div>
+
+        <div class="quiz-score">Set: Anime Medium <span id="score-anime-medium">0 / 5</span></div>
+
+        <h3>⚡ Anime Quiz — Medium (Set 1)</h3>
+        <div class="quiz-card">
+          <h3>1. What is Deku's full name in Japanese?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">爆豪勝己</button>
+          <button class="quiz-option" onclick="answer(this, true)">緑谷出久</button>
+          <button class="quiz-option" onclick="answer(this, false)">轟焦凍</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="友達" data-lang="ja-JP">友達</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Friend</button>
+          <button class="quiz-option" onclick="answer(this, false)">Dream</button>
+          <button class="quiz-option" onclick="answer(this, false)">Hero</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What is "Hero" in Korean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">꿈</button>
+          <button class="quiz-option" onclick="answer(this, true)">히어로</button>
+          <button class="quiz-option" onclick="answer(this, false)">친구</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. Who has the Quirk called "Explosion"?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Deku</button>
+          <button class="quiz-option" onclick="answer(this, true)">Bakugo</button>
+          <button class="quiz-option" onclick="answer(this, false)">Uraraka</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What does <span class="speakable" data-speak="個性" data-lang="ja-JP">個性</span> mean in MHA?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Sword</button>
+          <button class="quiz-option" onclick="answer(this, true)">Quirk</button>
+          <button class="quiz-option" onclick="answer(this, false)">School</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+
+      <div class="level-panel" id="anime-hard">
+        <span class="level-badge hard">HARD</span>
+        <h3>My Hero Academia — Famous Quotes</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Japanese</th><th>Romaji</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="私が来た！" data-lang="ja-JP">私が来た！</span></td><td>Watashi ga kita!</td><td>I am here! (All Might)</td></tr>
+            <tr><td><span class="speakable" data-speak="プラスウルトラ！" data-lang="ja-JP">プラスウルトラ！</span></td><td>Purasu Urutora!</td><td>Plus Ultra!</td></tr>
+            <tr><td><span class="speakable" data-speak="諦めない" data-lang="ja-JP">諦めない</span></td><td>Akiramenai</td><td>I won't give up (Deku)</td></tr>
+            <tr><td><span class="speakable" data-speak="限界を超えて" data-lang="ja-JP">限界を超えて</span></td><td>Genkai wo koete</td><td>Go beyond the limit</td></tr>
+            <tr><td><span class="speakable" data-speak="だって私はヒーローだから" data-lang="ja-JP">だって私はヒーローだから</span></td><td>Datte watashi wa hiiro dakara</td><td>Because I am a hero</td></tr>
+          </table>
+        </div>
+        <h3>Korean Versions</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Korean</th><th>Romaji</th><th>Meaning</th></tr>
+            <tr><td><span class="speakable" data-speak="내가 왔다!" data-lang="ko-KR">내가 왔다!</span></td><td>Naega watda!</td><td>I am here!</td></tr>
+            <tr><td><span class="speakable" data-speak="포기하지 않아" data-lang="ko-KR">포기하지 않아</span></td><td>Pogihaji ana</td><td>I won't give up</td></tr>
+            <tr><td><span class="speakable" data-speak="한계를 넘어서" data-lang="ko-KR">한계를 넘어서</span></td><td>Hangyereul neomeoseo</td><td>Go beyond the limit</td></tr>
+          </table>
+        </div>
+
+        <div class="quiz-score">Set: Anime Hard <span id="score-anime-hard">0 / 5</span></div>
+
+        <h3>⚡ Anime Quiz — Hard (Set 1)</h3>
+        <div class="quiz-card">
+          <h3>1. What does <span class="speakable" data-speak="私が来た！" data-lang="ja-JP">私が来た！</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Goodbye</button>
+          <button class="quiz-option" onclick="answer(this, true)">I am here!</button>
+          <button class="quiz-option" onclick="answer(this, false)">Let's go home</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="諦めない" data-lang="ja-JP">諦めない</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">I am tired</button>
+          <button class="quiz-option" onclick="answer(this, false)">I am hungry</button>
+          <button class="quiz-option" onclick="answer(this, true)">I won't give up</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What does <span class="speakable" data-speak="한계를 넘어서" data-lang="ko-KR">한계를 넘어서</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Go beyond the limit</button>
+          <button class="quiz-option" onclick="answer(this, false)">Come back home</button>
+          <button class="quiz-option" onclick="answer(this, false)">Eat well</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="プラスウルトラ！" data-lang="ja-JP">プラスウルトラ！</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Good morning</button>
+          <button class="quiz-option" onclick="answer(this, true)">Plus Ultra!</button>
+          <button class="quiz-option" onclick="answer(this, false)">Thank you</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What does <span class="speakable" data-speak="포기하지 않아" data-lang="ko-KR">포기하지 않아</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">I'm hungry</button>
+          <button class="quiz-option" onclick="answer(this, true)">I won't give up</button>
+          <button class="quiz-option" onclick="answer(this, false)">Goodbye</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PHARMACY & GYM ============ -->
+    <div class="section" id="work">
+      <h2>💊 Pharmacy &amp; Gym Vocab</h2>
+      <p>Because you’re a pharmacist and a gym girl. Tap to hear it. 🌸</p>
+      <h3>Japanese</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Japanese</th><th>Romaji</th><th>English</th></tr>
+          <tr><td><span class="speakable" data-speak="薬剤師" data-lang="ja-JP">薬剤師</span></td><td>Yakuzaishi</td><td>Pharmacist</td></tr>
+          <tr><td><span class="speakable" data-speak="薬" data-lang="ja-JP">薬</span></td><td>Kusuri</td><td>Medicine</td></tr>
+          <tr><td><span class="speakable" data-speak="患者" data-lang="ja-JP">患者</span></td><td>Kanja</td><td>Patient</td></tr>
+          <tr><td><span class="speakable" data-speak="処方箋" data-lang="ja-JP">処方箋</span></td><td>Shohousen</td><td>Prescription</td></tr>
+          <tr><td><span class="speakable" data-speak="ジム" data-lang="ja-JP">ジム</span></td><td>Jimu</td><td>Gym</td></tr>
+          <tr><td><span class="speakable" data-speak="運動" data-lang="ja-JP">運動</span></td><td>Undou</td><td>Exercise</td></tr>
+          <tr><td><span class="speakable" data-speak="筋トレ" data-lang="ja-JP">筋トレ</span></td><td>Kintore</td><td>Strength training</td></tr>
+          <tr><td><span class="speakable" data-speak="水" data-lang="ja-JP">水</span></td><td>Mizu</td><td>Water</td></tr>
+        </table>
+      </div>
+      <h3>Korean</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Korean</th><th>Romaji</th><th>English</th></tr>
+          <tr><td><span class="speakable" data-speak="약사" data-lang="ko-KR">약사</span></td><td>Yaksa</td><td>Pharmacist</td></tr>
+          <tr><td><span class="speakable" data-speak="약" data-lang="ko-KR">약</span></td><td>Yak</td><td>Medicine</td></tr>
+          <tr><td><span class="speakable" data-speak="환자" data-lang="ko-KR">환자</span></td><td>Hwanja</td><td>Patient</td></tr>
+          <tr><td><span class="speakable" data-speak="처방전" data-lang="ko-KR">처방전</span></td><td>Cheobangjeon</td><td>Prescription</td></tr>
+          <tr><td><span class="speakable" data-speak="헬스장" data-lang="ko-KR">헬스장</span></td><td>Helseujang</td><td>Gym</td></tr>
+          <tr><td><span class="speakable" data-speak="운동" data-lang="ko-KR">운동</span></td><td>Undong</td><td>Exercise</td></tr>
+          <tr><td><span class="speakable" data-speak="근력 운동" data-lang="ko-KR">근력 운동</span></td><td>Geunnyeok undong</td><td>Strength training</td></tr>
+          <tr><td><span class="speakable" data-speak="물" data-lang="ko-KR">물</span></td><td>Mul</td><td>Water</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ GENERAL QUIZ ============ -->
+    <div class="section" id="quiz">
+      <h2>📝 Quiz — 3 Levels</h2>
+      <p>Three separate sets. Tap the 🔊 to hear the word.</p>
+
+      <div class="level-tabs">
+        <button class="level-tab easy active" onclick="showLevel('quiz', 'easy', this)">🌱 Easy</button>
+        <button class="level-tab medium" onclick="showLevel('quiz', 'medium', this)">🌸 Medium</button>
+        <button class="level-tab hard" onclick="showLevel('quiz', 'hard', this)">🔥 Hard</button>
+      </div>
+
+      <div class="level-panel active" id="quiz-easy">
+        <span class="level-badge easy">EASY</span>
+        <div class="quiz-score">Set: Easy <span id="score-quiz-easy">0 / 6</span></div>
+
+        <div class="quiz-card">
+          <h3>1. What does <span class="speakable" data-speak="ありがとう" data-lang="ja-JP">ありがとう</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+          <button class="quiz-option" onclick="answer(this, true)">Thank you</button>
+          <button class="quiz-option" onclick="answer(this, false)">Excuse me</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="안녕하세요" data-lang="ko-KR">안녕하세요</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Sorry</button>
+          <button class="quiz-option" onclick="answer(this, false)">Yes</button>
+          <button class="quiz-option" onclick="answer(this, true)">Hello</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What is <span class="speakable" data-speak="薬剤師" data-lang="ja-JP">薬剤師</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Pharmacist</button>
+          <button class="quiz-option" onclick="answer(this, false)">Gym</button>
+          <button class="quiz-option" onclick="answer(this, false)">Water</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="대박" data-lang="ko-KR">대박</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Cute</button>
+          <button class="quiz-option" onclick="answer(this, true)">Awesome</button>
+          <button class="quiz-option" onclick="answer(this, false)">Delicious</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What is <span class="speakable" data-speak="薬" data-lang="ja-JP">薬</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Medicine</button>
+          <button class="quiz-option" onclick="answer(this, false)">Water</button>
+          <button class="quiz-option" onclick="answer(this, false)">Gym</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>6. What does <span class="speakable" data-speak="감사합니다" data-lang="ko-KR">감사합니다</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+          <button class="quiz-option" onclick="answer(this, false)">Hello</button>
+          <button class="quiz-option" onclick="answer(this, true)">Thank you</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+
+      <div class="level-panel" id="quiz-medium">
+        <span class="level-badge medium">MEDIUM</span>
+        <div class="quiz-score">Set: Medium <span id="score-quiz-medium">0 / 6</span></div>
+
+        <div class="quiz-card">
+          <h3>1. What is <span class="speakable" data-speak="水" data-lang="ja-JP">水</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Fire</button>
+          <button class="quiz-option" onclick="answer(this, true)">Water</button>
+          <button class="quiz-option" onclick="answer(this, false)">Mountain</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="친구" data-lang="ko-KR">친구</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Family</button>
+          <button class="quiz-option" onclick="answer(this, true)">Friend</button>
+          <button class="quiz-option" onclick="answer(this, false)">Time</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What number is <span class="speakable" data-speak="七" data-lang="ja-JP">七</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">5</button>
+          <button class="quiz-option" onclick="answer(this, false)">6</button>
+          <button class="quiz-option" onclick="answer(this, true)">7</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="반갑습니다" data-lang="ko-KR">반갑습니다</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Nice to meet you</button>
+          <button class="quiz-option" onclick="answer(this, false)">Good night</button>
+          <button class="quiz-option" onclick="answer(this, false)">I'm hungry</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What is <span class="speakable" data-speak="患者" data-lang="ja-JP">患者</span>?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Pharmacist</button>
+          <button class="quiz-option" onclick="answer(this, true)">Patient</button>
+          <button class="quiz-option" onclick="answer(this, false)">Prescription</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>6. What is "Medicine" in Korean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">물</button>
+          <button class="quiz-option" onclick="answer(this, false)">약사</button>
+          <button class="quiz-option" onclick="answer(this, true)">약</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+
+      <div class="level-panel" id="quiz-hard">
+        <span class="level-badge hard">HARD</span>
+        <div class="quiz-score">Set: Hard <span id="score-quiz-hard">0 / 6</span></div>
+
+        <div class="quiz-card">
+          <h3>1. What does <span class="speakable" data-speak="一緒に頑張りましょう。" data-lang="ja-JP">一緒に頑張りましょう。</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Let's eat together</button>
+          <button class="quiz-option" onclick="answer(this, true)">Let's do our best together</button>
+          <button class="quiz-option" onclick="answer(this, false)">See you tomorrow</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>2. What does <span class="speakable" data-speak="행복" data-lang="ko-KR">행복</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Sadness</button>
+          <button class="quiz-option" onclick="answer(this, true)">Happiness</button>
+          <button class="quiz-option" onclick="answer(this, false)">Anger</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>3. What does <span class="speakable" data-speak="愛" data-lang="ja-JP">愛</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, true)">Love</button>
+          <button class="quiz-option" onclick="answer(this, false)">Friend</button>
+          <button class="quiz-option" onclick="answer(this, false)">Dream</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>4. What does <span class="speakable" data-speak="함께 힘내요!" data-lang="ko-KR">함께 힘내요!</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Let's eat</button>
+          <button class="quiz-option" onclick="answer(this, true)">Let's cheer up together!</button>
+          <button class="quiz-option" onclick="answer(this, false)">Go home</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>5. What does <span class="speakable" data-speak="処方箋" data-lang="ja-JP">処方箋</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Hospital</button>
+          <button class="quiz-option" onclick="answer(this, true)">Prescription</button>
+          <button class="quiz-option" onclick="answer(this, false)">Pharmacy</button>
+          <div class="quiz-result"></div>
+        </div>
+        <div class="quiz-card">
+          <h3>6. What does <span class="speakable" data-speak="마음" data-lang="ko-KR">마음</span> mean?</h3>
+          <button class="quiz-option" onclick="answer(this, false)">Body</button>
+          <button class="quiz-option" onclick="answer(this, false)">Face</button>
+          <button class="quiz-option" onclick="answer(this, true)">Heart / Mind</button>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> This site is for learning. It does not give medical advice.
+      Always consult a doctor or pharmacist for health concerns.
+    </div>
+  </div>
+
+  <footer>
+    <span class="flower">
+      <span class="bob">🌸</span> <span class="bob">🌸</span> <span class="bob">🌸</span>
+    </span>
+    Made for Baby. Keep learning, keep glowing. — BABY MO - Jes
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PASSWORD = "baby";
+
+  function unlock() {
+    const input = document.getElementById("password").value.trim().toLowerCase();
+    if (input === PASSWORD) {
+      document.getElementById("lock").style.display = "none";
+      document.getElementById("site").style.display = "block";
+      localStorage.setItem("senUnlocked", "yes");
+      initVoices();
+    } else {
+      document.getElementById("lockMsg").textContent = "Wrong password. Try again, Baby.";
+    }
+  }
+
+  function logout() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    localStorage.removeItem("senUnlocked");
+    document.getElementById("site").style.display = "none";
+    document.getElementById("lock").style.display = "flex";
+    document.getElementById("password").value = "";
+    document.getElementById("lockMsg").textContent = "";
+    window.scrollTo(0, 0);
+  }
+
+  if (localStorage.getItem("senUnlocked") === "yes") {
+    document.getElementById("lock").style.display = "none";
+    document.getElementById("site").style.display = "block";
+  }
+
+  /* ===== TABS ===== */
+  function showTab(id, btn) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+    if (id === 'anime') playHeroAnimation();
+  }
+
+  function showLevel(sectionId, level, btn) {
+    const section = document.getElementById(sectionId);
+    section.querySelectorAll(".level-panel").forEach(p => p.classList.remove("active"));
+    section.querySelectorAll(".level-tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(sectionId + "-" + level).classList.add("active");
+    btn.classList.add("active");
+  }
+
+  /* ===== QUIZ TRACKING ===== */
+  const quizScores = {};
+
+  function initQuizScores() {
+    document.querySelectorAll('.level-panel').forEach(panel => {
+      const cards = panel.querySelectorAll('.quiz-card');
+      if (cards.length) {
+        quizScores[panel.id] = { correct: 0, total: cards.length };
+        updateScoreDisplay(panel.id);
+      }
+    });
+  }
+
+  function updateScoreDisplay(panelId) {
+    const scoreEl = document.getElementById('score-' + panelId);
+    if (scoreEl && quizScores[panelId]) {
+      scoreEl.textContent = quizScores[panelId].correct + ' / ' + quizScores[panelId].total;
+    }
+  }
+
+  function answer(btn, correct) {
+    const card = btn.parentElement;
+    const result = card.querySelector(".quiz-result");
+    const panel = card.closest('.level-panel');
+
+    if (card.dataset.answered === "1") return;
+    card.dataset.answered = "1";
+
+    if (correct) {
+      result.textContent = "Correct! Nice one, Baby. ✅";
+      result.style.color = "#9fe6d4";
+      btn.classList.add('correct');
+
+      if (panel && quizScores[panel.id]) {
+        quizScores[panel.id].correct += 1;
+        updateScoreDisplay(panel.id);
+      }
+    } else {
+      result.textContent = "Not quite. Try again. 💡";
+      result.style.color = "#ff8098";
+      btn.classList.add('wrong');
+      card.dataset.answered = "";
+      setTimeout(() => { btn.classList.remove('wrong'); }, 600);
+    }
+  }
+
+  document.getElementById("password").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") unlock();
+  });
+
+  /* ===== VOICE ===== */
+  let voices = [];
+  let voiceEnabled = true;
+  let speechPitch = 1.0;
+  let speechRate = 0.9;
+  const voiceSupport = 'speechSynthesis' in window;
+
+  let selectedJaVoice = "";
+  let selectedKoVoice = "";
+
+  function initVoices() {
+    if (!voiceSupport) return;
+    voices = speechSynthesis.getVoices();
+    populateVoiceSelects();
+  }
+
+  function populateVoiceSelects() {
+    const jaSel = document.getElementById('jaVoiceSelect');
+    const koSel = document.getElementById('koVoiceSelect');
+    if (!jaSel || !koSel) return;
+
+    const jaVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ja'));
+    const koVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ko'));
+
+    jaSel.innerHTML = '<option value="">Auto</option>' +
+      jaVoices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+    koSel.innerHTML = '<option value="">Auto</option>' +
+      koVoices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+
+    if (selectedJaVoice) jaSel.value = selectedJaVoice;
+    if (selectedKoVoice) koSel.value = selectedKoVoice;
+  }
+
+  if (voiceSupport) {
+    initVoices();
+    speechSynthesis.onvoiceschanged = () => { voices = speechSynthesis.getVoices(); populateVoiceSelects(); };
+  }
+
+  function findVoice(lang) {
+    if (!voices.length) voices = speechSynthesis.getVoices();
+    const short = lang.slice(0, 2).toLowerCase();
+
+    if (short === 'ja' && selectedJaVoice) {
+      const picked = voices.find(v => v.name === selectedJaVoice);
+      if (picked) return picked;
+    }
+    if (short === 'ko' && selectedKoVoice) {
+      const picked = voices.find(v => v.name === selectedKoVoice);
+      if (picked) return picked;
+    }
+
+    let v = voices.find(x => x.lang && x.lang.replace('_','-').toLowerCase() === lang.toLowerCase());
+    if (v) return v;
+    v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith(short));
+    return v || null;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("show"), 2400);
+  }
+
+  function speak(text, lang, el) {
+    if (!voiceSupport) { showToast("Voice not supported on this browser 😔"); return; }
+    if (!voiceEnabled) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang;
+      u.rate = speechRate;
+      u.pitch = speechPitch;
+      u.volume = 1.0;
+      const v = findVoice(lang);
+      if (v) u.voice = v;
+      if (el) {
+        el.classList.add("speaking");
+        u.onend = () => el.classList.remove("speaking");
+        u.onerror = () => el.classList.remove("speaking");
+      }
+      setTimeout(() => speechSynthesis.speak(u), 60);
+      if (!v) showToast("Using default voice — install " + (lang.startsWith('ja') ? 'Japanese' : 'Korean') + " voice for better sound.");
+    } catch (e) { showToast("Could not play voice 😔"); }
+  }
+
+  document.addEventListener("click", function(e) {
+    const el = e.target.closest(".speakable");
+    if (!el) return;
+    const text = el.getAttribute("data-speak");
+    const lang = el.getAttribute("data-lang") || "ja-JP";
+    if (text) speak(text, lang, el);
+  });
+
+  function toggleVoice() {
+    voiceEnabled = !voiceEnabled;
+    const btn = document.getElementById("voiceBtn");
+    if (voiceEnabled) {
+      btn.textContent = "🔊 On"; btn.classList.remove("muted"); showToast("Voice ON 🌸");
+    } else {
+      btn.textContent = "🔇 Off"; btn.classList.add("muted");
+      if (voiceSupport) speechSynthesis.cancel();
+      showToast("Voice muted 🔇");
+    }
+  }
+
+  /* ===== VOICE PANEL ===== */
+  function toggleVoicePanel() {
+    const panel = document.getElementById('voicePanel');
+    panel.classList.toggle('open');
+  }
+
+  function applyPreset(name) {
+    const pitchSlider = document.getElementById('pitchSlider');
+    const rateSlider = document.getElementById('rateSlider');
+
+    if (name === 'normal') {
+      speechPitch = 1.0;
+      speechRate = 0.9;
+      showToast("🎓 Normal voice");
+    } else if (name === 'soft') {
+      speechPitch = 1.2;
+      speechRate = 0.8;
+      showToast("🌸 Soft voice");
+    }
+
+    pitchSlider.value = speechPitch;
+    rateSlider.value = speechRate;
+    document.getElementById('pitchVal').textContent = speechPitch.toFixed(2);
+    document.getElementById('rateVal').textContent = speechRate.toFixed(2);
+
+    document.querySelectorAll('.voice-pill').forEach(p => p.classList.remove('active'));
+    const presetBtn = document.getElementById('preset' + name.charAt(0).toUpperCase() + name.slice(1));
+    if (presetBtn) presetBtn.classList.add('active');
+  }
+
+  function testVoice() {
+    speak("プラスウルトラ！", "ja-JP", null);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const pitchSlider = document.getElementById('pitchSlider');
+    const rateSlider = document.getElementById('rateSlider');
+    if (pitchSlider) {
+      pitchSlider.addEventListener('input', () => {
+        speechPitch = parseFloat(pitchSlider.value);
+        document.getElementById('pitchVal').textContent = speechPitch.toFixed(2);
+      });
+    }
+    if (rateSlider) {
+      rateSlider.addEventListener('input', () => {
+        speechRate = parseFloat(rateSlider.value);
+        document.getElementById('rateVal').textContent = speechRate.toFixed(2);
+      });
+    }
+    const jaSel = document.getElementById('jaVoiceSelect');
+    const koSel = document.getElementById('koVoiceSelect');
+    if (jaSel) jaSel.addEventListener('change', () => { selectedJaVoice = jaSel.value; });
+    if (koSel) koSel.addEventListener('change', () => { selectedKoVoice = koSel.value; });
+
+    initQuizScores();
+  });
+
+  setTimeout(() => { initQuizScores(); }, 300);
+
+  /* ===== HYDRANGEA ANIMATION ===== */
+  const HYDRANGEA_PALETTE = ['#b18cf0','#7ea6f0','#f2a3d4','#d4b6f5','#a8c8f5','#9fe6d4','#c9a7f0','#8fb8f2'];
+
+  function floretInner(c1, c2, cx = 0, cy = 0) {
+    return `
+      <ellipse cx="${cx}" cy="${cy - 6}" rx="4.2" ry="6" fill="${c1}" opacity="0.92"/>
+      <ellipse cx="${cx + 6}" cy="${cy}" rx="6" ry="4.2" fill="${c2}" opacity="0.92"/>
+      <ellipse cx="${cx}" cy="${cy + 6}" rx="4.2" ry="6" fill="${c1}" opacity="0.86"/>
+      <ellipse cx="${cx - 6}" cy="${cy}" rx="6" ry="4.2" fill="${c2}" opacity="0.86"/>
+      <circle cx="${cx}" cy="${cy}" r="2" fill="#fdf8ff" opacity="0.65"/>`;
+  }
+  function floretSVG(size, c1, c2) {
+    return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">${floretInner(c1, c2, 12, 12)}</svg>`;
+  }
+  function clusterSVG(palette) {
+    const spots = [[50,50],[31,33],[69,33],[31,67],[69,67],[50,23],[23,50],[77,50],[50,77],[39,41],[61,59],[61,41],[39,59]];
+    let inner = '';
+    spots.forEach(([x, y], i) => {
+      const c1 = palette[i % palette.length];
+      const c2 = palette[(i + 3) % palette.length];
+      const rot = Math.round(Math.random() * 360);
+      const sc = 0.82 + Math.random() * 0.3;
+      inner += `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${sc})">${floretInner(c1, c2, 0, 0)}</g>`;
+    });
+    return `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${inner}</svg>`;
+  }
+  function createPetals(container, count) {
+    if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const size = 9 + Math.random() * 16;
+      const dur = 13 + Math.random() * 12;
+      const delay = -Math.random() * dur;
+      const drift = (Math.random() * 2 - 1) * 130;
+      const op = 0.30 + Math.random() * 0.40;
+      const c1 = HYDRANGEA_PALETTE[Math.floor(Math.random() * HYDRANGEA_PALETTE.length)];
+      const c2 = HYDRANGEA_PALETTE[Math.floor(Math.random() * HYDRANGEA_PALETTE.length)];
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.style.left = (Math.random() * 100) + '%';
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
+      petal.style.setProperty('--drift', drift + 'px');
+      petal.style.setProperty('--op', op);
+      petal.style.animationDuration = dur + 's';
+      petal.style.animationDelay = delay + 's';
+      const inner = document.createElement('div');
+      inner.className = 'petal-inner';
+      inner.style.animationDuration = (3 + Math.random() * 3.5) + 's';
+      inner.style.animationDelay = (-Math.random() * 3) + 's';
+      inner.innerHTML = floretSVG(size, c1, c2);
+      petal.appendChild(inner);
+      frag.appendChild(petal);
+    }
+    container.appendChild(frag);
+  }
+  function buildBlooms() {
+    const tl = document.getElementById('bloomTL');
+    const br = document.getElementById('bloomBR');
+    if (tl) tl.innerHTML = clusterSVG(HYDRANGEA_PALETTE);
+    if (br) br.innerHTML = clusterSVG(HYDRANGEA_PALETTE.slice().reverse());
+  }
+  buildBlooms();
+  createPetals(document.getElementById('petalField'), 16);
+  createPetals(document.getElementById('lockPetals'), 10);
+
+  /* ===== HERO CHARACTER ===== */
+  function dekuSVG() {
+    return `
+      <svg viewBox="0 0 200 240" width="100%" height="100%" aria-hidden="true">
+        <ellipse cx="100" cy="232" rx="52" ry="7" fill="rgba(79,191,122,0.35)"/>
+        <rect x="76" y="180" width="20" height="42" rx="8" fill="#2d5f8a"/>
+        <rect x="104" y="180" width="20" height="42" rx="8" fill="#2d5f8a"/>
+        <rect x="72" y="214" width="28" height="14" rx="6" fill="#c0392b"/>
+        <rect x="100" y="214" width="28" height="14" rx="6" fill="#c0392b"/>
+        <rect x="64" y="118" width="72" height="68" rx="16" fill="#4fbf7a"/>
+        <rect x="64" y="118" width="72" height="20" rx="10" fill="#3da566"/>
+        <path d="M100 130 L100 180" stroke="#fdf8ff" stroke-width="3" opacity="0.55"/>
+        <g transform="rotate(-32 51 132)"><rect x="40" y="100" width="22" height="60" rx="11" fill="#4fbf7a"/></g>
+        <g transform="rotate(32 149 132)"><rect x="138" y="100" width="22" height="60" rx="11" fill="#4fbf7a"/></g>
+        <circle cx="40" cy="98" r="14" fill="#f5c9a0" stroke="#e0a878" stroke-width="1.5"/>
+        <circle cx="160" cy="98" r="14" fill="#f5c9a0" stroke="#e0a878" stroke-width="1.5"/>
+        <rect x="90" y="106" width="20" height="16" fill="#e0a878"/>
+        <circle cx="100" cy="80" r="44" fill="#f5c9a0"/>
+        <path d="M56 76 Q58 38 86 30 Q98 18 108 30 Q138 28 148 54 Q154 70 145 84 Q138 68 124 74 Q112 58 100 64 Q88 58 76 74 Q66 68 56 76 Z" fill="#3da566"/>
+        <path d="M58 60 L44 44 L66 52 Z" fill="#2d7a4f"/>
+        <path d="M90 26 L86 6 L106 22 Z" fill="#2d7a4f"/>
+        <path d="M128 30 L144 14 L138 40 Z" fill="#2d7a4f"/>
+        <path d="M70 50 L58 30 L80 44 Z" fill="#2d7a4f"/>
+        <path d="M120 44 L134 26 L128 50 Z" fill="#2d7a4f"/>
+        <ellipse cx="84" cy="82" rx="9" ry="11" fill="#ffffff"/>
+        <ellipse cx="116" cy="82" rx="9" ry="11" fill="#ffffff"/>
+        <circle cx="85" cy="84" r="6" fill="#2d7a4f"/>
+        <circle cx="117" cy="84" r="6" fill="#2d7a4f"/>
+        <circle cx="83" cy="82" r="2" fill="#ffffff"/>
+        <circle cx="115" cy="82" r="2" fill="#ffffff"/>
+        <circle cx="72" cy="94" r="1.6" fill="#c97b5a"/>
+        <circle cx="78" cy="98" r="1.6" fill="#c97b5a"/>
+        <circle cx="122" cy="94" r="1.6" fill="#c97b5a"/>
+        <circle cx="128" cy="98" r="1.6" fill="#c97b5a"/>
+        <path d="M90 102 Q100 110 110 102" stroke="#8b5a3c" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </svg>`;
+  }
+
+  function buildHero() {
+    const h = document.getElementById('heroCharacter');
+    if (h) h.innerHTML = dekuSVG();
+  }
+
+  function playHeroAnimation() {
+    const stage = document.getElementById('heroStage');
+    if (!stage) return;
+    stage.classList.remove('play');
+    void stage.offsetWidth;
+    stage.classList.add('play');
+    showToast("Deku has arrived! ⚡");
+  }
+
+  buildHero();
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const stage = document.getElementById('heroStage');
+      if (stage && document.getElementById('anime').classList.contains('active')) {
+        playHeroAnimation();
+      }
+    }, 600);
+  });
+
+  const originalUnlock = unlock;
+  unlock = function() {
+    originalUnlock();
+    const field = document.getElementById('petalField');
+    if (field && !field.dataset.built) {
+      field.dataset.built = '1';
+      createPetals(field, 16);
+    }
+  };
+</script>
+</body>
+</html>
