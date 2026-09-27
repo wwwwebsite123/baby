@@ -648,6 +648,246 @@
     .stat-card .value { font-size: 1rem; }
     .flash-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
   }
+  /* ============ PLAYLIST TAB ============ */
+.playlist-hero {
+  text-align: center;
+  padding: 1rem 0 1.5rem;
+}
+.playlist-hero h2 { margin: 0 0 6px; }
+.playlist-hero p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+.now-playing {
+  background: linear-gradient(135deg, rgba(177,140,240,0.20), rgba(242,163,212,0.15));
+  border: 1px solid var(--accent);
+  border-radius: 18px;
+  padding: 16px;
+  margin: 0 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 28px rgba(177,140,240,0.20);
+}
+
+.np-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue), var(--hyd-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(177,140,240,0.35);
+}
+
+.np-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.np-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.np-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Equalizer bars */
+.eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+  margin-left: 6px;
+}
+.eq span {
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  height: 4px;
+}
+.eq.playing span {
+  animation: eqBounce 0.9s ease-in-out infinite;
+}
+.eq.playing span:nth-child(1) { animation-delay: 0s; }
+.eq.playing span:nth-child(2) { animation-delay: 0.15s; }
+.eq.playing span:nth-child(3) { animation-delay: 0.3s; }
+.eq.playing span:nth-child(4) { animation-delay: 0.45s; }
+@keyframes eqBounce {
+  0%, 100% { height: 4px; }
+  50% { height: 18px; }
+}
+
+/* Progress */
+.np-progress-wrap {
+  width: 100%;
+  margin-top: 4px;
+}
+.np-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--bg);
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.np-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--hyd-mint), var(--accent), var(--hyd-pink));
+  transition: width 0.15s linear;
+}
+.np-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Controls */
+.np-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.np-btn {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+  padding: 0;
+  transition: all 0.15s;
+}
+.np-btn:active { transform: scale(0.92); }
+.np-btn.main {
+  width: 48px;
+  height: 48px;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(177,140,240,0.40);
+}
+
+/* Track list */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 1rem;
+}
+.track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.track:active { transform: scale(0.99); }
+.track.active {
+  background: linear-gradient(135deg, rgba(177,140,240,0.20), rgba(126,166,240,0.15));
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(177,140,240,0.25);
+}
+.track-num {
+  width: 24px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.track.active .track-num { color: var(--accent); }
+.track-emoji {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  width: 32px;
+  text-align: center;
+}
+.track-info {
+  flex: 1;
+  min-width: 0;
+}
+.track-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track.active .track-title { color: var(--accent); }
+.track-sub {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track-play {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+  padding: 0;
+  flex-shrink: 0;
+}
+.track.active .track-play {
+  background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.playlist-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.playlist-empty .emoji {
+  display: block;
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+.playlist-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border2);
+  line-height: 1.6;
+}
 </style>
 </head>
 <body data-theme="dark" data-season="hydrangea" data-furigana="off" data-romaji="on">
@@ -816,6 +1056,7 @@
       <button class="tab" onclick="showTab('letters', this)">💌 Letters</button>
       <button class="tab" onclick="showTab('badges', this)">🏆 Badges</button>
       <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
+      <button class="tab" onclick="showTab('playlist', this)">🎧 Playlist</button>
     </div>
 
     <!-- JAPANESE -->
@@ -1227,7 +1468,52 @@
       <p>Milestones you've earned.</p>
       <div class="badges-grid" id="badgesGrid"></div>
     </div>
+        <!-- PLAYLIST -->
+    <div class="section" id="playlist">
+      <div class="playlist-hero">
+        <h2>🎧 Your Playlist</h2>
+        <p>Recordings I made just for you. Tap any track to play.</p>
+      </div>
 
+      <!-- Now playing -->
+      <div class="now-playing" id="nowPlayingBar" style="display:none;">
+        <div class="np-cover" id="npCover">🎵</div>
+        <div class="np-info">
+          <div class="np-title" id="npTitle">—</div>
+          <div class="np-sub" id="npSub">
+            <div class="np-progress-wrap">
+              <div class="np-progress" id="npProgress">
+                <div class="np-progress-fill" id="npProgressFill"></div>
+              </div>
+              <div class="np-times">
+                <span id="npCurrent">0:00</span>
+                <span id="npDuration">0:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="np-controls">
+          <button class="np-btn" onclick="prevTrack()" title="Previous">⏮️</button>
+          <button class="np-btn main" id="npPlayBtn" onclick="togglePlayPause()" title="Play/Pause">▶️</button>
+          <button class="np-btn" onclick="nextTrack()" title="Next">⏭️</button>
+        </div>
+      </div>
+
+      <!-- Track list -->
+      <div class="track-list" id="trackList"></div>
+
+      <div class="playlist-empty" id="playlistEmpty">
+        <span class="emoji">🎙️</span>
+        No recordings yet.<br>
+        <small>Add them in the code below.</small>
+      </div>
+
+      <div class="playlist-hint">
+        <strong>How to add your songs:</strong><br>
+        Drop your MP3 files in the same folder as <code>index.html</code>, then edit the
+        <code>PLAYLIST</code> array in the code to list them.
+      </div>
+    </div>
     <!-- QUIZ -->
     <div class="section" id="quiz">
       <h2>📝 Quiz</h2>
@@ -2585,6 +2871,184 @@ function showToast(msg) {
   t.classList.add("show");
   clearTimeout(t._timeout);
   t._timeout = setTimeout(() => t.classList.remove("show"), 2200);
+}
+  /* ============================================================
+   PLAYLIST
+============================================================ */
+/* EDIT THIS: add your recorded songs here.
+   - src:  the file name (must be in the same folder as index.html)
+   - title: song title she sees
+   - sub:  small subtitle under the title
+   - emoji: what shows as the cover art
+*/
+const PLAYLIST = [
+  { src: "baby-song.mp3",        title: "baby, play this",         sub: "For you, always",       emoji: "🌸" },
+  { src: "recordings/song-2.mp3",title: "Second recording",        sub: "When you miss me",      emoji: "💌" },
+  { src: "recordings/song-3.mp3",title: "Third recording",         sub: "For quiet nights",      emoji: "🌙" },
+  { src: "recordings/song-4.mp3",title: "Fourth recording",        sub: "Because you're strong", emoji: "💪" },
+  // Add more here — just copy a line and change the values.
+  // The comma at the end of each line matters.
+];
+
+let playlistAudio = null;
+let currentTrackIndex = -1;
+
+function initPlaylist() {
+  if (!playlistAudio) {
+    playlistAudio = new Audio();
+    playlistAudio.preload = "metadata";
+    playlistAudio.addEventListener("timeupdate", updatePlaylistProgress);
+    playlistAudio.addEventListener("loadedmetadata", updatePlaylistDuration);
+    playlistAudio.addEventListener("ended", () => nextTrack(true));
+    playlistAudio.addEventListener("error", () => {
+      showToast("Couldn't load that track 😔");
+    });
+  }
+  renderTrackList();
+}
+
+function renderTrackList() {
+  const list = document.getElementById("trackList");
+  const empty = document.getElementById("playlistEmpty");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!PLAYLIST.length) {
+    if (empty) empty.style.display = "block";
+    return;
+  }
+  if (empty) empty.style.display = "none";
+
+  PLAYLIST.forEach((track, i) => {
+    const el = document.createElement("div");
+    el.className = "track" + (i === currentTrackIndex ? " active" : "");
+    el.innerHTML = `
+      <div class="track-num">${i === currentTrackIndex ? "▶" : (i + 1)}</div>
+      <div class="track-emoji">${track.emoji || "🎵"}</div>
+      <div class="track-info">
+        <div class="track-title">${track.title}</div>
+        <div class="track-sub">${track.sub || ""}</div>
+      </div>
+      <div class="track-play">${i === currentTrackIndex && playlistAudio && !playlistAudio.paused ? "⏸" : "▶"}</div>
+    `;
+    el.onclick = () => playTrack(i);
+    list.appendChild(el);
+  });
+}
+
+function playTrack(i) {
+  if (i < 0 || i >= PLAYLIST.length) return;
+  initPlaylist();
+
+  if (i === currentTrackIndex && playlistAudio && !playlistAudio.paused) {
+    playlistAudio.pause();
+    renderTrackList();
+    updateNowPlayingBtn();
+    return;
+  }
+
+  currentTrackIndex = i;
+  const track = PLAYLIST[i];
+  playlistAudio.src = track.src;
+  playlistAudio.play().then(() => {
+    showNowPlaying();
+    renderTrackList();
+  }).catch(err => {
+    console.warn("Play failed:", err);
+    showToast("Couldn't play that track 😔");
+  });
+}
+
+function togglePlayPause() {
+  if (!playlistAudio || currentTrackIndex === -1) {
+    if (PLAYLIST.length) playTrack(0);
+    return;
+  }
+  if (playlistAudio.paused) {
+    playlistAudio.play();
+  } else {
+    playlistAudio.pause();
+  }
+  updateNowPlayingBtn();
+  renderTrackList();
+}
+
+function nextTrack(auto) {
+  if (!PLAYLIST.length) return;
+  const next = (currentTrackIndex + 1) % PLAYLIST.length;
+  playTrack(next);
+}
+
+function prevTrack() {
+  if (!PLAYLIST.length) return;
+  if (playlistAudio && playlistAudio.currentTime > 3) {
+    playlistAudio.currentTime = 0;
+    return;
+  }
+  const prev = (currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length;
+  playTrack(prev);
+}
+
+function showNowPlaying() {
+  const bar = document.getElementById("nowPlayingBar");
+  if (!bar) return;
+  bar.style.display = "flex";
+  const track = PLAYLIST[currentTrackIndex];
+  document.getElementById("npCover").textContent = track.emoji || "🎵";
+  document.getElementById("npTitle").textContent = track.title;
+  document.getElementById("npSub").innerHTML = `
+    <div class="np-progress-wrap">
+      <div class="np-progress" id="npProgress">
+        <div class="np-progress-fill" id="npProgressFill"></div>
+      </div>
+      <div class="np-times">
+        <span id="npCurrent">0:00</span>
+        <span id="npDuration">0:00</span>
+      </div>
+    </div>`;
+  updateNowPlayingBtn();
+}
+
+function updateNowPlayingBtn() {
+  const btn = document.getElementById("npPlayBtn");
+  if (!btn || !playlistAudio) return;
+  btn.textContent = playlistAudio.paused ? "▶️" : "⏸️";
+}
+
+function updatePlaylistProgress() {
+  if (!playlistAudio) return;
+  const fill = document.getElementById("npProgressFill");
+  const cur = document.getElementById("npCurrent");
+  if (!fill || !cur) return;
+  const pct = playlistAudio.duration ? (playlistAudio.currentTime / playlistAudio.duration) * 100 : 0;
+  fill.style.width = pct + "%";
+  cur.textContent = formatTime(playlistAudio.currentTime);
+}
+
+function updatePlaylistDuration() {
+  const dur = document.getElementById("npDuration");
+  if (!dur || !playlistAudio) return;
+  dur.textContent = formatTime(playlistAudio.duration);
+}
+
+function formatTime(sec) {
+  if (!isFinite(sec) || sec < 0) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return m + ":" + s;
+}
+
+// Seek by tapping the progress bar
+document.addEventListener("click", function(e) {
+  const bar = e.target.closest("#npProgress");
+  if (!bar || !playlistAudio || !playlistAudio.duration) return;
+  const rect = bar.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  playlistAudio.currentTime = pct * playlistAudio.duration;
+});
+
+// Init playlist when the tab opens (or on load)
+if (document.getElementById("trackList")) {
+  initPlaylist();
 }
 </script>
 </body>
