@@ -257,12 +257,82 @@
 
   .container { max-width: 1000px; margin: auto; padding: 0.5rem 0.75rem 3rem; position: relative; z-index: 1; }
 
-  .tabs {
-    display: flex; gap: 8px; margin: 1rem 0 0.5rem;
-    overflow-x: auto; padding: 4px 4px 10px;
-    -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-snap-type: x proximity;
+    /* Tabs wrapper — arrow buttons + scroll */
+  .tabs-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 1rem 0 0.5rem;
   }
-  .tabs::-webkit-scrollbar { display: none; }
+
+  .tabs {
+    display: flex; gap: 8px;
+    flex: 1;
+    overflow-x: auto; overflow-y: hidden;
+    padding: 4px 4px 12px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    /* Styled thin scrollbar (Firefox) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+  }
+
+  /* Styled thin scrollbar (Chrome, Edge, Safari) */
+  .tabs::-webkit-scrollbar {
+    height: 8px;
+  }
+  .tabs::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 999px;
+  }
+  .tabs::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--hyd-purple), var(--hyd-blue));
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  .tabs::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, var(--hyd-pink), var(--hyd-purple));
+    background-clip: padding-box;
+  }
+
+  /* Arrow buttons */
+  .tabs-arrow {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border2);
+    color: var(--accent);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.15s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .tabs-arrow:hover {
+    background: linear-gradient(135deg, rgba(177,140,240,0.25), rgba(126,166,240,0.20));
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+  .tabs-arrow:active {
+    transform: scale(0.95);
+  }
+  .tabs-arrow:disabled,
+  .tabs-arrow.hidden {
+    opacity: 0.25;
+    pointer-events: none;
+  }
   .tab {
     background: var(--card); border: 1px solid var(--border); color: var(--muted);
     padding: 12px 16px; border-radius: 999px; cursor: pointer; font-weight: 600;
@@ -647,6 +717,14 @@
     .icon-btn { font-size: 0.7rem; padding: 6px 9px; }
     .stat-card .value { font-size: 1rem; }
     .flash-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  }
+    /* Hide arrows on touch devices / small screens */
+  @media (max-width: 768px), (hover: none) {
+    .tabs-arrow { display: none; }
+    .tabs {
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
   }
   /* ============ PLAYLIST TAB ============ */
 .playlist-hero {
@@ -1128,22 +1206,26 @@ body[data-theme="light"] .mini-player {
       </div>
     </div>
 
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('jp', this)">🇯🇵 Japanese</button>
-      <button class="tab" onclick="showTab('kr', this)">🇰🇷 Korean</button>
-      <button class="tab" onclick="showTab('anime', this)">🎌 Anime</button>
-      <button class="tab" onclick="showTab('work', this)">💊 Pharmacy</button>
-      <button class="tab" onclick="showTab('flash', this)">🃏 Flashcards</button>
-      <button class="tab" onclick="showTab('listen', this)">🎧 Listen</button>
-      <button class="tab" onclick="showTab('match', this)">🎮 Match</button>
-      <button class="tab" onclick="showTab('kpop', this)">💿 K-pop</button>
-      <button class="tab" onclick="showTab('tagalog', this)">🇵🇭 Tagalog</button>
-      <button class="tab" onclick="showTab('review', this)">📚 Review</button>
-      <button class="tab" onclick="showTab('favs', this)">💖 Favorites</button>
-      <button class="tab" onclick="showTab('letters', this)">💌 Letters</button>
-      <button class="tab" onclick="showTab('badges', this)">🏆 Badges</button>
-      <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
-      <button class="tab" onclick="showTab('playlist', this)">🎧 Playlist</button>
+       <div class="tabs-wrap">
+      <button class="tabs-arrow tabs-arrow-left" onclick="scrollTabs(-1)" aria-label="Scroll left">‹</button>
+      <div class="tabs" id="tabsBar">
+        <button class="tab active" onclick="showTab('jp', this)">🇯🇵 Japanese</button>
+        <button class="tab" onclick="showTab('kr', this)">🇰🇷 Korean</button>
+        <button class="tab" onclick="showTab('anime', this)">🎌 Anime</button>
+        <button class="tab" onclick="showTab('work', this)">💊 Pharmacy</button>
+        <button class="tab" onclick="showTab('flash', this)">🃏 Flashcards</button>
+        <button class="tab" onclick="showTab('listen', this)">🎧 Listen</button>
+        <button class="tab" onclick="showTab('match', this)">🎮 Match</button>
+        <button class="tab" onclick="showTab('kpop', this)">💿 K-pop</button>
+        <button class="tab" onclick="showTab('tagalog', this)">🇵🇭 Tagalog</button>
+        <button class="tab" onclick="showTab('review', this)">📚 Review</button>
+        <button class="tab" onclick="showTab('favs', this)">💖 Favorites</button>
+        <button class="tab" onclick="showTab('letters', this)">💌 Letters</button>
+        <button class="tab" onclick="showTab('badges', this)">🏆 Badges</button>
+        <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
+        <button class="tab" onclick="showTab('playlist', this)">🎧 Playlist</button>
+      </div>
+      <button class="tabs-arrow tabs-arrow-right" onclick="scrollTabs(1)" aria-label="Scroll right">›</button>
     </div>
 
     <!-- JAPANESE -->
@@ -3242,6 +3324,88 @@ document.addEventListener("click", function(e) {
 if (document.getElementById("trackList")) {
   initPlaylist();
 }
+  /* ============================================================
+   TAB BAR — desktop scroll controls
+============================================================ */
+(function initTabsScroll() {
+  const bar = document.getElementById("tabsBar");
+  if (!bar) return;
+
+  const wrap = bar.closest(".tabs-wrap");
+  const leftBtn = wrap.querySelector(".tabs-arrow-left");
+  const rightBtn = wrap.querySelector(".tabs-arrow-right");
+
+  // Show/hide arrows based on scroll position
+  function updateArrows() {
+    if (!leftBtn || !rightBtn) return;
+    const maxScroll = bar.scrollWidth - bar.clientWidth;
+    if (maxScroll < 8) {
+      leftBtn.classList.add("hidden");
+      rightBtn.classList.add("hidden");
+      return;
+    }
+    leftBtn.classList.toggle("hidden", bar.scrollLeft <= 4);
+    rightBtn.classList.toggle("hidden", bar.scrollLeft >= maxScroll - 4);
+  }
+
+  // Arrow click → scroll one "page"
+  window.scrollTabs = function (dir) {
+    const amount = Math.max(200, bar.clientWidth * 0.7);
+    bar.scrollBy({ left: dir * amount, behavior: "smooth" });
+  };
+
+  // Mouse wheel → horizontal scroll
+  bar.addEventListener("wheel", (e) => {
+    // Only hijack vertical wheel if there's horizontal overflow
+    if (bar.scrollWidth <= bar.clientWidth) return;
+    // Don't hijack if user is doing a two-finger swipe or shift-scroll
+    if (e.deltaX !== 0) return;
+    e.preventDefault();
+    bar.scrollLeft += e.deltaY;
+  }, { passive: false });
+
+  // Mouse drag to scroll (desktop only)
+  let isDown = false;
+  let startX = 0;
+  let startScroll = 0;
+  bar.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    isDown = true;
+    startX = e.pageX;
+    startScroll = bar.scrollLeft;
+    bar.style.cursor = "grabbing";
+    bar.style.scrollBehavior = "auto";
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    const dx = e.pageX - startX;
+    bar.scrollLeft = startScroll - dx;
+  });
+  window.addEventListener("mouseup", () => {
+    if (!isDown) return;
+    isDown = false;
+    bar.style.cursor = "";
+    bar.style.scrollBehavior = "";
+  });
+
+  // Update arrows on scroll, resize, and after tab clicks
+  bar.addEventListener("scroll", updateArrows, { passive: true });
+  window.addEventListener("resize", updateArrows);
+  // Also re-check when a tab becomes active
+  document.querySelectorAll(".tab").forEach(t => {
+    t.addEventListener("click", () => {
+      setTimeout(() => {
+        // Scroll active tab into view
+        t.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        updateArrows();
+      }, 50);
+    });
+  });
+
+  // Initial state
+  setTimeout(updateArrows, 200);
+  window.addEventListener("load", updateArrows);
+})();
 </script>
 </body>
 </html>
