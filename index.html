@@ -888,6 +888,93 @@
   border-top: 1px dashed var(--border2);
   line-height: 1.6;
 }
+  /* ============ MINI PLAYER ============ */
+.mini-player {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(120%);
+  width: calc(100% - 24px);
+  max-width: 720px;
+  background: linear-gradient(135deg, rgba(34,26,68,0.96), rgba(44,35,88,0.96));
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 900;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(177,140,240,0.20);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mini-player.show { transform: translateX(-50%) translateY(0); }
+
+body[data-theme="light"] .mini-player {
+  background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(246,240,255,0.98));
+  box-shadow: 0 12px 40px rgba(120,90,200,0.25);
+}
+
+.mini-cover {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue), var(--hyd-pink));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.mini-info {
+  flex: 1; min-width: 0; cursor: pointer;
+  padding: 4px 0;
+}
+.mini-title {
+  font-size: 0.82rem; font-weight: 700; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mini-sub {
+  font-size: 0.68rem; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mini-progress {
+  width: 100%; height: 3px; background: var(--bg);
+  border-radius: 999px; overflow: hidden; margin-top: 5px;
+}
+.mini-progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--hyd-mint), var(--accent), var(--hyd-pink));
+  transition: width 0.2s linear;
+}
+.mini-btn {
+  background: transparent; border: none;
+  color: var(--text); font-size: 1rem;
+  cursor: pointer; padding: 8px; min-width: 36px; min-height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; font-family: inherit;
+  transition: background 0.15s;
+}
+.mini-btn:active { background: rgba(177,140,240,0.15); }
+.mini-btn.main {
+  background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+  color: #fff; width: 40px; height: 40px;
+  box-shadow: 0 4px 12px rgba(177,140,240,0.35);
+}
+.mini-close {
+  font-size: 0.85rem; opacity: 0.7; padding: 6px;
+  min-width: 28px; min-height: 28px;
+}
+
+/* Shuffle/Repeat active state */
+.np-btn.on {
+  background: linear-gradient(135deg, rgba(177,140,240,0.35), rgba(242,163,212,0.30));
+  border-color: var(--accent); color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .mini-cover { width: 38px; height: 38px; font-size: 1.05rem; }
+  .mini-title { font-size: 0.78rem; }
+  .mini-sub { display: none; }
+  .np-btn { width: 36px; height: 36px; font-size: 0.85rem; }
+  .np-btn.main { width: 44px; height: 44px; }
+}
 </style>
 </head>
 <body data-theme="dark" data-season="hydrangea" data-furigana="off" data-romaji="on">
@@ -1492,10 +1579,12 @@
             </div>
           </div>
         </div>
-        <div class="np-controls">
+          <div class="np-controls">
+          <button class="np-btn" id="npShuffle" onclick="toggleShuffle()" title="Shuffle">🔀</button>
           <button class="np-btn" onclick="prevTrack()" title="Previous">⏮️</button>
           <button class="np-btn main" id="npPlayBtn" onclick="togglePlayPause()" title="Play/Pause">▶️</button>
           <button class="np-btn" onclick="nextTrack()" title="Next">⏭️</button>
+          <button class="np-btn" id="npRepeat" onclick="cycleRepeat()" title="Repeat">🔁</button>
         </div>
       </div>
 
@@ -1654,7 +1743,20 @@
     Made for Baby. Keep learning, keep glowing. — BABY MO - Jes
   </footer>
 </div>
-
+  <!-- MINI PLAYER -->
+  <div class="mini-player" id="miniPlayer">
+    <div class="mini-cover" id="miniCover">🎵</div>
+    <div class="mini-info" onclick="openPlaylistTab()">
+      <div class="mini-title" id="miniTitle">—</div>
+      <div class="mini-sub" id="miniSub"></div>
+      <div class="mini-progress">
+        <div class="mini-progress-fill" id="miniProgressFill"></div>
+      </div>
+    </div>
+    <button class="mini-btn main" id="miniPlayBtn" onclick="togglePlayPause()">▶️</button>
+    <button class="mini-btn" onclick="nextTrack()">⏭️</button>
+    <button class="mini-btn mini-close" onclick="closeMiniPlayer()">✕</button>
+  </div>
 <div class="letter-modal" id="letterModal" onclick="closeLetter(event)">
   <div class="letter-content" onclick="event.stopPropagation()">
     <h3 id="letterTitle">💌</h3>
@@ -2872,39 +2974,76 @@ function showToast(msg) {
   clearTimeout(t._timeout);
   t._timeout = setTimeout(() => t.classList.remove("show"), 2200);
 }
-  /* ============================================================
-   PLAYLIST
+ /* ============================================================
+   PLAYLIST — powered by playlist.txt
 ============================================================ */
-/* EDIT THIS: add your recorded songs here.
-   - src:  the file name (must be in the same folder as index.html)
-   - title: song title she sees
-   - sub:  small subtitle under the title
-   - emoji: what shows as the cover art
-*/
-const PLAYLIST = [
-  { src: "baby-song.mp3",        title: "baby, play this",         sub: "For you, always",       emoji: "🌸" },
-  { src: "recordings/song-2.mp3",title: "Second recording",        sub: "When you miss me",      emoji: "💌" },
-  { src: "recordings/song-3.mp3",title: "Third recording",         sub: "For quiet nights",      emoji: "🌙" },
-  { src: "recordings/song-4.mp3",title: "Fourth recording",        sub: "Because you're strong", emoji: "💪" },
-  // Add more here — just copy a line and change the values.
-  // The comma at the end of each line matters.
+
+// Fallback if playlist.txt can't load (e.g. opened via file://)
+const FALLBACK_PLAYLIST = [
+  { src: "baby-song.mp3", title: "baby, play this", sub: "For you, always", emoji: "🌸" },
 ];
 
+let PLAYLIST = [];
 let playlistAudio = null;
 let currentTrackIndex = -1;
+let shuffleOn = false;
+let repeatMode = "off"; // "off" | "all" | "one"
+
+async function loadPlaylist() {
+  try {
+    const res = await fetch("playlist.txt", { cache: "no-cache" });
+    if (!res.ok) throw new Error("no file");
+    const text = await res.text();
+    const lines = text.split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
+    const parsed = lines.map(line => {
+      const parts = line.split("|").map(s => s.trim());
+      return {
+        src: parts[0] || "",
+        title: parts[1] || parts[0] || "Untitled",
+        sub: parts[2] || "",
+        emoji: parts[3] || "🎵"
+      };
+    }).filter(t => t.src);
+    PLAYLIST = parsed.length ? parsed : FALLBACK_PLAYLIST;
+    console.log("✅ playlist.txt loaded:", PLAYLIST.length, "tracks");
+  } catch (e) {
+    PLAYLIST = FALLBACK_PLAYLIST;
+    console.log("ℹ️ Using fallback playlist");
+  }
+  renderTrackList();
+}
 
 function initPlaylist() {
   if (!playlistAudio) {
     playlistAudio = new Audio();
     playlistAudio.preload = "metadata";
-    playlistAudio.addEventListener("timeupdate", updatePlaylistProgress);
-    playlistAudio.addEventListener("loadedmetadata", updatePlaylistDuration);
-    playlistAudio.addEventListener("ended", () => nextTrack(true));
-    playlistAudio.addEventListener("error", () => {
-      showToast("Couldn't load that track 😔");
-    });
+    playlistAudio.addEventListener("timeupdate", updateProgressBars);
+    playlistAudio.addEventListener("loadedmetadata", updateDurationDisplay);
+    playlistAudio.addEventListener("ended", onTrackEnded);
+    playlistAudio.addEventListener("error", () => showToast("Couldn't load that track 😔"));
   }
+  loadPlaylist();
+}
+
+function onTrackEnded() {
+  if (repeatMode === "one") {
+    playlistAudio.currentTime = 0;
+    playlistAudio.play();
+    return;
+  }
+  if (shuffleOn) { playTrack(randomTrackIndex()); return; }
+  if (currentTrackIndex < PLAYLIST.length - 1) { playTrack(currentTrackIndex + 1); return; }
+  if (repeatMode === "all") { playTrack(0); return; }
+  updatePlayBtns();
   renderTrackList();
+}
+
+function randomTrackIndex() {
+  if (PLAYLIST.length <= 1) return 0;
+  let i;
+  do { i = Math.floor(Math.random() * PLAYLIST.length); }
+  while (i === currentTrackIndex);
+  return i;
 }
 
 function renderTrackList() {
@@ -2919,16 +3058,18 @@ function renderTrackList() {
   if (empty) empty.style.display = "none";
 
   PLAYLIST.forEach((track, i) => {
+    const isActive = i === currentTrackIndex;
+    const isPlaying = isActive && playlistAudio && !playlistAudio.paused;
     const el = document.createElement("div");
-    el.className = "track" + (i === currentTrackIndex ? " active" : "");
+    el.className = "track" + (isActive ? " active" : "");
     el.innerHTML = `
-      <div class="track-num">${i === currentTrackIndex ? "▶" : (i + 1)}</div>
+      <div class="track-num">${isActive ? "▶" : (i + 1)}</div>
       <div class="track-emoji">${track.emoji || "🎵"}</div>
       <div class="track-info">
         <div class="track-title">${track.title}</div>
         <div class="track-sub">${track.sub || ""}</div>
       </div>
-      <div class="track-play">${i === currentTrackIndex && playlistAudio && !playlistAudio.paused ? "⏸" : "▶"}</div>
+      <div class="track-play">${isPlaying ? "⏸" : "▶"}</div>
     `;
     el.onclick = () => playTrack(i);
     list.appendChild(el);
@@ -2937,12 +3078,25 @@ function renderTrackList() {
 
 function playTrack(i) {
   if (i < 0 || i >= PLAYLIST.length) return;
-  initPlaylist();
+  if (!playlistAudio) initPlaylist();
 
+  // Pause the homepage "baby, play this" song if it's playing
+  const homeSong = document.getElementById("babySong");
+  if (homeSong && !homeSong.paused) {
+    homeSong.pause();
+    const btn = document.getElementById("songBtn");
+    if (btn) btn.classList.remove("playing");
+    const icon = document.getElementById("songIcon");
+    const txt = document.getElementById("songText");
+    if (icon) icon.textContent = "▶️";
+    if (txt) txt.textContent = "baby, play this";
+  }
+
+  // Tap same track → pause
   if (i === currentTrackIndex && playlistAudio && !playlistAudio.paused) {
     playlistAudio.pause();
     renderTrackList();
-    updateNowPlayingBtn();
+    updatePlayBtns();
     return;
   }
 
@@ -2952,6 +3106,7 @@ function playTrack(i) {
   playlistAudio.play().then(() => {
     showNowPlaying();
     renderTrackList();
+    updatePlayBtns();
   }).catch(err => {
     console.warn("Play failed:", err);
     showToast("Couldn't play that track 😔");
@@ -2963,19 +3118,16 @@ function togglePlayPause() {
     if (PLAYLIST.length) playTrack(0);
     return;
   }
-  if (playlistAudio.paused) {
-    playlistAudio.play();
-  } else {
-    playlistAudio.pause();
-  }
-  updateNowPlayingBtn();
+  if (playlistAudio.paused) playlistAudio.play();
+  else playlistAudio.pause();
+  updatePlayBtns();
   renderTrackList();
 }
 
-function nextTrack(auto) {
+function nextTrack() {
   if (!PLAYLIST.length) return;
-  const next = (currentTrackIndex + 1) % PLAYLIST.length;
-  playTrack(next);
+  if (shuffleOn) { playTrack(randomTrackIndex()); return; }
+  playTrack((currentTrackIndex + 1) % PLAYLIST.length);
 }
 
 function prevTrack() {
@@ -2984,8 +3136,30 @@ function prevTrack() {
     playlistAudio.currentTime = 0;
     return;
   }
-  const prev = (currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length;
-  playTrack(prev);
+  playTrack((currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length);
+}
+
+function toggleShuffle() {
+  shuffleOn = !shuffleOn;
+  const btn = document.getElementById("npShuffle");
+  if (btn) btn.classList.toggle("on", shuffleOn);
+  showToast(shuffleOn ? "Shuffle ON 🔀" : "Shuffle off");
+}
+
+function cycleRepeat() {
+  if (repeatMode === "off") repeatMode = "all";
+  else if (repeatMode === "all") repeatMode = "one";
+  else repeatMode = "off";
+
+  const btn = document.getElementById("npRepeat");
+  if (btn) {
+    btn.classList.toggle("on", repeatMode !== "off");
+    btn.textContent = repeatMode === "one" ? "🔂" : "🔁";
+  }
+  showToast(
+    repeatMode === "off" ? "Repeat off" :
+    repeatMode === "all" ? "Repeat all 🔁" : "Repeat one 🔂"
+  );
 }
 
 function showNowPlaying() {
@@ -2995,36 +3169,37 @@ function showNowPlaying() {
   const track = PLAYLIST[currentTrackIndex];
   document.getElementById("npCover").textContent = track.emoji || "🎵";
   document.getElementById("npTitle").textContent = track.title;
-  document.getElementById("npSub").innerHTML = `
-    <div class="np-progress-wrap">
-      <div class="np-progress" id="npProgress">
-        <div class="np-progress-fill" id="npProgressFill"></div>
-      </div>
-      <div class="np-times">
-        <span id="npCurrent">0:00</span>
-        <span id="npDuration">0:00</span>
-      </div>
-    </div>`;
-  updateNowPlayingBtn();
+  document.getElementById("npSub").textContent = track.sub || "";
+
+  // Mini player
+  document.getElementById("miniCover").textContent = track.emoji || "🎵";
+  document.getElementById("miniTitle").textContent = track.title;
+  document.getElementById("miniSub").textContent = track.sub || "";
+  document.getElementById("miniPlayer").classList.add("show");
 }
 
-function updateNowPlayingBtn() {
-  const btn = document.getElementById("npPlayBtn");
-  if (!btn || !playlistAudio) return;
-  btn.textContent = playlistAudio.paused ? "▶️" : "⏸️";
-}
-
-function updatePlaylistProgress() {
+function updatePlayBtns() {
   if (!playlistAudio) return;
+  const icon = playlistAudio.paused ? "▶️" : "⏸️";
+  const big = document.getElementById("npPlayBtn");
+  const mini = document.getElementById("miniPlayBtn");
+  if (big) big.textContent = icon;
+  if (mini) mini.textContent = icon;
+}
+
+function updateProgressBars() {
+  if (!playlistAudio) return;
+  const pct = playlistAudio.duration
+    ? (playlistAudio.currentTime / playlistAudio.duration) * 100 : 0;
   const fill = document.getElementById("npProgressFill");
   const cur = document.getElementById("npCurrent");
-  if (!fill || !cur) return;
-  const pct = playlistAudio.duration ? (playlistAudio.currentTime / playlistAudio.duration) * 100 : 0;
-  fill.style.width = pct + "%";
-  cur.textContent = formatTime(playlistAudio.currentTime);
+  const mFill = document.getElementById("miniProgressFill");
+  if (fill) fill.style.width = pct + "%";
+  if (cur) cur.textContent = formatTime(playlistAudio.currentTime);
+  if (mFill) mFill.style.width = pct + "%";
 }
 
-function updatePlaylistDuration() {
+function updateDurationDisplay() {
   const dur = document.getElementById("npDuration");
   if (!dur || !playlistAudio) return;
   dur.textContent = formatTime(playlistAudio.duration);
@@ -3037,16 +3212,33 @@ function formatTime(sec) {
   return m + ":" + s;
 }
 
-// Seek by tapping the progress bar
+function openPlaylistTab() {
+  const tabBtn = Array.from(document.querySelectorAll(".tab"))
+    .find(t => t.textContent.includes("Playlist"));
+  if (tabBtn) showTab("playlist", tabBtn);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeMiniPlayer() {
+  document.getElementById("miniPlayer").classList.remove("show");
+}
+
+// Seek by tapping progress bars
 document.addEventListener("click", function(e) {
-  const bar = e.target.closest("#npProgress");
-  if (!bar || !playlistAudio || !playlistAudio.duration) return;
-  const rect = bar.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  playlistAudio.currentTime = pct * playlistAudio.duration;
+  const big = e.target.closest("#npProgress");
+  if (big && playlistAudio && playlistAudio.duration) {
+    const rect = big.getBoundingClientRect();
+    playlistAudio.currentTime = ((e.clientX - rect.left) / rect.width) * playlistAudio.duration;
+    return;
+  }
+  const mini = e.target.closest(".mini-progress");
+  if (mini && playlistAudio && playlistAudio.duration) {
+    const rect = mini.getBoundingClientRect();
+    playlistAudio.currentTime = ((e.clientX - rect.left) / rect.width) * playlistAudio.duration;
+  }
 });
 
-// Init playlist when the tab opens (or on load)
+// Load on startup
 if (document.getElementById("trackList")) {
   initPlaylist();
 }
