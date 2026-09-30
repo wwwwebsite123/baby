@@ -1134,6 +1134,220 @@ body[data-theme="light"] .mini-player {
   .np-btn { width: 36px; height: 36px; font-size: 0.85rem; }
   .np-btn.main { width: 44px; height: 44px; }
 }
+  /* ============ BAKING TAB ============ */
+.baking-hero {
+  text-align: center;
+  padding: 1rem 0 1.5rem;
+}
+.baking-hero h2 { margin: 0 0 6px; }
+.baking-hero p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+.baking-filters {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 1.25rem;
+  overflow-x: auto;
+  padding: 4px 4px 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.baking-filters::-webkit-scrollbar { display: none; }
+.baking-filter {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 36px;
+  transition: all 0.15s;
+}
+.baking-filter:active { transform: scale(0.96); }
+.baking-filter.active {
+  background: linear-gradient(135deg, rgba(242,163,212,0.30), rgba(177,140,240,0.25));
+  border-color: var(--hyd-pink);
+  color: var(--hyd-pink);
+  box-shadow: 0 4px 14px rgba(242,163,212,0.25);
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 1rem 0;
+}
+@media (max-width: 480px) {
+  .recipe-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+}
+
+.recipe-card {
+  background: linear-gradient(150deg, var(--card), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+.recipe-card:active { transform: scale(0.97); }
+.recipe-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 6px 22px rgba(177,140,240,0.25);
+}
+
+.recipe-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.recipe-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+.recipe-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: auto;
+  padding-top: 8px;
+  flex-wrap: wrap;
+}
+.recipe-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.recipe-level {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.recipe-level.easy { background: rgba(159,230,212,0.20); color: var(--hyd-mint); border: 1px solid var(--hyd-mint); }
+.recipe-level.medium { background: rgba(212,182,245,0.20); color: var(--hyd-lilac); border: 1px solid var(--accent); }
+.recipe-level.hard { background: rgba(242,163,212,0.20); color: var(--hyd-pink); border: 1px solid var(--hyd-pink); }
+
+/* Recipe modal */
+.recipe-modal {
+  position: fixed; inset: 0;
+  background: rgba(10, 8, 22, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.recipe-modal.open { display: flex; }
+.recipe-modal-content {
+  background: linear-gradient(160deg, var(--card), var(--card2));
+  border: 1px solid var(--accent);
+  border-radius: 22px;
+  padding: 24px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(177,140,240,0.30);
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+}
+.recipe-modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.recipe-modal-close:active { transform: scale(0.9); }
+
+.recipe-modal-emoji { font-size: 3rem; line-height: 1; margin-bottom: 6px; }
+.recipe-modal h3 {
+  color: var(--hyd-pink);
+  margin: 0 0 4px;
+  font-size: 1.35rem;
+  padding-right: 40px;
+}
+.recipe-modal-sub {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+.recipe-modal-meta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.recipe-modal-meta span { display: flex; align-items: center; gap: 5px; }
+
+.recipe-modal h4 {
+  color: var(--hyd-lilac);
+  font-size: 0.95rem;
+  margin: 16px 0 8px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.recipe-modal h4::before {
+  content: "❀";
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.recipe-modal ul, .recipe-modal ol {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+.recipe-modal li { margin-bottom: 4px; }
+.recipe-modal ol li { margin-bottom: 8px; }
+
+.recipe-tip {
+  background: linear-gradient(135deg, rgba(159,230,212,0.15), rgba(126,166,240,0.10));
+  border-left: 4px solid var(--hyd-mint);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.recipe-tip strong { color: var(--hyd-mint); }
 </style>
 </head>
 <body data-theme="dark" data-season="hydrangea" data-furigana="off" data-romaji="on">
@@ -1305,6 +1519,7 @@ body[data-theme="light"] .mini-player {
         <button class="tab" onclick="showTab('badges', this)">🏆 Badges</button>
         <button class="tab" onclick="showTab('quiz', this)">📝 Quiz</button>
         <button class="tab" onclick="showTab('playlist', this)">🎧 Playlist</button>
+        <button class="tab" onclick="showTab('baking', this)">🧁 Baking</button>
       </div>
       <button class="tabs-arrow tabs-arrow-right" onclick="scrollTabs(1)" aria-label="Scroll right">›</button>
     </div>
@@ -1730,6 +1945,44 @@ body[data-theme="light"] .mini-player {
         <h2>🎧 Your Playlist</h2>
         <p>Recordings I made just for you. Tap any track to play.</p>
       </div>
+          <!-- BAKING -->
+    <div class="section" id="baking">
+      <div class="baking-hero">
+        <h2>🧁 Baking Recipes</h2>
+        <p>Easy recipes to start with. Tap any card to see the full recipe.</p>
+      </div>
+
+      <div class="baking-filters" id="bakingFilters">
+        <button class="baking-filter active" onclick="filterRecipes('all', this)">✨ All</button>
+        <button class="baking-filter" onclick="filterRecipes('cookies', this)">🍪 Cookies</button>
+        <button class="baking-filter" onclick="filterRecipes('cakes', this)">🎂 Cakes</button>
+        <button class="baking-filter" onclick="filterRecipes('breads', this)">🍞 Breads</button>
+        <button class="baking-filter" onclick="filterRecipes('pinoy', this)">🇵🇭 Filipino</button>
+        <button class="baking-filter" onclick="filterRecipes('no-bake', this)">❄️ No-Bake</button>
+      </div>
+
+      <div class="recipe-grid" id="recipeGrid"></div>
+
+      <div class="recipe-tip" style="margin-top: 1.5rem;">
+        <strong>Beginner tip:</strong> Always read the whole recipe first, measure everything before you start (mise en place), and preheat the oven 15 minutes before baking. Baking is a science — small changes matter.
+      </div>
+    </div>
+
+    <!-- Recipe modal -->
+    <div class="recipe-modal" id="recipeModal" onclick="closeRecipe(event)">
+      <div class="recipe-modal-content" onclick="event.stopPropagation()">
+        <button class="recipe-modal-close" onclick="closeRecipe()">✕</button>
+        <div class="recipe-modal-emoji" id="recipeModalEmoji">🧁</div>
+        <h3 id="recipeModalTitle">Recipe</h3>
+        <p class="recipe-modal-sub" id="recipeModalSub"></p>
+        <div class="recipe-modal-meta" id="recipeModalMeta"></div>
+        <h4>Ingredients</h4>
+        <ul id="recipeModalIngredients"></ul>
+        <h4>Steps</h4>
+        <ol id="recipeModalSteps"></ol>
+        <div class="recipe-tip" id="recipeModalTip" style="display:none;"></div>
+      </div>
+    </div>
 
       <!-- Now playing -->
       <div class="now-playing" id="nowPlayingBar" style="display:none;">
@@ -2186,6 +2439,14 @@ function showLevel(sectionId, level, btn) {
   document.getElementById(sectionId + "-" + level).classList.add("active");
   btn.classList.add("active");
 }
+    if (id === "baking") {
+    // Auto-unlock the baking letter if it exists
+    const bl = LETTERS.find(l => l.id === "baking");
+    if (bl && !state.lettersOpened["baking"]) {
+      // Don't auto-open, just make it available
+      renderLetters();
+    }
+  }
 
 /* ============================================================
    LEARNED / PROGRESS / FAVORITES
@@ -2957,6 +3218,7 @@ const LETTERS = [
   { id: "tenStreak", emoji: "🌟", title: "Open when 10-day streak", unlock: () => state.streak >= 10, body: "Ten days. Not a fluke. Not a mood. You built something real. I'm proud of you, always." },
   { id: "topHero", emoji: "🏅", title: "Open when Top 10 Hero rank", unlock: () => state.xp >= 600, body: "Top 10 Hero. In any world, that's serious. And you did it by showing up, a little every day.\n\nおめでとう。축하해요." },
   { id: "symbol", emoji: "🌍", title: "Open when Symbol of Peace", unlock: () => state.xp >= 1000, body: "You hit the highest rank I made for you. There's more to learn, but this — right here — matters. Thank you for taking this seriously. Thank you for being you." }
+    { id: "baking", emoji: "🧁", title: "Open when you want to bake", unlock: () => true, body: "Hey Baby,\n\nI added this baking tab because you said you want to learn. I don't know if you'll actually use it — but I wanted you to have it, just in case.\n\nStart with the cookies and whatever you make, don't worry if it doesn't look perfect the first time. That's not the point.\n\nThe point is you tried.\n\n— Jes 🌸" }
 ];
 function renderLetters() {
   const grid = document.getElementById("lettersGrid");
@@ -3640,6 +3902,344 @@ if (document.getElementById("trackList")) {
   setTimeout(updateArrows, 200);
   window.addEventListener("load", updateArrows);
 })();
+  /* ============================================================
+   BAKING RECIPES
+============================================================ */
+const RECIPES = [
+  {
+    id: "choc-chip-cookies",
+    emoji: "🍪",
+    title: "Chocolate Chip Cookies",
+    sub: "Classic, chewy, foolproof",
+    category: "cookies",
+    level: "easy",
+    time: "30 min",
+    servings: "24 cookies",
+    ingredients: [
+      "2¼ cups all-purpose flour",
+      "1 tsp baking soda",
+      "1 tsp salt",
+      "1 cup butter, softened",
+      "¾ cup white sugar",
+      "¾ cup brown sugar, packed",
+      "2 large eggs",
+      "2 tsp vanilla extract",
+      "2 cups chocolate chips"
+    ],
+    steps: [
+      "Preheat oven to 375°F (190°C). Line two baking sheets with parchment paper.",
+      "Whisk flour, baking soda, and salt in a bowl.",
+      "In a large bowl, cream butter and both sugars until light and fluffy (2–3 min).",
+      "Beat in eggs one at a time, then vanilla.",
+      "Gradually mix in the dry ingredients, then fold in chocolate chips.",
+      "Drop rounded tablespoons onto the baking sheet, 2 inches apart.",
+      "Bake 9–11 minutes until edges are golden but centers look soft.",
+      "Cool on the sheet for 5 minutes, then move to a wire rack."
+    ],
+    tip: "The cookies will look underdone in the middle when you pull them out — that's what makes them chewy. They set as they cool."
+  },
+  {
+    id: "banana-bread",
+    emoji: "🍌",
+    title: "Banana Bread",
+    sub: "Uses up overripe bananas",
+    category: "breads",
+    level: "easy",
+    time: "1 hr",
+    servings: "1 loaf",
+    ingredients: [
+      "3 very ripe bananas, mashed",
+      "⅓ cup melted butter",
+      "¾ cup sugar",
+      "1 egg, beaten",
+      "1 tsp vanilla",
+      "1 tsp baking soda",
+      "1 pinch salt",
+      "1½ cups all-purpose flour"
+    ],
+    steps: [
+      "Preheat oven to 350°F (175°C). Grease a 9x5 inch loaf pan.",
+      "Mash bananas in a large bowl with a fork.",
+      "Stir in melted butter, sugar, egg, and vanilla.",
+      "Sprinkle baking soda and salt over the mixture, stir.",
+      "Add flour and mix until just combined — don't overmix.",
+      "Pour into the loaf pan and bake 55–65 minutes.",
+      "A toothpick inserted in the center should come out clean.",
+      "Cool in the pan for 15 minutes, then turn out onto a rack."
+    ],
+    tip: "The blacker the bananas, the better the bread. Freeze ripe bananas and thaw when you're ready to bake."
+  },
+  {
+    id: "pinoy-mamon",
+    emoji: "🧁",
+    title: "Filipino Mamon",
+    sub: "Soft sponge cake, classic merienda",
+    category: "pinoy",
+    level: "medium",
+    time: "45 min",
+    servings: "12 mamon",
+    ingredients: [
+      "1 cup cake flour",
+      "1 tsp baking powder",
+      "½ tsp salt",
+      "5 egg yolks",
+      "¼ cup milk",
+      "¼ cup vegetable oil",
+      "1 tsp vanilla",
+      "½ cup sugar (for yolks)",
+      "5 egg whites",
+      "½ tsp cream of tartar",
+      "⅓ cup sugar (for whites)",
+      "Butter and sugar for topping"
+    ],
+    steps: [
+      "Preheat oven to 350°F (175°C). Grease mamon molds and dust with sugar.",
+      "Sift flour, baking powder, and salt. Set aside.",
+      "Whisk yolks, milk, oil, vanilla, and ½ cup sugar until pale.",
+      "Fold in the dry ingredients until smooth.",
+      "In a clean bowl, beat egg whites with cream of tartar until frothy.",
+      "Gradually add ⅓ cup sugar and beat to stiff peaks.",
+      "Fold the meringue into the yolk mixture in three additions.",
+      "Fill molds ¾ full. Bake 15–18 minutes until golden.",
+      "Brush tops with butter and sprinkle with sugar while warm."
+    ],
+    tip: "Fold gently — you want to keep the air in the egg whites. That's what makes mamon fluffy."
+  },
+  {
+    id: "no-bake-cheesecake",
+    emoji: "🍰",
+    title: "No-Bake Cheesecake",
+    sub: "No oven needed",
+    category: "no-bake",
+    level: "easy",
+    time: "20 min + chill",
+    servings: "8 slices",
+    ingredients: [
+      "1½ cups graham cracker crumbs",
+      "½ cup melted butter",
+      "2 tbsp sugar",
+      "16 oz cream cheese, softened",
+      "½ cup powdered sugar",
+      "1 tsp vanilla",
+      "1 cup heavy cream, whipped",
+      "Topping: fresh fruit or jam"
+    ],
+    steps: [
+      "Mix graham crumbs, melted butter, and sugar. Press into a 9-inch springform pan.",
+      "Chill the crust in the fridge while you make the filling.",
+      "Beat cream cheese and powdered sugar until smooth.",
+      "Add vanilla and mix.",
+      "Whip the heavy cream to stiff peaks, then fold into the cream cheese.",
+      "Spread over the chilled crust. Smooth the top.",
+      "Cover and chill at least 4 hours (overnight is best).",
+      "Top with fruit or jam before serving."
+    ],
+    tip: "Let the cream cheese sit at room temperature for 30 minutes before beating — it prevents lumps."
+  },
+  {
+    id: "pandesal",
+    emoji: "🥖",
+    title: "Pandesal",
+    sub: "Filipino bread rolls",
+    category: "pinoy",
+    level: "medium",
+    time: "2.5 hrs",
+    servings: "16 rolls",
+    ingredients: [
+      "4 cups bread flour",
+      "1 packet (2¼ tsp) active dry yeast",
+      "¼ cup warm water",
+      "¼ cup sugar",
+      "1 tsp salt",
+      "1 cup warm milk",
+      "3 tbsp butter, softened",
+      "2 eggs",
+      "Bread crumbs for coating"
+    ],
+    steps: [
+      "Dissolve yeast in warm water with a pinch of sugar. Wait 10 min until foamy.",
+      "Mix flour, sugar, and salt in a large bowl.",
+      "Add yeast mixture, milk, butter, and eggs. Knead 8–10 minutes.",
+      "Cover and let rise 1 hour until doubled.",
+      "Punch down and divide into 16 equal pieces. Roll into balls.",
+      "Coat each in bread crumbs. Place on a greased baking sheet.",
+      "Cover and let rise 45 minutes more.",
+      "Bake at 350°F (175°C) for 18–22 minutes until golden brown."
+    ],
+    tip: "Pandesal is best eaten warm with butter and dipped in coffee. Reheat in a toaster oven, not the microwave."
+  },
+  {
+    id: "chiffon-cake",
+    emoji: "🎂",
+    title: "Chiffon Cake",
+    sub: "Light and airy base for any occasion",
+    category: "cakes",
+    level: "hard",
+    time: "1.5 hrs",
+    servings: "1 cake",
+    ingredients: [
+      "2¼ cups cake flour",
+      "1½ cups sugar (divided)",
+      "1 tbsp baking powder",
+      "1 tsp salt",
+      "7 egg yolks",
+      "¾ cup water",
+      "½ cup vegetable oil",
+      "2 tsp vanilla",
+      "7 egg whites",
+      "½ tsp cream of tartar"
+    ],
+    steps: [
+      "Preheat oven to 325°F (165°C).",
+      "Sift flour, ¾ cup sugar, baking powder, and salt.",
+      "Make a well, add yolks, water, oil, and vanilla. Beat until smooth.",
+      "In a clean bowl, beat whites with cream of tartar until foamy.",
+      "Gradually add remaining ¾ cup sugar. Beat to stiff peaks.",
+      "Fold meringue into the batter in three additions — gently.",
+      "Pour into an ungreased tube pan.",
+      "Bake 55–65 minutes until top springs back when touched.",
+      "Invert the pan to cool completely before removing."
+    ],
+    tip: "Never grease a chiffon pan — the batter needs to climb the sides. Invert while cooling so it doesn't collapse."
+  },
+  {
+    id: "brownies",
+    emoji: "🍫",
+    title: "Fudgy Brownies",
+    sub: "Rich, dense, and easy",
+    category: "cakes",
+    level: "easy",
+    time: "45 min",
+    servings: "16 squares",
+    ingredients: [
+      "½ cup butter",
+      "1 cup sugar",
+      "2 eggs",
+      "1 tsp vanilla",
+      "⅓ cup cocoa powder",
+      "½ cup all-purpose flour",
+      "¼ tsp salt",
+      "¼ tsp baking powder",
+      "½ cup chocolate chips (optional)"
+    ],
+    steps: [
+      "Preheat oven to 350°F (175°C). Grease an 8x8 inch pan.",
+      "Melt butter in a saucepan. Remove from heat.",
+      "Stir in sugar, eggs, and vanilla until smooth.",
+      "Beat in cocoa, flour, salt, and baking powder.",
+      "Fold in chocolate chips.",
+      "Spread batter evenly into the pan.",
+      "Bake 25–30 minutes until a toothpick comes out with moist crumbs.",
+      "Cool completely before cutting."
+    ],
+    tip: "For fudgy brownies, pull them out when the center still jiggles slightly. They finish setting as they cool."
+  },
+  {
+    id: "banana-muffins",
+    emoji: "🧁",
+    title: "Banana Muffins",
+    sub: "Breakfast on the go",
+    category: "breads",
+    level: "easy",
+    time: "35 min",
+    servings: "12 muffins",
+    ingredients: [
+      "1½ cups all-purpose flour",
+      "1 tsp baking soda",
+      "1 tsp baking powder",
+      "½ tsp salt",
+      "3 ripe bananas, mashed",
+      "¾ cup sugar",
+      "1 egg",
+      "⅓ cup melted butter",
+      "1 tsp vanilla"
+    ],
+    steps: [
+      "Preheat oven to 350°F (175°C). Line a muffin tin with paper cups.",
+      "Whisk flour, baking soda, baking powder, and salt.",
+      "In another bowl, mix bananas, sugar, egg, butter, and vanilla.",
+      "Fold the dry into the wet until just combined.",
+      "Spoon into muffin cups, filling each ¾ full.",
+      "Bake 18–22 minutes until golden and a toothpick comes out clean.",
+      "Cool in the tin for 5 minutes, then transfer to a rack."
+    ],
+    tip: "Don't overmix! Lumps are fine. Overmixing makes muffins tough."
+  }
+];
+
+function renderRecipes(filter) {
+  const grid = document.getElementById("recipeGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  const list = filter === "all" ? RECIPES : RECIPES.filter(r => r.category === filter);
+  if (!list.length) {
+    grid.innerHTML = `<div class="review-empty"><span class="emoji">🥺</span>No recipes in this category yet.</div>`;
+    return;
+  }
+  list.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "recipe-card";
+    card.innerHTML = `
+      <span class="recipe-level ${r.level}">${r.level.toUpperCase()}</span>
+      <div class="recipe-emoji">${r.emoji}</div>
+      <div class="recipe-title">${r.title}</div>
+      <div style="font-size:0.78rem;color:var(--muted);">${r.sub}</div>
+      <div class="recipe-meta">
+        <span>⏱ ${r.time}</span>
+        <span>🍽 ${r.servings}</span>
+      </div>
+    `;
+    card.onclick = () => openRecipe(r.id);
+    grid.appendChild(card);
+  });
+}
+
+function filterRecipes(category, btn) {
+  document.querySelectorAll(".baking-filter").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderRecipes(category);
+}
+
+function openRecipe(id) {
+  const r = RECIPES.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById("recipeModalEmoji").textContent = r.emoji;
+  document.getElementById("recipeModalTitle").textContent = r.title;
+  document.getElementById("recipeModalSub").textContent = r.sub;
+  document.getElementById("recipeModalMeta").innerHTML = `
+    <span>⏱ ${r.time}</span>
+    <span>🍽 ${r.servings}</span>
+    <span>📊 ${r.level.charAt(0).toUpperCase() + r.level.slice(1)}</span>
+  `;
+  const ing = document.getElementById("recipeModalIngredients");
+  ing.innerHTML = "";
+  r.ingredients.forEach(i => {
+    const li = document.createElement("li"); li.textContent = i; ing.appendChild(li);
+  });
+  const st = document.getElementById("recipeModalSteps");
+  st.innerHTML = "";
+  r.steps.forEach(s => {
+    const li = document.createElement("li"); li.textContent = s; st.appendChild(li);
+  });
+  const tip = document.getElementById("recipeModalTip");
+  if (r.tip) {
+    tip.style.display = "block";
+    tip.innerHTML = `<strong>Tip:</strong> ${r.tip}`;
+  } else {
+    tip.style.display = "none";
+  }
+  document.getElementById("recipeModal").classList.add("open");
+}
+
+function closeRecipe(e) {
+  if (e && e.target && !e.target.classList.contains("recipe-modal")) return;
+  document.getElementById("recipeModal").classList.remove("open");
+}
+
+// Init when the tab opens
+if (document.getElementById("recipeGrid")) {
+  renderRecipes("all");
+}
 </script>
 </body>
 </html>
