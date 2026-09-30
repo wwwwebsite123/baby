@@ -1939,50 +1939,41 @@ body[data-theme="light"] .mini-player {
       <p>Milestones you've earned.</p>
       <div class="badges-grid" id="badgesGrid"></div>
     </div>
+        <!-- BADGES -->
+    <div class="section" id="badges">
+      ...
+    </div>
+
+    <!-- BAKING -->
+    <div class="section" id="baking">
+      ...
+    </div>
+
+    <!-- Recipe modal -->
+    <div class="recipe-modal" id="recipeModal" onclick="closeRecipe(event)">
+      ...
+    </div>
+
+    <!-- PLAYLIST -->
+    <div class="section" id="playlist">
+      <div class="playlist-hero">
+        ...
+      </div>
+
+      <!-- Now playing -->
+      <div class="now-playing" id="nowPlayingBar" style="display:none;">
+        ...
+      </div>
+
+      <div class="track-list" id="trackList"></div>
+      ...
+    </div>
         <!-- PLAYLIST -->
     <div class="section" id="playlist">
       <div class="playlist-hero">
         <h2>🎧 Your Playlist</h2>
         <p>Recordings I made just for you. Tap any track to play.</p>
       </div>
-          <!-- BAKING -->
-    <div class="section" id="baking">
-      <div class="baking-hero">
-        <h2>🧁 Baking Recipes</h2>
-        <p>Easy recipes to start with. Tap any card to see the full recipe.</p>
-      </div>
-
-      <div class="baking-filters" id="bakingFilters">
-        <button class="baking-filter active" onclick="filterRecipes('all', this)">✨ All</button>
-        <button class="baking-filter" onclick="filterRecipes('cookies', this)">🍪 Cookies</button>
-        <button class="baking-filter" onclick="filterRecipes('cakes', this)">🎂 Cakes</button>
-        <button class="baking-filter" onclick="filterRecipes('breads', this)">🍞 Breads</button>
-        <button class="baking-filter" onclick="filterRecipes('pinoy', this)">🇵🇭 Filipino</button>
-        <button class="baking-filter" onclick="filterRecipes('no-bake', this)">❄️ No-Bake</button>
-      </div>
-
-      <div class="recipe-grid" id="recipeGrid"></div>
-
-      <div class="recipe-tip" style="margin-top: 1.5rem;">
-        <strong>Beginner tip:</strong> Always read the whole recipe first, measure everything before you start (mise en place), and preheat the oven 15 minutes before baking. Baking is a science — small changes matter.
-      </div>
-    </div>
-
-    <!-- Recipe modal -->
-    <div class="recipe-modal" id="recipeModal" onclick="closeRecipe(event)">
-      <div class="recipe-modal-content" onclick="event.stopPropagation()">
-        <button class="recipe-modal-close" onclick="closeRecipe()">✕</button>
-        <div class="recipe-modal-emoji" id="recipeModalEmoji">🧁</div>
-        <h3 id="recipeModalTitle">Recipe</h3>
-        <p class="recipe-modal-sub" id="recipeModalSub"></p>
-        <div class="recipe-modal-meta" id="recipeModalMeta"></div>
-        <h4>Ingredients</h4>
-        <ul id="recipeModalIngredients"></ul>
-        <h4>Steps</h4>
-        <ol id="recipeModalSteps"></ol>
-        <div class="recipe-tip" id="recipeModalTip" style="display:none;"></div>
-      </div>
-    </div>
 
       <!-- Now playing -->
       <div class="now-playing" id="nowPlayingBar" style="display:none;">
@@ -3210,7 +3201,7 @@ const LETTERS = [
   { id: "matchWin", emoji: "🎮", title: "Open when you win Match", unlock: () => state.correct >= 5, body: "You matched pairs and answered right. That's not just memorizing — that's actually knowing.\n\nKeep going, Baby." },
   { id: "tenStreak", emoji: "🌟", title: "Open when 10-day streak", unlock: () => state.streak >= 10, body: "Ten days. Not a fluke. Not a mood. You built something real. I'm proud of you, always." },
   { id: "topHero", emoji: "🏅", title: "Open when Top 10 Hero rank", unlock: () => state.xp >= 600, body: "Top 10 Hero. In any world, that's serious. And you did it by showing up, a little every day.\n\nおめでとう。축하해요." },
-  { id: "symbol", emoji: "🌍", title: "Open when Symbol of Peace", unlock: () => state.xp >= 1000, body: "You hit the highest rank I made for you. There's more to learn, but this — right here — matters. Thank you for taking this seriously. Thank you for being you." }
+  { id: "symbol", emoji: "🌍", title: "Open when Symbol of Peace", unlock: () => state.xp >= 1000, body: "You hit the highest rank I made for you. There's more to learn, but this — right here — matters. Thank you for taking this seriously. Thank you for being you." },
   { id: "baking", emoji: "🧁", title: "Open when you want to bake", unlock: () => true, body: "Hey Baby,\n\nI added this baking tab because you said you want to learn. I don't know if you'll actually use it — but I wanted you to have it, just in case.\n\nStart with the cookies and whatever you make, don't worry if it doesn't look perfect the first time. That's not the point.\n\nThe point is you tried.\n\n— Jes 🌸" },
 ];
 function renderLetters() {
