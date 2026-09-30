@@ -1972,7 +1972,7 @@ body[data-theme="light"] .mini-player {
       </div>
     </div>
 
-    <!-- PLAYLIST -->
+       <!-- PLAYLIST -->
     <div class="section" id="playlist">
       <div class="playlist-hero">
         <h2>🎧 Your Playlist</h2>
@@ -1981,11 +1981,43 @@ body[data-theme="light"] .mini-player {
 
       <!-- Now playing -->
       <div class="now-playing" id="nowPlayingBar" style="display:none;">
-        ...
+        <div class="np-cover" id="npCover">🎵</div>
+        <div class="np-info">
+          <div class="np-title" id="npTitle">—</div>
+          <div class="np-sub" id="npSub">
+            <div class="np-progress-wrap">
+              <div class="np-progress" id="npProgress">
+                <div class="np-progress-fill" id="npProgressFill"></div>
+              </div>
+              <div class="np-times">
+                <span id="npCurrent">0:00</span>
+                <span id="npDuration">0:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="np-controls">
+          <button class="np-btn" id="npShuffle" onclick="toggleShuffle()" title="Shuffle">🔀</button>
+          <button class="np-btn" onclick="prevTrack()" title="Previous">⏮️</button>
+          <button class="np-btn main" id="npPlayBtn" onclick="togglePlayPause()" title="Play/Pause">▶️</button>
+          <button class="np-btn" onclick="nextTrack()" title="Next">⏭️</button>
+          <button class="np-btn" id="npRepeat" onclick="cycleRepeat()" title="Repeat">🔁</button>
+        </div>
       </div>
 
       <div class="track-list" id="trackList"></div>
-      ...
+
+      <div class="playlist-empty" id="playlistEmpty">
+        <span class="emoji">🎙️</span>
+        No recordings yet.<br>
+        <small>Add them in the code below.</small>
+      </div>
+
+      <div class="playlist-hint">
+        <strong>How to add your songs:</strong><br>
+        Drop your MP3 files in the same folder as <code>index.html</code>, then edit the
+        <code>PLAYLIST</code> array in the code to list them.
+      </div>
     </div>
      
 
