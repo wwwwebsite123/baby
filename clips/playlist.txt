@@ -1,7 +1,7 @@
 # Format: filename | Caption | emoji
 # Lines starting with # are ignored
 
-Deku.gif | Plus Ultra! | ⚡
+clips/Deku.gif | Plus Ultra! | ⚡
 clips/Bakugo.gif | Deku's arrival | 🦸
 clips/Deku2.gif | Deku | 💥
 clips/Bakugo2.gif | Rivals | 🤝
