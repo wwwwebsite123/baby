@@ -2439,14 +2439,7 @@ function showLevel(sectionId, level, btn) {
   document.getElementById(sectionId + "-" + level).classList.add("active");
   btn.classList.add("active");
 }
-    if (id === "baking") {
-    // Auto-unlock the baking letter if it exists
-    const bl = LETTERS.find(l => l.id === "baking");
-    if (bl && !state.lettersOpened["baking"]) {
-      // Don't auto-open, just make it available
-      renderLetters();
-    }
-  }
+  
 
 /* ============================================================
    LEARNED / PROGRESS / FAVORITES
