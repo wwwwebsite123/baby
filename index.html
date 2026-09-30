@@ -394,43 +394,103 @@
     transition: width 0.5s ease;
   }
 
+    /* HERO CLIP GALLERY */
   .hero-stage {
-    position: relative; height: 240px; margin: 0.5rem 0 1.5rem;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; border-radius: 18px;
-    background:
-      radial-gradient(circle at 50% 100%, rgba(79,191,122,0.20), transparent 60%),
-      radial-gradient(circle at 50% 0%, rgba(177,140,240,0.15), transparent 60%),
-      rgba(15, 12, 34, 0.6);
+    position: relative; margin: 0.5rem 0 1.5rem;
+    border-radius: 18px; overflow: hidden;
+    background: rgba(15, 12, 34, 0.85);
     border: 1px solid var(--border);
+    aspect-ratio: 16 / 9;
+    max-height: 340px;
   }
-  .hero-character { width: 150px; height: 190px; opacity: 0; transform: translateX(-220%) rotate(-360deg); }
-  .hero-character svg { display: block; width: 100%; height: 100%; }
-  .hero-stage.play .hero-character { animation: heroEntrance 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-  @keyframes heroEntrance {
-    0% { opacity: 0; transform: translateX(-220%) rotate(-360deg) scale(0.6); }
-    55% { opacity: 1; transform: translateX(18px) rotate(8deg) scale(1.05); }
-    75% { transform: translateX(-8px) rotate(-5deg) scale(0.98); }
-    100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
-  }
-  .hero-smash {
-    position: absolute; top: 22%; left: 50%; transform: translate(-50%, 0) scale(0.4);
-    font-size: clamp(2rem, 9vw, 3.4rem); font-weight: 900; letter-spacing: 4px;
-    color: var(--hyd-pink); text-shadow: 0 0 24px rgba(242,163,212,0.9);
-    opacity: 0; pointer-events: none; white-space: nowrap;
-  }
-  .hero-stage.play .hero-smash { animation: smashPop 1.7s ease-out 0.55s forwards; }
-  @keyframes smashPop {
-    0% { opacity: 0; transform: translate(-50%, 0) scale(0.4); }
-    35% { opacity: 1; transform: translate(-50%, 0) scale(1.5); }
-    100% { opacity: 0; transform: translate(-50%, -30px) scale(1.7); }
-  }
-  .hero-caption {
-    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
-    font-size: 0.78rem; color: var(--hyd-lilac); letter-spacing: 1px;
-    opacity: 0.85; text-align: center; width: 90%;
+  @media (max-width: 480px) {
+    .hero-stage { aspect-ratio: 4 / 5; max-height: 420px; }
   }
 
+  .hero-media {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #0a0818;
+  }
+  .hero-media img,
+  .hero-media video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .hero-media img.loaded,
+  .hero-media video.loaded { opacity: 1; }
+
+  .hero-media img { animation: clipFadeIn 0.5s ease forwards; }
+  @keyframes clipFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .hero-overlay {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 16px 12px 10px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
+    display: flex; flex-direction: column; gap: 8px;
+    pointer-events: none;
+  }
+  .hero-caption {
+    font-size: 0.85rem; color: #fff; letter-spacing: 0.5px;
+    text-align: center; font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .hero-nav {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    pointer-events: auto;
+  }
+  .hero-nav-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(34,26,68,0.85); border: 1px solid var(--accent);
+    color: var(--accent); font-size: 1.1rem; font-weight: 700;
+    cursor: pointer; font-family: inherit; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: all 0.15s;
+  }
+  .hero-nav-btn:active { transform: scale(0.9); }
+  .hero-nav-btn:hover { background: var(--accent); color: #fff; }
+
+  .hero-dots {
+    display: flex; gap: 6px; align-items: center;
+    flex-wrap: nowrap; overflow-x: auto; max-width: 60vw;
+    padding: 4px 6px; scrollbar-width: none;
+  }
+  .hero-dots::-webkit-scrollbar { display: none; }
+  .hero-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    border: none; padding: 0; cursor: pointer;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .hero-dot.active {
+    background: var(--hyd-pink);
+    box-shadow: 0 0 8px rgba(242,163,212,0.8);
+    width: 18px; border-radius: 4px;
+  }
+
+  .hero-empty {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: var(--muted); font-size: 0.85rem;
+    text-align: center; padding: 20px;
+    gap: 8px;
+  }
+  .hero-empty .emoji { font-size: 2.5rem; }
+
+  .hero-counter {
+    position: absolute; top: 10px; right: 12px;
+    background: rgba(0,0,0,0.6); color: #fff;
+    font-size: 0.7rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px;
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
   .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0; border-radius: 12px; }
   table { width: 100%; min-width: 280px; border-collapse: collapse; font-size: 0.95rem; }
   th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); }
@@ -1384,10 +1444,16 @@ body[data-theme="light"] .mini-player {
     <!-- ANIME -->
     <div class="section" id="anime">
       <h2>🎌 Anime &amp; K-Drama</h2>
-      <div class="hero-stage" id="heroStage">
-        <div class="hero-character" id="heroCharacter"></div>
-        <div class="hero-smash">SMASH!</div>
-        <div class="hero-caption">Green-haired hero incoming… 🌸</div>
+         <div class="hero-stage" id="heroStage">
+        <div class="hero-media" id="heroMedia"></div>
+        <div class="hero-overlay">
+          <div class="hero-caption" id="heroCaption">Heroes incoming… 🌸</div>
+          <div class="hero-nav">
+            <button class="hero-nav-btn" onclick="prevHeroClip()" aria-label="Previous clip">‹</button>
+            <div class="hero-dots" id="heroDots"></div>
+            <button class="hero-nav-btn" onclick="nextHeroClip()" aria-label="Next clip">›</button>
+          </div>
+        </div>
       </div>
       <h3>Anime Phrases</h3>
       <div class="table-wrap"><table>
@@ -2078,7 +2144,14 @@ function showTab(id, btn) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   btn.classList.add("active");
-  if (id === "anime") playHeroAnimation();
+  if (id === "anime") {
+    if (typeof resetHeroTimer === "function") resetHeroTimer();
+  } else {
+    if (typeof heroClipTimer !== "undefined" && heroClipTimer) {
+      clearTimeout(heroClipTimer);
+      heroClipTimer = null;
+    }
+  }
   if (id === "favs") renderFavorites();
   if (id === "badges") renderBadges();
   if (id === "letters") renderLetters();
@@ -2918,51 +2991,159 @@ function resetProgress() {
 /* ============================================================
    HERO CHARACTER
 ============================================================ */
-function dekuSVG() {
-  return `<svg viewBox="0 0 200 240" width="100%" height="100%" aria-hidden="true">
-    <ellipse cx="100" cy="232" rx="52" ry="7" fill="rgba(79,191,122,0.35)"/>
-    <rect x="76" y="180" width="20" height="42" rx="8" fill="#2d5f8a"/>
-    <rect x="104" y="180" width="20" height="42" rx="8" fill="#2d5f8a"/>
-    <rect x="72" y="214" width="28" height="14" rx="6" fill="#c0392b"/>
-    <rect x="100" y="214" width="28" height="14" rx="6" fill="#c0392b"/>
-    <rect x="64" y="118" width="72" height="68" rx="16" fill="#4fbf7a"/>
-    <rect x="64" y="118" width="72" height="20" rx="10" fill="#3da566"/>
-    <path d="M100 130 L100 180" stroke="#fdf8ff" stroke-width="3" opacity="0.55"/>
-    <g transform="rotate(-32 51 132)"><rect x="40" y="100" width="22" height="60" rx="11" fill="#4fbf7a"/></g>
-    <g transform="rotate(32 149 132)"><rect x="138" y="100" width="22" height="60" rx="11" fill="#4fbf7a"/></g>
-    <circle cx="40" cy="98" r="14" fill="#f5c9a0" stroke="#e0a878" stroke-width="1.5"/>
-    <circle cx="160" cy="98" r="14" fill="#f5c9a0" stroke="#e0a878" stroke-width="1.5"/>
-    <rect x="90" y="106" width="20" height="16" fill="#e0a878"/>
-    <circle cx="100" cy="80" r="44" fill="#f5c9a0"/>
-    <path d="M56 76 Q58 38 86 30 Q98 18 108 30 Q138 28 148 54 Q154 70 145 84 Q138 68 124 74 Q112 58 100 64 Q88 58 76 74 Q66 68 56 76 Z" fill="#3da566"/>
-    <path d="M58 60 L44 44 L66 52 Z" fill="#2d7a4f"/>
-    <path d="M90 26 L86 6 L106 22 Z" fill="#2d7a4f"/>
-    <path d="M128 30 L144 14 L138 40 Z" fill="#2d7a4f"/>
-    <ellipse cx="84" cy="82" rx="9" ry="11" fill="#ffffff"/>
-    <ellipse cx="116" cy="82" rx="9" ry="11" fill="#ffffff"/>
-    <circle cx="85" cy="84" r="6" fill="#2d7a4f"/>
-    <circle cx="117" cy="84" r="6" fill="#2d7a4f"/>
-    <circle cx="83" cy="82" r="2" fill="#ffffff"/>
-    <circle cx="115" cy="82" r="2" fill="#ffffff"/>
-    <circle cx="72" cy="94" r="1.6" fill="#c97b5a"/>
-    <circle cx="78" cy="98" r="1.6" fill="#c97b5a"/>
-    <circle cx="122" cy="94" r="1.6" fill="#c97b5a"/>
-    <circle cx="128" cy="98" r="1.6" fill="#c97b5a"/>
-    <path d="M90 102 Q100 110 110 102" stroke="#8b5a3c" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  </svg>`;
+/* ============ HERO CLIP GALLERY ============ */
+const FALLBACK_CLIPS = [
+  // If clips.txt can't load, these are shown.
+  // Put your clip files in a "clips/" folder.
+];
+
+let HERO_CLIPS = [];
+let heroClipIndex = 0;
+let heroClipTimer = null;
+const HERO_ROTATE_MS = 6000; // auto-advance every 6 seconds
+
+async function loadHeroClips() {
+  try {
+    const res = await fetch("clips.txt", { cache: "no-cache" });
+    if (!res.ok) throw new Error("no file");
+    const text = await res.text();
+    const lines = text.split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
+    const parsed = lines.map(line => {
+      const parts = line.split("|").map(s => s.trim());
+      return {
+        src: parts[0] || "",
+        caption: parts[1] || "",
+        emoji: parts[2] || "🎬"
+      };
+    }).filter(c => c.src);
+    HERO_CLIPS = parsed.length ? parsed : FALLBACK_CLIPS;
+  } catch (e) {
+    HERO_CLIPS = FALLBACK_CLIPS;
+  }
+  renderHeroClip();
 }
-function buildHero() {
-  const h = document.getElementById('heroCharacter');
-  if (h) h.innerHTML = dekuSVG();
+
+function renderHeroClip() {
+  const media = document.getElementById("heroMedia");
+  const caption = document.getElementById("heroCaption");
+  const dots = document.getElementById("heroDots");
+  if (!media) return;
+
+  // Clear
+  media.innerHTML = "";
+  if (dots) dots.innerHTML = "";
+
+  if (!HERO_CLIPS.length) {
+    media.innerHTML = `
+      <div class="hero-empty">
+        <span class="emoji">🎬</span>
+        <div>No clips yet</div>
+        <small>Add GIF or MP4 files to <code>clips/</code><br>and list them in <code>clips.txt</code></small>
+      </div>`;
+    if (caption) caption.textContent = "Heroes incoming… 🌸";
+    return;
+  }
+
+  // Wrap around
+  if (heroClipIndex >= HERO_CLIPS.length) heroClipIndex = 0;
+  if (heroClipIndex < 0) heroClipIndex = HERO_CLIPS.length - 1;
+
+  const clip = HERO_CLIPS[heroClipIndex];
+  const isVideo = /\.(mp4|webm|mov)$/i.test(clip.src);
+
+  if (isVideo) {
+    const video = document.createElement("video");
+    video.src = clip.src;
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.onloadeddata = () => video.classList.add("loaded");
+    video.onerror = () => showHeroError(media);
+    media.appendChild(video);
+  } else {
+    // GIF or image
+    const img = document.createElement("img");
+    img.src = clip.src;
+    img.alt = clip.caption || "Hero clip";
+    img.loading = "eager";
+    img.onload = () => img.classList.add("loaded");
+    img.onerror = () => showHeroError(media);
+    media.appendChild(img);
+  }
+
+  // Caption
+  if (caption) {
+    caption.textContent = (clip.emoji ? clip.emoji + " " : "") + (clip.caption || "");
+  }
+
+  // Counter
+  const existingCounter = document.querySelector(".hero-counter");
+  if (existingCounter) existingCounter.remove();
+  const counter = document.createElement("div");
+  counter.className = "hero-counter";
+  counter.textContent = `${heroClipIndex + 1} / ${HERO_CLIPS.length}`;
+  document.getElementById("heroStage").appendChild(counter);
+
+  // Dots
+  if (dots) {
+    HERO_CLIPS.forEach((_, i) => {
+      const d = document.createElement("button");
+      d.className = "hero-dot" + (i === heroClipIndex ? " active" : "");
+      d.setAttribute("aria-label", "Clip " + (i + 1));
+      d.onclick = (e) => {
+        e.stopPropagation();
+        heroClipIndex = i;
+        renderHeroClip();
+        resetHeroTimer();
+      };
+      dots.appendChild(d);
+    });
+    // Scroll active dot into view
+    setTimeout(() => {
+      const active = dots.querySelector(".hero-dot.active");
+      if (active) active.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }, 50);
+  }
+
+  // Restart auto-rotate
+  resetHeroTimer();
 }
-function playHeroAnimation() {
-  const stage = document.getElementById('heroStage');
-  if (!stage) return;
-  stage.classList.remove('play');
-  void stage.offsetWidth;
-  stage.classList.add('play');
+
+function showHeroError(media) {
+  media.innerHTML = `
+    <div class="hero-empty">
+      <span class="emoji">⚠️</span>
+      <div>Couldn't load that clip</div>
+      <small>Check the filename in <code>clips.txt</code></small>
+    </div>`;
 }
-buildHero();
+
+function nextHeroClip() {
+  if (!HERO_CLIPS.length) return;
+  heroClipIndex = (heroClipIndex + 1) % HERO_CLIPS.length;
+  renderHeroClip();
+}
+function prevHeroClip() {
+  if (!HERO_CLIPS.length) return;
+  heroClipIndex = (heroClipIndex - 1 + HERO_CLIPS.length) % HERO_CLIPS.length;
+  renderHeroClip();
+}
+function resetHeroTimer() {
+  if (heroClipTimer) clearTimeout(heroClipTimer);
+  if (HERO_CLIPS.length <= 1) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  heroClipTimer = setTimeout(() => {
+    nextHeroClip();
+  }, HERO_ROTATE_MS);
+}
+
+// Init on startup
+if (document.getElementById("heroStage")) {
+  loadHeroClips();
+}
 
 /* ============================================================
    PETALS
