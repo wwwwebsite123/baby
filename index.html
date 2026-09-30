@@ -395,33 +395,54 @@
   }
 
     /* HERO CLIP GALLERY */
+  /* HERO CLIP GALLERY — responsive */
   .hero-stage {
-    position: relative; margin: 0.5rem 0 1.5rem;
-    border-radius: 18px; overflow: hidden;
-    background: rgba(15, 12, 34, 0.85);
+    position: relative;
+    margin: 0.5rem 0 1.5rem;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #0a0818;
     border: 1px solid var(--border);
+    width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: 340px;
-  }
-  @media (max-width: 480px) {
-    .hero-stage { aspect-ratio: 4 / 5; max-height: 420px; }
+    max-height: 70vh;
+    transition: aspect-ratio 0.25s ease;
   }
 
   .hero-media {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: #0a0818;
   }
+
   .hero-media img,
   .hero-media video {
-    width: 100%; height: 100%;
-    object-fit: cover;
     display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     opacity: 0;
     transition: opacity 0.5s ease;
   }
+
   .hero-media img.loaded,
   .hero-media video.loaded { opacity: 1; }
+
+  /* Better sizing on phones */
+  @media (max-width: 480px) {
+    .hero-stage { max-height: 60vh; }
+  }
+  @media (max-width: 380px) {
+    .hero-stage { max-height: 55vh; }
+  }
+  @media (orientation: portrait) and (max-width: 768px) {
+    .hero-stage { max-height: 65vh; }
+  }
 
   .hero-media img { animation: clipFadeIn 0.5s ease forwards; }
   @keyframes clipFadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -3051,7 +3072,7 @@ function renderHeroClip() {
   const clip = HERO_CLIPS[heroClipIndex];
   const isVideo = /\.(mp4|webm|mov)$/i.test(clip.src);
 
-  if (isVideo) {
+   if (isVideo) {
     const video = document.createElement("video");
     video.src = clip.src;
     video.autoplay = true;
@@ -3060,7 +3081,10 @@ function renderHeroClip() {
     video.playsInline = true;
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
-    video.onloadeddata = () => video.classList.add("loaded");
+    video.onloadeddata = () => {
+      video.classList.add("loaded");
+      adjustStageAspect(video.videoWidth, video.videoHeight);
+    };
     video.onerror = () => showHeroError(media);
     media.appendChild(video);
   } else {
@@ -3069,7 +3093,10 @@ function renderHeroClip() {
     img.src = clip.src;
     img.alt = clip.caption || "Hero clip";
     img.loading = "eager";
-    img.onload = () => img.classList.add("loaded");
+    img.onload = () => {
+      img.classList.add("loaded");
+      adjustStageAspect(img.naturalWidth, img.naturalHeight);
+    };
     img.onerror = () => showHeroError(media);
     media.appendChild(img);
   }
@@ -3120,6 +3147,32 @@ function showHeroError(media) {
       <small>Check the filename in <code>clips.txt</code></small>
     </div>`;
 }
+
+/* Auto-fit the stage to the clip's natural shape */
+function adjustStageAspect(w, h) {
+  const stage = document.getElementById("heroStage");
+  if (!stage || !w || !h) return;
+
+  const isMobile = window.matchMedia("(max-width: 640px)").matches;
+  let ratio = w / h;
+
+  // Clamp so nothing gets absurdly tall or wide
+  const minRatio = isMobile ? 0.6 : 0.75;
+  const maxRatio = isMobile ? 1.9 : 2.4;
+  ratio = Math.max(minRatio, Math.min(maxRatio, ratio));
+
+  stage.style.aspectRatio = ratio;
+}
+
+/* Recalculate on rotate / resize */
+window.addEventListener("resize", () => {
+  if (!HERO_CLIPS.length) return;
+  const media = document.querySelector("#heroMedia img, #heroMedia video");
+  if (!media) return;
+  const w = media.naturalWidth || media.videoWidth || 0;
+  const h = media.naturalHeight || media.videoHeight || 0;
+  if (w && h) adjustStageAspect(w, h);
+});
 
 function nextHeroClip() {
   if (!HERO_CLIPS.length) return;
