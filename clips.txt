@@ -1,0 +1,10 @@
+# Format: filename | Caption | emoji
+# Lines starting with # are ignored
+
+clips/Deku.gif | Plus Ultra! | ⚡
+clips/Bakugo.gif | Kachan's arrival | 💥
+clips/Deku2.gif | Deku | 🦸
+clips/Bakugo2.gif | Rivals | 🤝
+clips/Deku3.gif | Go beyond | 🔥
+clips/bakugo1.gif | Kachan | 😤
+clips/Deku4.gif | DEKU | 💚
