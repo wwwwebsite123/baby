@@ -1350,6 +1350,372 @@ body[data-theme="light"] .mini-player {
 .recipe-tip strong { color: var(--hyd-mint); }
 </style>
 </head>
+  <!-- ============================================================
+     INTRO HYDRANGEA BLOOM — plays every time the site opens
+     ============================================================ -->
+<div class="intro-bloom" id="introBloom">
+  <div class="intro-night"></div>
+  <div class="intro-spores" id="introSpores"></div>
+
+  <div class="intro-scene">
+    <div class="intro-hydrangea intro-hydrangea--left">
+      <div class="intro-stem">
+        <div class="intro-leaf intro-leaf--a"></div>
+        <div class="intro-leaf intro-leaf--b"></div>
+      </div>
+      <div class="intro-bloom-head" data-intro-bloom></div>
+    </div>
+
+    <div class="intro-hydrangea intro-hydrangea--center">
+      <div class="intro-stem">
+        <div class="intro-leaf intro-leaf--a"></div>
+        <div class="intro-leaf intro-leaf--b"></div>
+      </div>
+      <div class="intro-bloom-head" data-intro-bloom></div>
+    </div>
+
+    <div class="intro-hydrangea intro-hydrangea--right">
+      <div class="intro-stem">
+        <div class="intro-leaf intro-leaf--a"></div>
+        <div class="intro-leaf intro-leaf--b"></div>
+      </div>
+      <div class="intro-bloom-head" data-intro-bloom></div>
+    </div>
+  </div>
+
+  <div class="intro-title-wrap">
+    <h1 class="intro-title">For Baby</h1>
+    <p class="intro-sub">A garden, growing for you</p>
+  </div>
+</div>
+
+<style>
+/* ============ INTRO BLOOM OVERLAY ============ */
+.intro-bloom {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: radial-gradient(ellipse at 50% 100%, #0d2a1a 0%, #071810 60%, #04120a 100%);
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 1.1s ease;
+}
+.intro-bloom.intro-hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-night {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(61, 139, 70, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 0%, rgba(10, 30, 15, 0.9) 0%, transparent 60%);
+  pointer-events: none;
+}
+.intro-night::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(168, 230, 168, 0.35) 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(107, 194, 92, 0.25) 1px, transparent 1.5px);
+  background-size: 90px 90px, 140px 140px;
+  background-position: 0 0, 45px 60px;
+  opacity: 0.35;
+}
+
+.intro-spores {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+.intro-spore {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c8ff9a, #6bc25c 60%, transparent 100%);
+  box-shadow: 0 0 8px #6bc25c, 0 0 16px rgba(107, 194, 92, 0.5);
+  animation: intro-spore-float linear infinite;
+}
+@keyframes intro-spore-float {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(-110vh) translateX(30px); opacity: 0; }
+}
+
+.intro-scene {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+  height: 100%;
+  pointer-events: none;
+}
+
+.intro-hydrangea {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform-origin: bottom center;
+}
+.intro-hydrangea--left   { transform: translateX(-50%) rotate(-12deg); margin-left: -22%; }
+.intro-hydrangea--center { transform: translateX(-50%); z-index: 5; }
+.intro-hydrangea--right  { transform: translateX(-50%) rotate(12deg); margin-left: 22%; }
+
+.intro-stem {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 0;
+  background: linear-gradient(to top, #1a3a22, #2d5a3a 40%, #3d8b46 100%);
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  border-radius: 3px 3px 0 0;
+  box-shadow: inset 0 0 3px rgba(0,0,0,0.4), 0 0 12px rgba(61,139,70,0.3);
+  animation: intro-stem-grow 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+}
+.intro-hydrangea--left   .intro-stem { height: 34vh; animation-delay: 0.35s; }
+.intro-hydrangea--center .intro-stem { height: 46vh; animation-delay: 0.15s; }
+.intro-hydrangea--right  .intro-stem { height: 30vh; animation-delay: 0.5s; }
+
+@keyframes intro-stem-grow {
+  from { height: 0; }
+}
+
+.intro-leaf {
+  position: absolute;
+  width: 60px;
+  height: 38px;
+  background: linear-gradient(135deg, #3a7a48, #245a2e);
+  border-radius: 100% 0 100% 0;
+  opacity: 0;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.25), 0 0 14px rgba(61,139,70,0.25);
+  animation: intro-leaf-unfurl 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.intro-leaf::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  background: linear-gradient(135deg, rgba(168,230,168,0.25), transparent 60%);
+  border-radius: inherit;
+}
+.intro-leaf--a { left: -54px; bottom: 40%; transform: rotate(-25deg) scale(0); transform-origin: bottom right; animation-delay: 1.1s; }
+.intro-leaf--b { left: 6px;   bottom: 55%; transform: rotate(25deg) scale(0) scaleX(-1); transform-origin: bottom left;  animation-delay: 1.35s; }
+.intro-hydrangea--left   .intro-leaf--a { animation-delay: 1.15s; }
+.intro-hydrangea--left   .intro-leaf--b { animation-delay: 1.4s; }
+.intro-hydrangea--center .intro-leaf--a { animation-delay: 0.95s; }
+.intro-hydrangea--center .intro-leaf--b { animation-delay: 1.2s; }
+.intro-hydrangea--right  .intro-leaf--a { animation-delay: 1.3s; }
+.intro-hydrangea--right  .intro-leaf--b { animation-delay: 1.55s; }
+
+@keyframes intro-leaf-unfurl {
+  to { opacity: 1; transform: rotate(-25deg) scale(1); }
+}
+.intro-leaf--b { animation-name: intro-leaf-unfurl-b; }
+@keyframes intro-leaf-unfurl-b {
+  to { opacity: 1; transform: rotate(25deg) scale(1) scaleX(-1); }
+}
+
+.intro-bloom-head {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, 60%);
+}
+.intro-hydrangea--left   .intro-bloom-head { margin-bottom: 34vh; }
+.intro-hydrangea--center .intro-bloom-head { margin-bottom: 46vh; }
+.intro-hydrangea--right  .intro-bloom-head { margin-bottom: 30vh; }
+
+.intro-floret {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform:
+    translate(-50%, -50%)
+    translate(var(--x), var(--y))
+    scale(0)
+    rotate(calc(var(--d) * 60deg));
+  transform-origin: center;
+  animation: intro-floret-bloom 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) forwards;
+  will-change: transform;
+}
+.intro-floret i {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #a8e6a8 0%, #6bc25c 40%, #3d8b46 85%, #1a4d2e 100%);
+  box-shadow:
+    inset 0 -2px 3px rgba(0,0,0,0.2),
+    inset 0 2px 3px rgba(255,255,255,0.35),
+    0 0 6px rgba(107,194,92,0.6);
+  opacity: 0;
+  transform: scale(0.4);
+  animation: intro-petal-in 0.6s ease-out calc(var(--d) + 0.1s) forwards;
+}
+.intro-floret i:nth-child(1) { top: -15px; left: -6.5px; }
+.intro-floret i:nth-child(2) { top: -6.5px; left: 2px; }
+.intro-floret i:nth-child(3) { top: 2px;    left: -6.5px; }
+.intro-floret i:nth-child(4) { top: -6.5px; left: -15px; }
+.intro-floret::after {
+  content: '';
+  position: absolute;
+  left: -2px; top: -2px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #c8ff9a;
+  box-shadow: 0 0 6px #c8ff9a;
+  opacity: 0;
+  animation: intro-petal-in 0.4s ease-out calc(var(--d) + 0.4s) forwards;
+}
+@keyframes intro-floret-bloom {
+  to {
+    transform:
+      translate(-50%, -50%)
+      translate(var(--x), var(--y))
+      scale(var(--s))
+      rotate(0deg);
+  }
+}
+@keyframes intro-petal-in {
+  to { opacity: 1; transform: scale(1); }
+}
+
+.intro-title-wrap {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  max-width: 600px;
+  padding: 0 20px;
+  animation: intro-title-in 1s ease-out 5.2s both;
+}
+@keyframes intro-title-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.intro-title {
+  font-family: 'Georgia', serif;
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #a8e6a8 0%, #c8ff9a 40%, #6bc25c 70%, #a8e6a8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 24px rgba(107,194,92,0.55));
+  margin: 0 0 8px;
+}
+.intro-sub {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: clamp(0.85rem, 3vw, 1.05rem);
+  color: rgba(200, 230, 200, 0.75);
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 600px) {
+  .intro-hydrangea--left  { margin-left: -26%; }
+  .intro-hydrangea--right { margin-left: 26%; }
+  .intro-hydrangea--left   .intro-stem { height: 26vh; }
+  .intro-hydrangea--center .intro-stem { height: 36vh; }
+  .intro-hydrangea--right  .intro-stem { height: 23vh; }
+  .intro-hydrangea--left   .intro-bloom-head { margin-bottom: 26vh; }
+  .intro-hydrangea--center .intro-bloom-head { margin-bottom: 36vh; }
+  .intro-hydrangea--right  .intro-bloom-head { margin-bottom: 23vh; }
+  .intro-leaf { width: 48px; height: 30px; }
+  .intro-floret i { width: 11px; height: 11px; }
+  .intro-floret i:nth-child(1) { top: -13px; left: -5.5px; }
+  .intro-floret i:nth-child(2) { top: -5.5px; left: 1px; }
+  .intro-floret i:nth-child(3) { top: 1px;    left: -5.5px; }
+  .intro-floret i:nth-child(4) { top: -5.5px; left: -13px; }
+}
+</style>
+
+<script>
+(function() {
+  const intro = document.getElementById('introBloom');
+  if (!intro) return;
+
+  // ---- Build floret clusters ----
+  const rings = [
+    { count: 3,  radius: 10, size: 0.75, delayBase: 1.6 },
+    { count: 6,  radius: 24, size: 0.85, delayBase: 1.4 },
+    { count: 9,  radius: 40, size: 0.95, delayBase: 1.2 },
+    { count: 10, radius: 56, size: 1.00, delayBase: 1.0 },
+    { count: 8,  radius: 72, size: 0.90, delayBase: 0.8 }
+  ];
+
+  intro.querySelectorAll('[data-intro-bloom]').forEach((bloom) => {
+    const isCenter = bloom.closest('.intro-hydrangea--center');
+    const scale = isCenter ? 1.15 : 0.95;
+
+    rings.forEach((ring) => {
+      for (let i = 0; i < ring.count; i++) {
+        const angle = (i / ring.count) * Math.PI * 2 + (Math.random() - 0.5) * 0.35;
+        const r = ring.radius + (Math.random() - 0.5) * 4;
+        const x = Math.cos(angle) * r;
+        const y = Math.sin(angle) * r;
+        const delay = ring.delayBase + Math.random() * 0.6;
+        const size = ring.size * (0.9 + Math.random() * 0.2) * scale;
+
+        const f = document.createElement('div');
+        f.className = 'intro-floret';
+        f.style.setProperty('--x', x.toFixed(1) + 'px');
+        f.style.setProperty('--y', y.toFixed(1) + 'px');
+        f.style.setProperty('--d', delay.toFixed(2) + 's');
+        f.style.setProperty('--s', size.toFixed(2));
+        f.innerHTML = '<i></i><i></i><i></i><i></i>';
+        bloom.appendChild(f);
+      }
+    });
+  });
+
+  // ---- Floating spores ----
+  const spores = document.getElementById('introSpores');
+  for (let i = 0; i < 20; i++) {
+    const s = document.createElement('div');
+    s.className = 'intro-spore';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.animationDuration = (6 + Math.random() * 8) + 's';
+    s.style.animationDelay = (Math.random() * 8) + 's';
+    const sz = 2 + Math.random() * 3;
+    s.style.width = sz + 'px';
+    s.style.height = sz + 'px';
+    s.style.opacity = 0.4 + Math.random() * 0.5;
+    spores.appendChild(s);
+  }
+
+  // ---- Auto-hide after animation completes ----
+  // Blooms finish ~2.5s, title appears at 5.2s, hold briefly, then fade.
+  const HOLD_MS = 6800;
+
+  setTimeout(() => {
+    intro.classList.add('intro-hide');
+    // Remove from DOM after fade transition finishes so it stops consuming CPU
+    setTimeout(() => { intro.remove(); }, 1300);
+  }, HOLD_MS);
+})();
+</script>
+<!-- ============================================================
+     END INTRO HYDRANGEA BLOOM
+     ============================================================ -->
 <body data-theme="dark" data-season="hydrangea" data-furigana="off" data-romaji="on">
 
 <div class="lock" id="lock">
