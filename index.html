@@ -4954,4 +4954,344 @@ if (document.getElementById("recipeGrid")) {
 }
 </script>
 </body>
+  <!-- ============================================================
+     JESBOT — AI chat companion
+     ============================================================ -->
+<button class="jesbot-btn" id="jesbotBtn" onclick="toggleJesbot()" title="Chat with Jesbot" style="display:none;">
+  <span class="jesbot-avatar">🤖</span>
+  <span class="jesbot-dot"></span>
+</button>
+
+<div class="jesbot-panel" id="jesbotPanel" style="display:none;">
+  <div class="jesbot-header">
+    <div class="jesbot-header-avatar">🤖</div>
+    <div class="jesbot-header-info">
+      <div class="jesbot-header-name">Jesbot</div>
+      <div class="jesbot-header-status">online for baby ko</div>
+    </div>
+    <button class="jesbot-close" onclick="toggleJesbot()">✕</button>
+  </div>
+
+  <div class="jesbot-messages" id="jesbotMessages"></div>
+
+  <div class="jesbot-input-row">
+    <input
+      type="text"
+      class="jesbot-input"
+      id="jesbotInput"
+      placeholder="Type something, baby ko…"
+      autocomplete="off"
+      onkeydown="if(event.key==='Enter'){sendJesbotMessage();}"
+    />
+    <button class="jesbot-send" onclick="sendJesbotMessage()">➤</button>
+  </div>
+</div>
+
+<style>
+.jesbot-btn {
+  position: fixed;
+  bottom: calc(90px + env(safe-area-inset-bottom));
+  right: 16px;
+  z-index: 950;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue), var(--hyd-pink));
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 8px 24px rgba(177, 140, 240, 0.45), 0 0 0 0 rgba(177, 140, 240, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  animation: jesbot-pulse 2.4s ease-in-out infinite;
+  transition: transform 0.15s ease;
+}
+.jesbot-btn:active { transform: scale(0.92); }
+.jesbot-avatar { font-size: 1.6rem; line-height: 1; }
+.jesbot-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #4fbf7a; border: 2px solid var(--bg);
+  box-shadow: 0 0 8px #4fbf7a;
+}
+@keyframes jesbot-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(177,140,240,0.45), 0 0 0 0 rgba(177,140,240,0.55); }
+  50%      { box-shadow: 0 8px 28px rgba(177,140,240,0.65), 0 0 0 12px rgba(177,140,240,0); }
+}
+
+.jesbot-panel {
+  position: fixed;
+  right: 16px;
+  bottom: calc(158px + env(safe-area-inset-bottom));
+  z-index: 951;
+  width: min(92vw, 370px);
+  height: min(70vh, 520px);
+  background: linear-gradient(160deg, var(--card), var(--card2));
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(177, 140, 240, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: jesbot-slide-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes jesbot-slide-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.jesbot-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(177,140,240,0.25), rgba(126,166,240,0.20));
+  border-bottom: 1px solid var(--border);
+}
+.jesbot-header-avatar {
+  width: 38px; height: 38px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue), var(--hyd-pink));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.jesbot-header-info { flex: 1; min-width: 0; }
+.jesbot-header-name { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+.jesbot-header-status { font-size: 0.72rem; color: var(--hyd-mint); margin-top: 1px; }
+.jesbot-close {
+  background: transparent; border: none; color: var(--muted);
+  font-size: 1.1rem; cursor: pointer; padding: 6px;
+  font-family: inherit; border-radius: 50%;
+  min-width: 32px; min-height: 32px;
+}
+.jesbot-close:active { background: rgba(177, 140, 240, 0.15); }
+
+.jesbot-messages {
+  flex: 1; overflow-y: auto; padding: 14px 12px;
+  display: flex; flex-direction: column; gap: 10px;
+  scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+}
+.jesbot-messages::-webkit-scrollbar { width: 5px; }
+.jesbot-messages::-webkit-scrollbar-thumb { background: rgba(177, 140, 240, 0.4); border-radius: 999px; }
+
+.jesbot-msg {
+  max-width: 82%; padding: 10px 14px; border-radius: 16px;
+  font-size: 0.88rem; line-height: 1.5; word-wrap: break-word;
+  animation: jesbot-msg-in 0.25s ease-out;
+}
+@keyframes jesbot-msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.jesbot-msg.bot {
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(177,140,240,0.22), rgba(126,166,240,0.18));
+  border: 1px solid var(--border); color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+.jesbot-msg.me {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--hyd-purple), var(--hyd-blue));
+  color: #fff; border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 12px rgba(177, 140, 240, 0.35);
+}
+
+.jesbot-typing {
+  align-self: flex-start; padding: 12px 16px;
+  background: rgba(177,140,240,0.15); border: 1px solid var(--border);
+  border-radius: 16px; border-bottom-left-radius: 4px;
+  display: flex; gap: 4px; align-items: center;
+}
+.jesbot-typing span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--hyd-lilac); animation: jesbot-typing-bounce 1.2s infinite;
+}
+.jesbot-typing span:nth-child(2) { animation-delay: 0.15s; }
+.jesbot-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes jesbot-typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+.jesbot-input-row {
+  display: flex; gap: 8px; padding: 10px 12px;
+  border-top: 1px solid var(--border); background: var(--bg);
+}
+.jesbot-input {
+  flex: 1; padding: 12px 14px; border-radius: 999px;
+  border: 1px solid var(--border2); background: var(--card); color: var(--text);
+  font-family: inherit; font-size: 16px; outline: none; min-height: 44px;
+}
+.jesbot-input:focus { border-color: var(--accent); }
+.jesbot-send {
+  width: 44px; height: 44px; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, var(--accent), var(--hyd-blue));
+  color: #fff; font-size: 1rem; cursor: pointer; font-family: inherit;
+  padding: 0; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.jesbot-send:active { transform: scale(0.92); }
+
+@media (max-width: 480px) {
+  .jesbot-btn {
+    width: 52px; height: 52px;
+    bottom: calc(86px + env(safe-area-inset-bottom)); right: 12px;
+  }
+  .jesbot-panel {
+    right: 8px; left: 8px; width: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+    height: min(68vh, 480px);
+  }
+}
+</style>
+
+<script>
+/* ============================================================
+   JESBOT — powered by AI via Cloudflare Worker
+   ============================================================ */
+
+// 👇 YOUR WORKER URL
+const JESBOT_API_URL = "https://jesbot.jakeintel11.workers.dev";
+
+const JESBOT_STORAGE = "jesbotHistory_v1";
+let jesbotHistory = [];
+try { jesbotHistory = JSON.parse(localStorage.getItem(JESBOT_STORAGE) || "[]"); } catch(e) { jesbotHistory = []; }
+
+function toggleJesbot() {
+  const panel = document.getElementById("jesbotPanel");
+  const btn = document.getElementById("jesbotBtn");
+  if (panel.style.display === "none" || !panel.style.display) {
+    panel.style.display = "flex";
+    btn.style.display = "none";
+    if (!jesbotHistory.length) {
+      jesbotGreet();
+    } else {
+      renderJesbotHistory();
+    }
+    setTimeout(() => {
+      const input = document.getElementById("jesbotInput");
+      if (input && window.innerWidth > 700) input.focus();
+    }, 200);
+  } else {
+    panel.style.display = "none";
+    btn.style.display = "flex";
+  }
+}
+
+function jesbotGreet() {
+  const hour = new Date().getHours();
+  let greeting = "Hi, baby ko. 🤍";
+  if (hour < 5)       greeting = "Can't sleep, baby ko? 🌙";
+  else if (hour < 12) greeting = "Good morning, baby ko. ☀️";
+  else if (hour < 18) greeting = "Good afternoon, baby ko. 🌸";
+  else                greeting = "Good evening, baby ko. ✨";
+
+  const followUp = "I'm Jesbot — his little stand-in while he's away. Talk to me, baby ko. 🤍";
+  addJesbotMessage("bot", greeting, false);
+  setTimeout(() => addJesbotMessage("bot", followUp, true), 700);
+}
+
+function addJesbotMessage(who, text, save = true) {
+  const box = document.getElementById("jesbotMessages");
+  const msg = document.createElement("div");
+  msg.className = "jesbot-msg " + who;
+  msg.textContent = text;
+  box.appendChild(msg);
+  box.scrollTop = box.scrollHeight;
+  if (save) {
+    jesbotHistory.push({ who, text, t: Date.now() });
+    localStorage.setItem(JESBOT_STORAGE, JSON.stringify(jesbotHistory.slice(-100)));
+  }
+}
+
+function renderJesbotHistory() {
+  const box = document.getElementById("jesbotMessages");
+  box.innerHTML = "";
+  jesbotHistory.slice(-60).forEach(m => {
+    const msg = document.createElement("div");
+    msg.className = "jesbot-msg " + m.who;
+    msg.textContent = m.text;
+    box.appendChild(msg);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+function showJesbotTyping() {
+  const box = document.getElementById("jesbotMessages");
+  const el = document.createElement("div");
+  el.className = "jesbot-typing";
+  el.id = "jesbotTyping";
+  el.innerHTML = "<span></span><span></span><span></span>";
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+function hideJesbotTyping() {
+  const el = document.getElementById("jesbotTyping");
+  if (el) el.remove();
+}
+
+async function sendJesbotMessage() {
+  const input = document.getElementById("jesbotInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  addJesbotMessage("me", text);
+  input.value = "";
+  showJesbotTyping();
+
+  const history = jesbotHistory.slice(-8).map(m => ({
+    role: m.who === "me" ? "user" : "assistant",
+    content: m.text
+  }));
+
+  try {
+    const res = await fetch(JESBOT_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text, history })
+    });
+    const data = await res.json();
+    hideJesbotTyping();
+    addJesbotMessage("bot", data.reply || "Nandito ako, baby ko. 🤍");
+  } catch (e) {
+    hideJesbotTyping();
+    addJesbotMessage("bot", "Nandito ako, baby ko. 🤍 (sandali lang — may problema sa connection)");
+  }
+}
+
+function showJesbotIfUnlocked() {
+  const site = document.getElementById("site");
+  const btn = document.getElementById("jesbotBtn");
+  if (site && btn && site.style.display !== "none") {
+    btn.style.display = "flex";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(showJesbotIfUnlocked, 500);
+});
+setInterval(showJesbotIfUnlocked, 1000);
+
+if (typeof unlock === "function") {
+  const _origUnlock = unlock;
+  unlock = function() {
+    _origUnlock();
+    setTimeout(showJesbotIfUnlocked, 300);
+  };
+}
+if (typeof logout === "function") {
+  const _origLogout = logout;
+  logout = function() {
+    const panel = document.getElementById("jesbotPanel");
+    const btn = document.getElementById("jesbotBtn");
+    if (panel) panel.style.display = "none";
+    if (btn) btn.style.display = "none";
+    _origLogout();
+  };
+}
+</script>
+<!-- ============================================================
+     END JESBOT
+     ============================================================ -->
 </html>
